@@ -8,6 +8,5 @@ public interface UserRepository extends CrudRepository<UserRecord, String>
 {  
 	public List<UserRecord> getUserById(int id);
 	public List<UserRecord> getUserByName(int id);
-	//public void getUserById(UserRecord userRecord, String id);
-	public void deleteByName(String name);
+	
 }  

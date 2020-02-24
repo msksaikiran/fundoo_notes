@@ -45,9 +45,6 @@ public class NotesController
     public void deleteUser(@RequestBody UserRecord userRecord,@PathVariable String id) {
     	 noteService.removeNotes(userRecord,id); 
     }
-    @GetMapping("/hello")
-    public String get() {
-    	return "hello";
-	}
+    
     
 }  

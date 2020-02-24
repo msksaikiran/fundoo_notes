@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.bridgelabz.fundoonotes.configuration.ConfigurFile;
-import com.bridgelabz.fundoonotes.controller.UserController;
 import com.bridgelabz.fundoonotes.dto.Userlogin;
 import com.bridgelabz.fundoonotes.model.UserRecord;
 import com.bridgelabz.fundoonotes.repository.UserRepository;
@@ -16,8 +13,8 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-    private ConfigurFile config;
+//	@Autowired
+//    private ConfigurFile config;
 	
 	public List<UserRecord> getUsers(UserRecord userRecord) {
 		List<UserRecord> ls = new ArrayList<>();
@@ -28,7 +25,7 @@ public class UserService {
 	}
 
 	public void addUser(UserRecord notes) {
-		notes.setPassword(config.passwordEncoder().encode(notes.getPassword()));
+		//notes.setPassword(config.passwordEncoder().encode(notes.getPassword()));
 		userRepository.save(notes);
 	}
 
@@ -39,7 +36,7 @@ public class UserService {
 		for (UserRecord ls : list) {
 			if (ls.getId() == id) {
 				userlogindto.setEmail(ls.getEmail());
-				config.passwordEncoder().matches(userRecord.getPassword(), ls.getPassword());
+				//config.passwordEncoder().matches(userRecord.getPassword(), ls.getPassword());
 				userlogindto.setPassword(ls.getName());
 				return ls;
 			}
@@ -48,10 +45,11 @@ public class UserService {
 
 	}
 
-	public void removeUser(UserRecord userRecord, String name) {
+	public void removeUser(UserRecord userRecord, String id) {
+		int idd = Integer.parseInt(id);
 		List<UserRecord> list = this.getUsers(userRecord);
 		for (UserRecord ls : list) {
-			if (ls.getName().equalsIgnoreCase(name)) {
+			if (ls.getId()==idd) {
 				userRepository.delete(ls);
 
 			}
