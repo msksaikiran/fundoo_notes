@@ -8,12 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import org.springframework.web.bind.annotation.RestController;
-
+import com.bridgelabz.fundoonotes.entity.Noteinfo;
 import com.bridgelabz.fundoonotes.exception.UserNotFoundException;
-import com.bridgelabz.fundoonotes.model.Noteinfo;
-import com.bridgelabz.fundoonotes.model.UserRecord;
 import com.bridgelabz.fundoonotes.service.NoteService;
 
 @RestController
@@ -33,7 +30,7 @@ public class NotesController {
 	}
 
 	@GetMapping(value = "/notes/login/{id}")
-	public Noteinfo loginUser(@RequestBody UserRecord userRecord, @PathVariable String id) {
+	public Noteinfo loginUser(@RequestBody Noteinfo notes, @PathVariable String id) {
 		Noteinfo result = noteService.getNotes(Integer.parseInt(id));
 		if (result == null)
 			throw new UserNotFoundException(id + " Record not Exist in Database");

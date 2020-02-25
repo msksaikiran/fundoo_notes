@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.web.bind.annotation.RestController;
 
-//import com.bridgelabz.fundoonotes.configuration.ConfigurFile;
+import com.bridgelabz.fundoonotes.entity.User;
 import com.bridgelabz.fundoonotes.exception.UserNotFoundException;
-import com.bridgelabz.fundoonotes.model.UserRecord;
 import com.bridgelabz.fundoonotes.service.UserService;
 
 import java.util.List;
@@ -23,35 +22,35 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@GetMapping("/user")
-	public List<UserRecord> getAllUser(@RequestBody UserRecord userRecord) {
-		return userService.getUsers(userRecord);
-	}
-
-	@PostMapping(value = "/user/add-user")
-	public void addUser(@RequestBody UserRecord userRecord) {
-
-		userService.addUser(userRecord);
-	}
-
 	@GetMapping(value = "/user/login/{id}")
-	public UserRecord loginUser(@RequestBody UserRecord userRecord, @PathVariable String id) {
-		UserRecord result = userService.getUser(Integer.parseInt(id), userRecord);
+	public User loginUser(@RequestBody User userRecord, @PathVariable String id) {
+		User result = userService.login(Integer.parseInt(id), userRecord);
 		if (result == null)
 			throw new UserNotFoundException(id + " Record not Exist in Database");
 
 		return result;
 
 	}
+	
+	@PostMapping(value = "/user/add-user")
+	public void register(@RequestBody User userRecord) {
 
-	@DeleteMapping(value = "/user/delete/{id}")
-	public void deleteUser(@RequestBody UserRecord userRecord, @PathVariable String id) {
-		userService.removeUser(userRecord, id);
+		userService.register(userRecord);
+	}
+	
+	@PostMapping(value = "/user/forgot/{email}/{password}")
+	public void forgetPassword(@PathVariable String email,@PathVariable String password) {
+
+		userService.forgotPassword(email,password);
+	}
+	@GetMapping("/user")
+	public List<User> getAllUser(@RequestBody User userRecord) {
+		return userService.getUsers(userRecord);
 	}
 
-	@GetMapping("/hello")
-	public String get() {
-		return "hello";
+	@DeleteMapping(value = "/user/delete/{id}")
+	public void deleteUser(@RequestBody User userRecord, @PathVariable String id) {
+		userService.removeUser(userRecord, id);
 	}
 
 }
