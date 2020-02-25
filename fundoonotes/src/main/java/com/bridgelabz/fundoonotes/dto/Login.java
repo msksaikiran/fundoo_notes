@@ -1,6 +1,6 @@
 package com.bridgelabz.fundoonotes.dto;
 
-public class Userlogin {
+public class Login {
 
 	private String email;
 	private String password;

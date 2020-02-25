@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Component
-public class RegisterUser {
+public class Register {
 	private String name;
 	private String email;
 	private String password;
