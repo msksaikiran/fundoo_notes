@@ -1,4 +1,4 @@
-package com.bridgelabz.fundoonotes.model;
+package com.bridgelabz.fundoonotes.entity;
 
 import java.sql.Date;
 
@@ -10,7 +10,7 @@ import javax.persistence.Id;
 
 
 @Entity
-public class UserRecord {
+public class User{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
@@ -18,11 +18,11 @@ public class UserRecord {
 	private String email;
 	private String password;
 	private Date date;
-	private boolean isVerified;
+	private String isVerified;
 	private long number;
 
     //default constructor
-	public UserRecord() {
+	public User() {
 	}
 
 	public int getId() {
@@ -65,11 +65,13 @@ public class UserRecord {
 		this.date = date;
 	}
 
-	public boolean isVerified() {
+	
+
+	public String getIsVerified() {
 		return isVerified;
 	}
 
-	public void setVerified(boolean isVerified) {
+	public void setIsVerified(String isVerified) {
 		this.isVerified = isVerified;
 	}
 

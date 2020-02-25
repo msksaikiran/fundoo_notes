@@ -1,4 +1,4 @@
-package com.bridgelabz.fundoonotes.model;
+package com.bridgelabz.fundoonotes.entity;
 
 import java.util.Date;
 
