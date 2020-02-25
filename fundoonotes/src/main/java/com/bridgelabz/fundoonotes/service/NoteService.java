@@ -2,7 +2,7 @@ package com.bridgelabz.fundoonotes.service;
 
 import java.util.List;
 
-import com.bridgelabz.fundoonotes.model.Noteinfo;
+import com.bridgelabz.fundoonotes.entity.Noteinfo;
 
 public interface NoteService {
 
