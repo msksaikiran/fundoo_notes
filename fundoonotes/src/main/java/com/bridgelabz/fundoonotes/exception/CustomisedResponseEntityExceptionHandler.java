@@ -13,7 +13,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.bridgelabz.fundoonotes.model.ExceptionResponse;
 @ControllerAdvice
-//@RestController
 public class CustomisedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler{
 
 	@ExceptionHandler(UserNotFoundException.class)
