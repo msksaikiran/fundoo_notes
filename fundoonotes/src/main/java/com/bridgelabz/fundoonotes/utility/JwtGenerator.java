@@ -21,10 +21,10 @@ public class JwtGenerator {
 		return token;
 	}
 
-	public Long parseJWT(String jwt) {
-		Long userId = (long) 0;
+	public Integer parseJWT(String jwt) {
+		Integer userId = (Integer) 0;
 		if (jwt != null) {
-			userId = JWT.require(Algorithm.HMAC512(SECRET)).build().verify(jwt).getClaim("id").asLong();
+			userId = JWT.require(Algorithm.HMAC512(SECRET)).build().verify(jwt).getClaim("id").asInt();
 		}
 		return userId;
 	}
