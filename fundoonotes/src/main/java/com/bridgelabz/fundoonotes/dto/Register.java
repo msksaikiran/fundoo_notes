@@ -1,5 +1,7 @@
 package com.bridgelabz.fundoonotes.dto;
 
+import java.sql.Date;
+
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
@@ -10,8 +12,9 @@ public class Register {
 	private String name;
 	private String email;
 	private String password;
-	private String mobileNumber;
-
+	private long number;
+	private Date date;
+	
 	public String getName() {
 		return name;
 	}
@@ -36,12 +39,20 @@ public class Register {
 		this.password = password;
 	}
 
-	public String getMobileNumber() {
-		return mobileNumber;
+	public long getNumber() {
+		return number;
 	}
 
-	public void setMobileNumber(String mobileNumber) {
-		this.mobileNumber = mobileNumber;
+	public void setNumber(long number) {
+		this.number = number;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 }
