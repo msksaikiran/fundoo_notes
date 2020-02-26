@@ -1,8 +1,7 @@
 package com.bridgelabz.fundoonotes.configuration;
-
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -13,4 +12,14 @@ public class ApplicationConfiguration {
     public  PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
+    @Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
+	}
+    
+    /*@Bean
+    public ExceptionResponse exceptionresponse(Date timestamp, String message, String details){
+    	return new ExceptionResponse(timestamp, message, details);
+    }*/
 }
