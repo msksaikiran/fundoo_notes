@@ -1,13 +1,15 @@
 package com.bridgelabz.fundoonotes.entity;
 
 import java.sql.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 @Entity
 public class User{
@@ -21,9 +23,16 @@ public class User{
 	private String isVerified;
 	private long number;
 
+	@OneToMany(cascade = CascadeType.ALL)
+
+	@JoinColumn(name = "id")
+	 private List<Noteinfo> note;
+	
     //default constructor
 	public User() {
 	}
+
+	
 
 	public int getId() {
 		return id;
@@ -65,7 +74,6 @@ public class User{
 		this.date = date;
 	}
 
-	
 
 	public String getIsVerified() {
 		return isVerified;
@@ -81,6 +89,14 @@ public class User{
 
 	public void setNumber(long number) {
 		this.number = number;
+	}
+
+	public List<Noteinfo> getNote() {
+		return note;
+	}
+
+	public void setNote(List<Noteinfo> note) {
+		this.note = note;
 	}
 
 	@Override

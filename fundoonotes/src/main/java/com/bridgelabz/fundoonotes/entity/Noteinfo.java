@@ -8,13 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Noteinfo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-
 	private Long noteId;
 
 	private String title;
@@ -35,13 +35,14 @@ public class Noteinfo {
 
 	private LocalDateTime reminder;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL)
+    private User user;
 
-	public Long getId() {
+	public Long getNoteId() {
 		return noteId;
 	}
 
-	public void setId(Long noteId) {
+	public void setNoteId(Long noteId) {
 		this.noteId = noteId;
 	}
 
@@ -61,27 +62,27 @@ public class Noteinfo {
 		this.description = description;
 	}
 
-	public int isArchieved() {
+	public int getIsArchieved() {
 		return isArchieved;
 	}
 
-	public void setArchieved(int isArchieved) {
+	public void setIsArchieved(int isArchieved) {
 		this.isArchieved = isArchieved;
 	}
 
-	public int isPinned() {
+	public int getIsPinned() {
 		return isPinned;
 	}
 
-	public void setPinned(int isPinned) {
+	public void setIsPinned(int isPinned) {
 		this.isPinned = isPinned;
 	}
 
-	public int isTrashed() {
+	public int getIsTrashed() {
 		return isTrashed;
 	}
 
-	public void setTrashed(int isTrashed) {
+	public void setIsTrashed(int isTrashed) {
 		this.isTrashed = isTrashed;
 	}
 
@@ -117,4 +118,12 @@ public class Noteinfo {
 		this.reminder = reminder;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 }
