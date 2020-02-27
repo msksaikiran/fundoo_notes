@@ -1,4 +1,6 @@
 package com.bridgelabz.fundoonotes.dto;
+import java.time.LocalDateTime;
+
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
@@ -8,7 +10,7 @@ public class NoteDto {
 	private String title;
 	@NotNull
 	private String description;
-
+	
 	public String getTitle() {
 		return title;
 	}
