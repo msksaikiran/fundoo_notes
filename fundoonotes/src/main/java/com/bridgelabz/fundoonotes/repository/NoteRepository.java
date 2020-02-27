@@ -13,5 +13,7 @@ public interface NoteRepository extends CrudRepository<Noteinfo, Integer>
 
 	@Query(value = "select * from fundoosai.noteinfo where user_id=?", nativeQuery = true)
 	List<Noteinfo> findAllById(int noteId);  
-
+	
+	@Query(value = "select * from fundoosai.noteinfo where user_id=?", nativeQuery = true)
+	Noteinfo getNote(int token);
 }  
