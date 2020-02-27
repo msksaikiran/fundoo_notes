@@ -9,17 +9,38 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.bridgelabz</groupId>
-	<artifactId>springboot-1</artifactId>
+	<artifactId>fundoonotes</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>springboot-1</name>
+	<name>fundoonotes</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
 		<java.version>1.8</java.version>
+		<start-class>com.bridgelabz.fundoonotes.FundooNotesApplication</start-class>
 		<spring-cloud.version>Hoxton.SR1</spring-cloud.version>
 		<springsecurity.version>4.0.1.RELEASE</springsecurity.version>
 	</properties>
 	<dependencies>
+	
+		<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
+  <dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger2</artifactId>
+    <version>2.9.2</version>
+</dependency>  
+		<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
+   <dependency>
+    <groupId>io.springfox</groupId>
+    <artifactId>springfox-swagger-ui</artifactId>
+    <version>2.9.2</version>
+</dependency> 
+		 
+ <!-- <dependency>
+            <groupId>org.springframework.plugin</groupId>
+            <artifactId>spring-plugin-core</artifactId>
+            <version>1.2.0.RELEASE</version>
+        </dependency> -->
+        
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
