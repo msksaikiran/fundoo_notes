@@ -9,10 +9,12 @@ public interface NoteService {
 
 	public List<Noteinfo> getAllNotes(String id);
 
-	public void addNotes(NoteDto notes);
+	public Noteinfo addNotes(NoteDto notes,String token);
 
 	public Noteinfo getNote(String id);
 
 	public void removeNotes(Noteinfo notes, String id);
+
+	
 
 }
