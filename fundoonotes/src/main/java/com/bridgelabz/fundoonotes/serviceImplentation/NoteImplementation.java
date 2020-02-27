@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,17 +18,23 @@ import com.bridgelabz.fundoonotes.dto.NoteDto;
 import com.bridgelabz.fundoonotes.entity.Noteinfo;
 import com.bridgelabz.fundoonotes.entity.User;
 import com.bridgelabz.fundoonotes.repository.NoteRepository;
+import com.bridgelabz.fundoonotes.repository.UserRepository;
 import com.bridgelabz.fundoonotes.service.NoteService;
 import com.bridgelabz.fundoonotes.utility.JwtGenerator;
 
 @Service
 public class NoteImplementation implements NoteService {
-private Noteinfo note=new Noteinfo();
+//private Noteinfo note=new Noteinfo();
 	@Autowired
 	private NoteRepository noteRepository;
 
 	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
 	private JwtGenerator generate;
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Transactional
 	@Override
@@ -38,28 +46,45 @@ private Noteinfo note=new Noteinfo();
 
 	@Transactional
 	@Override
-	public void addNotes(NoteDto notes) {
+	public Noteinfo addNotes(NoteDto notes,String token) {
 
-		//Long id=(Long)generate.parseJWT(token);
-	    BeanUtils.copyProperties(notes,Noteinfo.class);
-		Noteinfo result = noteRepository.save(note);
+		Integer id=(Integer)generate.parseJWT(token);
+		User user = userRepository.getUserById(id);
+		if(user!=null){
+			Noteinfo note = (Noteinfo)modelMapper.map(notes, Noteinfo.class);
+			
+			note.setColour("ash");
+			note.setIsArchieved(0);
+			note.setCreatedDateAndTime(LocalDateTime.now());
+			note.setIsPinned(0);
+			note.setIsTrashed(0);
+			note.setReminder(null);
+			note.setTitle(notes.getTitle());
+			note.setDescription(notes.getDescription());
+			return noteRepository.save(note);
+		}
+	    //BeanUtils.copyProperties(notes,Noteinfo.class);
+		return null;
 	}
 
 	@Transactional
 	@Override
-	public Noteinfo getNote(String id) {
+	public Noteinfo getNote(String token) {
 		Login userlogindto = new Login();
-		List<Noteinfo> list = this.getAllNotes(id);
-
+		List<Noteinfo> list = this.getAllNotes(token);
+		Noteinfo note =null;
 		for (Noteinfo ls : list) {
-			if (ls.getNoteId() == Integer.parseInt(id)) {
+			if (ls.getNoteId() == Integer.parseInt(token)) {
 				userlogindto.setEmail(ls.getTitle());
 				userlogindto.setPassword(ls.getDescription());
-				return ls;
+				note= noteRepository.getNote(Integer.parseInt(token));
+				
 			}
 		}
+		if(note!=null){
+			return note;
+		}
 		return null;
-
 	}
 
 	@Transactional
