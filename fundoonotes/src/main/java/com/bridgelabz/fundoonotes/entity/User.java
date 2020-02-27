@@ -23,9 +23,7 @@ public class User{
 	private String isVerified;
 	private long number;
 
-	@OneToMany(cascade = CascadeType.ALL)
-
-	@JoinColumn(name = "id")
+	@OneToMany
 	 private List<Noteinfo> note;
 	
     //default constructor
@@ -91,13 +89,13 @@ public class User{
 		this.number = number;
 	}
 
-	public List<Noteinfo> getNote() {
-		return note;
-	}
-
-	public void setNote(List<Noteinfo> note) {
-		this.note = note;
-	}
+//	public List<Noteinfo> getNote() {
+//		return note;
+//	}
+//
+//	public void setNote(List<Noteinfo> note) {
+//		this.note = note;
+//	}
 
 	@Override
 	public String toString() {

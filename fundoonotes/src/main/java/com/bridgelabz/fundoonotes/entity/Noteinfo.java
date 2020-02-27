@@ -35,7 +35,7 @@ public class Noteinfo {
 
 	private LocalDateTime reminder;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
     private User user;
 
 	public Long getNoteId() {
