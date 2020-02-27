@@ -22,16 +22,19 @@ public class NotesController {
 	private NoteService noteService;
 
 	@GetMapping("/user/{id}/notes")
-	public List<Noteinfo> getAllNotes(@PathVariable String id) {
-		return noteService.getAllNotes(id);
+	public List<Noteinfo> getAllNotes(@PathVariable String token) {
+		return noteService.getAllNotes(token);
 	}
 
-	@PostMapping(value = "/topic/{id}/notes")
-	public void addNotes(@RequestBody NoteDto notes,@PathVariable String id) {
+	@PostMapping(value = "/user/{id}/notes")
+	public void addNotes(@RequestBody NoteDto notes,@PathVariable String token) {
 
 		//user.getId();
 		//notes.setUser(new User(Integer.parseInt(id)));
-		noteService.addNotes(notes);
+		Noteinfo note = noteService.addNotes(notes,token);
+		if(note!=null){
+			System.out.println("SSSS.....");
+		}
 	}
 
 	@GetMapping(value = "/user/{id}/notes/{id}")

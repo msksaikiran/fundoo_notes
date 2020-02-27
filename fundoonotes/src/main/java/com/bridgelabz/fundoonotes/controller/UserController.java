@@ -4,21 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import org.springframework.web.bind.annotation.RestController;
-
 import com.bridgelabz.fundoonotes.dto.Login;
 import com.bridgelabz.fundoonotes.dto.Register;
 import com.bridgelabz.fundoonotes.dto.Update;
 import com.bridgelabz.fundoonotes.entity.User;
-import com.bridgelabz.fundoonotes.exception.UserNotFoundException;
 import com.bridgelabz.fundoonotes.response.Response;
 import com.bridgelabz.fundoonotes.response.UserDetail;
 import com.bridgelabz.fundoonotes.service.UserService;
@@ -101,5 +96,5 @@ public class UserController {
 	public void deleteUser(@RequestBody User userRecord, @PathVariable String id) {
 		userService.removeUser(userRecord, id);
 	}
-
+	
 }
