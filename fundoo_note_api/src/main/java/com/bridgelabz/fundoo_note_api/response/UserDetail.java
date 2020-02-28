@@ -5,10 +5,10 @@ import lombok.Data;
 
 public class UserDetail {
 	private String token;
-	private int Message;
+	private String Message;
 	private Object obj;
 
-	public UserDetail(String token, int i, Object obj) {
+	public UserDetail(String token, String i, Object obj) {
 
 		this.token = token;
 		Message = i;
@@ -23,11 +23,11 @@ public class UserDetail {
 		this.token = token;
 	}
 
-	public int getMessage() {
+	public String getMessage() {
 		return Message;
 	}
 
-	public void setMessage(int message) {
+	public void setMessage(String message) {
 		Message = message;
 	}
 
