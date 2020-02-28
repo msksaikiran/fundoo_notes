@@ -10,7 +10,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 public class JwtGenerator {
 	private static final String SECRET = "2129152050365";
 
-	public String jwtToken(long l) {
+	public String jwtToken(int l) {
 		String token = null;
 		try {
 			token = JWT.create().withClaim("id", l).sign(Algorithm.HMAC512(SECRET));
