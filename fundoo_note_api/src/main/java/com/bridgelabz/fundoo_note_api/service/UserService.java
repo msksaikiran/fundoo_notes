@@ -9,17 +9,19 @@ import com.bridgelabz.fundoo_note_api.entity.User;
 
 public interface UserService {
 
-	public User login(int id, Login userRecord);
+	User login(String id);
 	
 	public User register(Register userRecord);
 	
-	public User forgotPassword(String token,Update user);
+	public User forgotPassword(Update updateDto);
 	
 	public List<User> getUsers();
 	
-	public void removeUser(User userRecord, String id);
+	public void removeUser(String id);
 
 	Boolean verify(String token);
+
+	
 
 	
 

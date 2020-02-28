@@ -7,7 +7,7 @@ import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 
 public interface NoteService {
 
-	public List<Noteinfo> getAllNotes(String id);
+	public List<Noteinfo> getAllNotes();
 
 	Noteinfo addNotes(NoteDto notes, String token);
 	
@@ -15,6 +15,6 @@ public interface NoteService {
 
 	public void removeNotes(Noteinfo notes, String id);
 
-	
+	public List<Noteinfo> getNoteByUserId(String id);
 
 }
