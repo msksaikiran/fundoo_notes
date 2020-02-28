@@ -24,15 +24,13 @@ public class User{
 	private long number;
 
 	@OneToMany(cascade = CascadeType.ALL)
-
-	@JoinColumn(name = "id")
 	 private List<Noteinfo> note;
 	
-    //default constructor
+    /*  default constructor  */
+	
 	public User() {
 	}
 
-	
 
 	public int getId() {
 		return id;
