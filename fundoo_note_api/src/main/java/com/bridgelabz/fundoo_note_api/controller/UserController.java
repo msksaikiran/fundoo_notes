@@ -23,13 +23,7 @@ import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 
 @RestController
 public class UserController {
-	
-	
-	
-	@GetMapping("/userss/test")
-	public String getAllUser() {
-		return "Sai";
-	}
+
 	
 	@Autowired
 	private UserService userService;
@@ -40,14 +34,14 @@ public class UserController {
 	/*  API for user login  */
 	
 	@GetMapping(value = "/user/login/{id}")
-	public ResponseEntity<UserDetail> loginUser(@RequestBody Login userRecord, @PathVariable String id) {
-		User result = userService.login(Integer.parseInt(id), userRecord);
+	public ResponseEntity<UserDetail> loginUser(@PathVariable String id) {
+		User result = userService.login(id);
 		if (result != null) {
 			String token = generator.jwtToken(result.getId());
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Login Successfull", result.getName())
-					.body(new UserDetail(token, 200,userRecord));
+					.body(new UserDetail(token, "200-ok",result));
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new UserDetail("Login failed", 400, userRecord));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new UserDetail("Login failed", "400-Not-Found", result));
 
 
 	}
@@ -55,7 +49,6 @@ public class UserController {
 	
 	@PostMapping(value = "/user/add-user")
 	public ResponseEntity<Response> register(@RequestBody Register userRecord) {
-
 		User user = userService.register(userRecord);
 		if(user!=null){
 		return ResponseEntity.status(HttpStatus.CREATED)
@@ -66,9 +59,9 @@ public class UserController {
 		}
 	}
 	
-	/*API for verifying the token generated for the email*/
+	/*    API for verifying the token generated for the email     */
 	
-	@PostMapping("/verify/{token}")
+	@GetMapping("/verify/{token}")
 	public ResponseEntity<Response> verify(@PathVariable("token") String token) throws Exception {
 		boolean verification = userService.verify(token);
 		if (verification) {
@@ -79,15 +72,15 @@ public class UserController {
 	
 	/*  API for user Forgot Passsword  */
 	
-	@PutMapping(value = "/user/forgot/{token}")
-	public ResponseEntity<Response> forgetPassword(@PathVariable String token,@RequestBody Update user) {
-       
-		User result = userService.forgotPassword(token,user);
+	@PutMapping(value = "/user/forgot")
+	public ResponseEntity<Response> forgetPassword(@RequestBody Update updateDto) {
+		
+		User result = userService.forgotPassword(updateDto);
 		if(result!=null){
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-					.body(new Response("Password Updated Successfully", 200, user));
+					.body(new Response("Password Updated Successfully", 200, User.class));
 			}else{
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("password doesn't matched", 402, token));
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response("emailId doesn't matched", 402, updateDto.getEmail()));
 			}
 	}
 
@@ -101,8 +94,8 @@ public class UserController {
 	/*  API for Deleting the user */
 	
 	@DeleteMapping(value = "/user/delete/{id}")
-	public void deleteUser(@RequestBody User userRecord, @PathVariable String id) {
-		userService.removeUser(userRecord, id);
+	public void deleteUser(@PathVariable String id) {
+		userService.removeUser(id);
 	}
 
 }
