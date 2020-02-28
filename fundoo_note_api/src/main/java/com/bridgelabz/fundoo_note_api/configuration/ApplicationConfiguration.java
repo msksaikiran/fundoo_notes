@@ -2,6 +2,8 @@ package com.bridgelabz.fundoo_note_api.configuration;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -18,8 +20,12 @@ public class ApplicationConfiguration {
 		return new ModelMapper();
 	}
     
-    /*@Bean
-    public ExceptionResponse exceptionresponse(Date timestamp, String message, String details){
-    	return new ExceptionResponse(timestamp, message, details);
-    }*/
+    @Bean
+    public JavaMailSenderImpl mail() {
+    	
+    	return new JavaMailSenderImpl();
+    	
+    }
+    
+ 
 }
