@@ -87,9 +87,19 @@ public class UserImplementation implements UserService {
 		User result = userRepository.save(user);
 		
 		/*send the email verification to the register user*/
-		  
+		
+//		senderimp.setUsername("msaikiran201@gmail.com");
+//		senderimp.setPassword("sai072807");
+//		senderimp.setPort(587);
+//		Properties prop = new Properties();
+//		prop.put("mail.smtp.auth", "true");
+//		prop.put("mail.smtp.starttls.enable", "true");
+//		prop.put("mail.smtp.host", "smtp.gmail.com");
+//		prop.put("mail.smtp.port", "587");
+//
+//		senderimp.setJavaMailProperties(prop);  
 		this.mailservice();
-
+		//MailService.MailConfigure(user,generate.jwtToken(user.getId()));
 		MailService.senMail(user,senderimp,generate.jwtToken(user.getId()));
 		
 		return result;

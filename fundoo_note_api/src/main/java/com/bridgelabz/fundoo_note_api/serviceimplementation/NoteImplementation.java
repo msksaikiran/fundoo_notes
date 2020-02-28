@@ -32,9 +32,9 @@ private Noteinfo note=new Noteinfo();
 	
 	@Transactional
 	@Override
-	public List<Noteinfo> getAllNotes(String id) {
-		List<Noteinfo> notes = new ArrayList<>();   
-		noteRepository.findAllById(Integer.parseInt(id)).forEach(notes::add);
+	public List<Noteinfo> getAllNotes(){
+		List<Noteinfo> notes = new ArrayList<>();  
+		noteRepository.findAll().forEach(notes::add);
 		return notes;
 	}
 
@@ -55,17 +55,34 @@ private Noteinfo note=new Noteinfo();
 			note.setReminder(null);
 			note.setTitle(notes.getTitle());
 			note.setDescription(notes.getDescription());
+			note.setUser(user);
 			return noteRepository.save(note);
 		}
 	    //BeanUtils.copyProperties(notes,Noteinfo.class);
 		return null;
 	}
 
+	public List<Noteinfo> getNoteByUserId(String id) {
+		List<Noteinfo> notes = noteRepository.findNoteByUserId(Integer.parseInt(id));
+		if(notes!=null) {
+			return notes;
+		}
+		return null;
+	}
+	
 	@Transactional
 	@Override
 	public Noteinfo getNote(String id) {
-		Login userlogindto = new Login();
-		List<Noteinfo> list = this.getAllNotes(id);
+		/*    using query  */
+		Noteinfo notes = noteRepository.findNoteById(Integer.parseInt(id));
+		if(notes!=null) {
+			return notes;
+		}
+
+		/*   without using the query   */
+		
+  /*    Login userlogindto = new Login();
+		List<Noteinfo> list = this.getAllNotes();
 
 		for (Noteinfo ls : list) {
 			if (ls.getNoteId() == Integer.parseInt(id)) {
@@ -73,7 +90,7 @@ private Noteinfo note=new Noteinfo();
 				userlogindto.setPassword(ls.getDescription());
 				return ls;
 			}
-		}
+		}       */
 		return null;
 
 	}
@@ -81,7 +98,8 @@ private Noteinfo note=new Noteinfo();
 	@Transactional
 	@Override
 	public void removeNotes(Noteinfo notes, String id) {
-		List<Noteinfo> list = this.getAllNotes(id);
+		List<Noteinfo> list = this.getAllNotes();
+		//Integer id=(Integer)generate.parseJWT(token);
 		for (Noteinfo ls : list) {
 			if (ls.getNoteId() == (Integer.parseInt(id))) {
 				noteRepository.delete(ls);
