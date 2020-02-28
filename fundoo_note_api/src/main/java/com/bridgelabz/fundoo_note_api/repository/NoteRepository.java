@@ -11,7 +11,12 @@ import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 public interface NoteRepository extends CrudRepository<Noteinfo, Integer> 
 {
 
+	
+
+	@Query(value = "select * from fundoosai.noteinfo where note_id=?", nativeQuery = true)
+	Noteinfo findNoteById(int id);
+
 	@Query(value = "select * from fundoosai.noteinfo where user_id=?", nativeQuery = true)
-	List<Noteinfo> findAllById(int noteId);  
+	List<Noteinfo> findNoteByUserId(int parseInt);  
 
 }  

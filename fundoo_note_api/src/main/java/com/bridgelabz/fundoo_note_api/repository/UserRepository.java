@@ -15,7 +15,7 @@ public interface UserRepository extends CrudRepository<User, Integer> {
     public User register(User user);
 	
 	@Query(value = "update user set password=? where email=?", nativeQuery = true)
-	public User forgotPassword(User user);
+	public User forgotPassword(String password, String email);
 	
 	@Query(value = "select * from fundoosai.user where id=?", nativeQuery = true)
 	public User getUserById(int id);
@@ -24,6 +24,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 	public User getUserByEmail(String email);
 
 	@Query(value="update fundoosai.user set is_verified=true where id=?",nativeQuery=true)
-	public void verify(Integer id);
+	public void verify(int id);
 
 }
