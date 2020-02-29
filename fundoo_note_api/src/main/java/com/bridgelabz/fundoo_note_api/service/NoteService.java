@@ -12,7 +12,7 @@ public interface NoteService {
 	
     Noteinfo getNote(String id);
 
-	void removeNotes(String id);
+	Noteinfo removeNotes(String id);
 
     List<Noteinfo> getNoteByUserId(String id);
 

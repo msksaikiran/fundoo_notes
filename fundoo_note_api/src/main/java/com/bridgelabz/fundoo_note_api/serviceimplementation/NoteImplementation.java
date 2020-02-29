@@ -25,16 +25,11 @@ public class NoteImplementation implements NoteService {
 
 	@Autowired
 	private ModelMapper modelMapper;
+	
 	@Autowired
 	private JwtGenerator generate;
 	
-	@Transactional
-	@Override
-	public List<Noteinfo> getAllNotes(){
-		List<Noteinfo> notes = new ArrayList<>();  
-		noteRepository.findAll().forEach(notes::add);
-		return notes;
-	}
+	
 
 	@Transactional
 	@Override
@@ -60,6 +55,34 @@ public class NoteImplementation implements NoteService {
 		return null;
 	}
 
+	@Transactional
+	@Override
+	public List<Noteinfo> getAllNotes(){
+		List<Noteinfo> notes = new ArrayList<>();  
+		noteRepository.findAll().forEach(notes::add);
+		return notes;
+	}
+	
+	@Transactional
+	@Override
+	public Noteinfo removeNotes(String id) {
+		
+//		return noteRepository.removeNotes(Integer.parseInt(id));
+//		
+//		/*
+//		 * without using the query
+//		 */
+		
+		List<Noteinfo> list = this.getAllNotes();
+		for (Noteinfo ls : list) {
+			if (ls.getNoteId() == (Integer.parseInt(id))) {
+				noteRepository.delete(ls);
+                return ls;
+			}
+		}
+		return null;  
+	}
+	
 	public List<Noteinfo> getNoteByUserId(String id) {
 		List<Noteinfo> note = new ArrayList<>();
 	    noteRepository.findNoteByUserId(Integer.parseInt(id)).forEach(note::add);
@@ -72,13 +95,17 @@ public class NoteImplementation implements NoteService {
 	@Transactional
 	@Override
 	public Noteinfo getNote(String id) {
-		/*    using query  */
+		/*
+		 * using query
+		 */
 		Noteinfo notes = noteRepository.findNoteById(Integer.parseInt(id));
 		if(notes!=null) {
 			return notes;
 		}
 
-		/*   without using the query   */
+		/*
+		 * without using the query
+		 */
 		
   /*    Login userlogindto = new Login();
 		List<Noteinfo> list = this.getAllNotes();
@@ -92,20 +119,5 @@ public class NoteImplementation implements NoteService {
 		}       */
 		return null;
 
-	}
-
-	@Transactional
-	@Override
-	public void removeNotes(String id) {
-		List<Noteinfo> list = this.getAllNotes();
-		//Integer id=(Integer)generate.parseJWT(token);
-		for (Noteinfo ls : list) {
-			if (ls.getNoteId() == (Integer.parseInt(id))) {
-				noteRepository.delete(ls);
-
-			}
-		}
-	}
-
-
+	}	
 }

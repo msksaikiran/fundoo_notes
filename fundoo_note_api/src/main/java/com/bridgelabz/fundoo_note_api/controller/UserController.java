@@ -33,13 +33,12 @@ public class UserController {
 	
 	/*  API for user login  */
 	
-	@GetMapping(value = "/user/login/{id}")
-	public ResponseEntity<UserDetail> loginUser(@PathVariable String id) {
-		User result = userService.login(id);
+	@GetMapping(value = "/user/login/{token}")
+	public ResponseEntity<UserDetail> loginUser(@PathVariable String token) {
+		User result = userService.login(token);
 		if (result != null) {
-			String token = generator.jwtToken(result.getId());
-			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Login Successfull", result.getName())
-					.body(new UserDetail(token, "200-ok",result));
+			String parseToken = generator.jwtToken(result.getId());
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new UserDetail(parseToken, "You have Loggined in Successfully",result));
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new UserDetail("Login failed", "400-Not-Found", result));
 
@@ -61,7 +60,7 @@ public class UserController {
 	
 	/*    API for verifying the token generated for the email     */
 	
-	@GetMapping("/verify/{token}")
+	@GetMapping(value="/verify/{token}")
 	public ResponseEntity<Response> verify(@PathVariable("token") String token) throws Exception {
 		boolean verification = userService.verify(token);
 		if (verification) {
@@ -86,7 +85,7 @@ public class UserController {
 
 	/*  API for Getting the all users */
 	
-	@GetMapping("/user")
+	@GetMapping(value="/user")
 	public List<User> getAllUsers() {
 		return userService.getUsers();
 	}

@@ -35,7 +35,10 @@ public class Noteinfo {
 
 	@ManyToOne(cascade = CascadeType.ALL)
     private User user;
-
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+    private Label lable;
+	
 	public Long getNoteId() {
 		return noteId;
 	}
@@ -123,5 +126,7 @@ public class Noteinfo {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+	
 	
 }
