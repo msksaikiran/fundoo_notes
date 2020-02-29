@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.bridgelabz.fundoo_note_api.dto.Login;
 import com.bridgelabz.fundoo_note_api.dto.NoteDto;
 import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.entity.User;
@@ -18,7 +17,6 @@ import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 
 @Service
 public class NoteImplementation implements NoteService {
-private Noteinfo note=new Noteinfo();
 	@Autowired
 	private NoteRepository noteRepository;
 
@@ -63,9 +61,10 @@ private Noteinfo note=new Noteinfo();
 	}
 
 	public List<Noteinfo> getNoteByUserId(String id) {
-		List<Noteinfo> notes = noteRepository.findNoteByUserId(Integer.parseInt(id));
-		if(notes!=null) {
-			return notes;
+		List<Noteinfo> note = new ArrayList<>();
+	    noteRepository.findNoteByUserId(Integer.parseInt(id)).forEach(note::add);
+		if(note!=null) {
+			return note;
 		}
 		return null;
 	}
@@ -97,7 +96,7 @@ private Noteinfo note=new Noteinfo();
 
 	@Transactional
 	@Override
-	public void removeNotes(Noteinfo notes, String id) {
+	public void removeNotes(String id) {
 		List<Noteinfo> list = this.getAllNotes();
 		//Integer id=(Integer)generate.parseJWT(token);
 		for (Noteinfo ls : list) {

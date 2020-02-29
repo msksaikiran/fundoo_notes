@@ -4,22 +4,16 @@ import java.util.List;
 import java.util.Properties;
 import java.sql.Date;
 import java.util.ArrayList;
-
-import org.apache.naming.factory.SendMailFactory;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.bridgelabz.fundoo_note_api.configuration.ApplicationConfiguration;
-import com.bridgelabz.fundoo_note_api.dto.Login;
 import com.bridgelabz.fundoo_note_api.dto.Register;
 import com.bridgelabz.fundoo_note_api.dto.Update;
 import com.bridgelabz.fundoo_note_api.entity.User;
 import com.bridgelabz.fundoo_note_api.repository.UserRepository;
-import com.bridgelabz.fundoo_note_api.response.MailObject;
-import com.bridgelabz.fundoo_note_api.response.MailResponse;
 import com.bridgelabz.fundoo_note_api.service.UserService;
 import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 import com.bridgelabz.fundoo_note_api.utility.MailService;
@@ -100,9 +94,10 @@ public class UserImplementation implements UserService {
 	@Transactional
 	@Override
 	public Boolean verify(String token) {
-		System.out.println("id is in verification" + (Integer) generate.parseJWT(token));
+		//System.out.println("id is in verification" + (Integer) generate.parseJWT(token));
 		int id = (Integer) generate.parseJWT(token);
 		User user = userRepository.getUserById(id);
+		System.out.println(user.getName());
 		user.setIsVerified("true");
 		User users = userRepository.save(user);
 		if(users!=null) {

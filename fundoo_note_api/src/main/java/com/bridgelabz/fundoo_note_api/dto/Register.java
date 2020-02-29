@@ -1,9 +1,6 @@
 package com.bridgelabz.fundoo_note_api.dto;
 
-import java.sql.Date;
-
 import org.springframework.stereotype.Component;
-
 import lombok.Data;
 
 @Data
