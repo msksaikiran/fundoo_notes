@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo_note_api.dto.NoteDto;
+import com.bridgelabz.fundoo_note_api.dto.Update;
+import com.bridgelabz.fundoo_note_api.dto.UpdateNote;
 import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
-import com.bridgelabz.fundoo_note_api.exception.UserNotFoundException;
-import com.bridgelabz.fundoo_note_api.response.ListResponse;
 import com.bridgelabz.fundoo_note_api.response.NoteResponse;
 import com.bridgelabz.fundoo_note_api.response.Response;
-import com.bridgelabz.fundoo_note_api.response.UserDetail;
 import com.bridgelabz.fundoo_note_api.service.NoteService;
 
 @RestController
@@ -24,15 +24,7 @@ public class NotesController {
 	@Autowired
 	private NoteService noteService;
 
-	/*
-	 * API to get The All Note Details
-	 */
 	
-	@GetMapping("/user/notes")
-	public List<Noteinfo> getAllNotes() {
-		return noteService.getAllNotes();
-	}
-
 	/*
 	 * API to add the Note Details
 	 */
@@ -49,6 +41,17 @@ public class NotesController {
 					.body(new Response("Already existing user", 400, notes));
 		}
 	}
+	
+	@PutMapping(value="/notes/{id}")
+	public ResponseEntity<NoteResponse> updateNote(@PathVariable String id,@RequestBody UpdateNote dto){
+		 Noteinfo note = noteService.updateNotes(id,dto);
+		 if(note!=null){
+			 return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("200-OK", note));
+		 }
+		 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new NoteResponse("Note Not Exist",  note));
+	}
+	
 	/*
 	 * API to getting the Note Details By Id
 	 */
@@ -58,37 +61,49 @@ public class NotesController {
 		Noteinfo result = noteService.getNote(id);
 		if (result != null) {
 			// String token = generator.jwtToken(result.getId());
-			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", result.getTitle())
-					.body(new NoteResponse("200-OK", result));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("200-OK", result));
 		}
-		throw new UserNotFoundException(id + " Record not Exist in Database");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(new NoteResponse("Note Not Exist",  result));
 	}
 	/*
 	 * API to getting the Note Details By User_Id
 	 */
 
 	@GetMapping(value = "/notes/user/{id}")
-	public ResponseEntity<ListResponse> getUserNotesById(@PathVariable String id) {
+	public ResponseEntity<NoteResponse> getNotesByUserId(@PathVariable String id) {
 		List<Noteinfo> result = noteService.getNoteByUserId(id);
 		if (result != null) {
 			// return result;
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", "sucess")
-					.body(new ListResponse("200-OK", result));
+					.body(new NoteResponse("200-OK", result));
 		}
-		throw new UserNotFoundException(id + " Record not Exist in Database");
+		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+				.body(new NoteResponse("Not an existing user",  result));
 	}
 	/*
 	 * API to deleting the Note Details By _Id
 	 */
 	@DeleteMapping(value = "/notes/{id}")
-	public ResponseEntity<ListResponse> deleteNote(@PathVariable String id) {
+	public ResponseEntity<NoteResponse> deleteNote(@PathVariable String id) {
 		Noteinfo result = noteService.removeNotes(id);
 		if (result != null) {
 			// return result;
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", "sucess")
-					.body(new ListResponse("200-OK", result));
+					.body(new NoteResponse("200-OK", result));
 		}
-		throw new UserNotFoundException(id + " Record not Exist in Database");
+		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+				.body(new NoteResponse("Not existing user",  result));
+	}
+
+	/*
+	 * API to get The All Note Details
+	 */
+	
+	@GetMapping("/user/notes")
+	public List<Noteinfo> getAllNotes() {
+		
+		return noteService.getAllNotes();
 	}
 
 }

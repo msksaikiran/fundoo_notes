@@ -15,7 +15,7 @@ public interface UserService {
 	
 	List<User> getUsers();
 	
-	void removeUser(String id);
+	User removeUser(String id);
 
 	Boolean verify(String token);
 

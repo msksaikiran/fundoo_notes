@@ -21,7 +21,7 @@ public class User{
 	private String isVerified;
 	private long number;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany
 	 private List<Noteinfo> note;
 	
     /*  default constructor  */
@@ -88,14 +88,14 @@ public class User{
 	}
 
 
-	public List<Noteinfo> getNote() {
-		return note;
-	}
-
-
-	public void setNote(List<Noteinfo> note) {
-		this.note = note;
-	}
+//	public List<Noteinfo> getNote() {
+//		return note;
+//	}
+//
+//
+//	public void setNote(List<Noteinfo> note) {
+//		this.note = note;
+//	}
 
 
 	@Override

@@ -33,12 +33,13 @@ public class Noteinfo {
 
 	private LocalDateTime reminder;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
     private User user;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
     private Label lable;
 	
+
 	public Long getNoteId() {
 		return noteId;
 	}
@@ -125,6 +126,14 @@ public class Noteinfo {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@Override
+	public String toString() {
+		return "Noteinfo [noteId=" + noteId + ", title=" + title + ", description=" + description + ", isArchieved="
+				+ isArchieved + ", isPinned=" + isPinned + ", isTrashed=" + isTrashed + ", createdDateAndTime="
+				+ createdDateAndTime + ", upDateAndTime=" + upDateAndTime + ", colour=" + colour + ", reminder="
+				+ reminder + ", user=" + user + ", lable=" + lable + "]";
 	}
 
 	

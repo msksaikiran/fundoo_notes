@@ -2,6 +2,8 @@ package com.bridgelabz.fundoo_note_api.serviceimplementation;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.sql.Date;
 import java.util.ArrayList;
 import org.modelmapper.ModelMapper;
@@ -128,16 +130,21 @@ public class UserImplementation implements UserService {
 
     @Transactional
 	@Override
-	public void removeUser(String token) {
+	public User removeUser(String token) {
     	int id = (Integer) generate.parseJWT(token);
 		//int idd = Integer.parseInt(id);
 		List<User> list = this.getUsers();
-		for (User ls : list) {
-			if (ls.getId() == id) {
-				userRepository.delete(ls);
-
-			}
-		}
+	    list.stream().filter(t->t.getId()==id).forEach(t->{
+	    	userRepository.delete(t);	
+	    	System.out.println("delete"+t);
+	    });
+	    return null;
+//		for (User ls : list) {
+//			if (ls.getId() == id) {
+//				userRepository.delete(ls);
+//
+//			}
+//		}
 	}
     
     public JavaMailSenderImpl mailservice() {

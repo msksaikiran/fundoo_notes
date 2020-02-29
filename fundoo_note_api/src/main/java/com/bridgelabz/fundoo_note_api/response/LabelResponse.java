@@ -1,13 +1,13 @@
 package com.bridgelabz.fundoo_note_api.response;
 
-public class ListResponse {
+public class LabelResponse {
 	private String Message;
-	private Object obj;
+	private Object notes;
 	
-	public ListResponse(String message, Object obj) {
+	public LabelResponse(String message, Object obj) {
 		super();
 		Message = message;
-		this.obj = obj;
+		this.notes = obj;
 	}
 
 	public String getMessage() {
@@ -19,10 +19,10 @@ public class ListResponse {
 	}
 
 	public Object getObj() {
-		return obj;
+		return notes;
 	}
 
 	public void setObj(Object obj) {
-		this.obj = obj;
+		this.notes = obj;
 	}
 }

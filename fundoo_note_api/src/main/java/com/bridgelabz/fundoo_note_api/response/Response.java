@@ -7,12 +7,12 @@ public class Response {
 	
 	private String Message;
 	private int StatusCode;
-	private Object obj;
+	private Object notes;
 	
 	public Response(String message, int statusCode, Object obj) {
 		Message = message;
 		StatusCode = statusCode;
-		this.obj = obj;
+		this.notes = obj;
 	}
 
 	public Response(String message, int statusCode) {
@@ -37,11 +37,11 @@ public class Response {
 	}
 
 	public Object getObj() {
-		return obj;
+		return notes;
 	}
 
 	public void setObj(Object obj) {
-		this.obj = obj;
+		this.notes = obj;
 	}
 
 }

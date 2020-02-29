@@ -85,16 +85,19 @@ public class UserController {
 
 	/*  API for Getting the all users */
 	
-	@GetMapping(value="/user")
+/*	@GetMapping(value="/user")
 	public List<User> getAllUsers() {
 		return userService.getUsers();
 	}
 	
-	/*  API for Deleting the user */
+	/*  API for Deleting the user 
 	
 	@DeleteMapping(value = "/user/delete/{id}")
 	public void deleteUser(@PathVariable String id) {
-		userService.removeUser(id);
+		User result = userService.removeUser(id);
+		if(result!=null){
+			System.out.println("@@@");
+		}
 	}
-
+*/
 }
