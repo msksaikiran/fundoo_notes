@@ -14,9 +14,6 @@ public interface LabelRepository extends CrudRepository<Label, Integer>  {
 	Label findLableById(int id);
 
 	@Query(value = "select * from label where user_id=?", nativeQuery = true)
-	List<Label> findLableByUserId(int parseInt);
-
-	@Query(value = "delete from label  where lId=?", nativeQuery = true)
-	Label removeLabel(int parseInt);  
+	List<Label> findLableByUserId(int id);
 
 }
