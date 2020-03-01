@@ -5,6 +5,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import com.bridgelabz.fundoo_note_api.configuration.ApplicationConfiguration;
 import com.bridgelabz.fundoo_note_api.dto.Register;
 import com.bridgelabz.fundoo_note_api.dto.Update;
 import com.bridgelabz.fundoo_note_api.entity.User;
+import com.bridgelabz.fundoo_note_api.exception.UserNotFoundException;
 import com.bridgelabz.fundoo_note_api.repository.UserRepository;
 import com.bridgelabz.fundoo_note_api.service.UserService;
 import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
@@ -33,14 +35,14 @@ public class UserImplementation implements UserService {
 	private ModelMapper modelMapper;
 	@Autowired
 	private JavaMailSenderImpl senderimp;
-	
+
 	@Transactional
 	@Override
 	public User login(String token) {
 
 		/* with using the query */
 
-		//BeanUtils.copyProperties(userDto,User.class);
+		// BeanUtils.copyProperties(userDto,User.class);
 		int id = (Integer) generate.parseJWT(token);
 		User user = userRepository.getUserById(id);
 		if (user != null) {
@@ -65,57 +67,65 @@ public class UserImplementation implements UserService {
 		return null;
 
 	}
-	
+
 	@Transactional
 	@Override
 	public User register(Register userDto) {
 
 		User useremail = userRepository.getUserByEmail(userDto.getEmail());
-		if(useremail==null){
-			
-		/*using the modelMapper and getting the User*/
-		userDto.setPassword(config.passwordEncoder().encode(userDto.getPassword()));
-		User user = (User)modelMapper.map(userDto, User.class);
-		
-		/*setting the password as encrypted*/
-		user.setDate(new Date(System.currentTimeMillis()));
-		user.setIsVerified("false");
-		User result = userRepository.save(user);
-		
-		/*send the email verification to the register user*/
-		  
-		this.mailservice();
+		try {
+			if (useremail == null) {
+				/* using the modelMapper and getting the User */
+				
+				User user = (User) modelMapper.map(userDto, User.class);
 
-		MailService.senMail(user,senderimp,generate.jwtToken(user.getId()));
-		
-		return result;
+				/* setting the password as encrypted */
+				user.setPassword(config.passwordEncoder().encode(userDto.getPassword()));
+				user.setDate(LocalDateTime.now());
+				user.setIsVerified("false");
+				User result = userRepository.save(user);
+
+				/* send the email verification to the register user */
+
+				this.mailservice();
+				MailService.senMail(user, senderimp, generate.jwtToken(user.getId()));
+
+				return result;
+			}
+		} catch (Exception ae) {
+			throw new UserNotFoundException("user Not registered");
 		}
 		return null;
 	}
-	
+
 	@Transactional
 	@Override
 	public Boolean verify(String token) {
-		//System.out.println("id is in verification" + (Integer) generate.parseJWT(token));
+		// System.out.println("id is in verification" + (Integer)
+		// generate.parseJWT(token));
 		int id = (Integer) generate.parseJWT(token);
 		User user = userRepository.getUserById(id);
 		System.out.println(user.getName());
 		user.setIsVerified("true");
 		User users = userRepository.save(user);
-		if(users!=null) {
-		return true;
+		if (users != null) {
+			return true;
 		}
 		return false;
 	}
-	
+
 	@Transactional
 	@Override
 	public User forgotPassword(Update userDto) {
-		User useremail = userRepository.getUserByEmail(userDto.getEmail());
-		if(useremail!=null){
-			User user = (User)modelMapper.map(userDto, User.class);
-			user.setPassword(config.passwordEncoder().encode(user.getPassword()));
-			return userRepository.save(user);
+		try {
+			User useremail = userRepository.getUserByEmail(userDto.getEmail());
+			if (useremail != null) {
+				User user = (User) modelMapper.map(userDto, User.class);
+				user.setPassword(config.passwordEncoder().encode(user.getPassword()));
+				return userRepository.save(user);
+			}
+		} catch (Exception ae) {
+			throw new UserNotFoundException("user Not Updated");
 		}
 		return null;
 	}
@@ -128,29 +138,30 @@ public class UserImplementation implements UserService {
 		return ls;
 	}
 
-    @Transactional
+	@Transactional
 	@Override
 	public User removeUser(String token) {
-    	int id = (Integer) generate.parseJWT(token);
-		//int idd = Integer.parseInt(id);
-		List<User> list = this.getUsers();
-	    list.stream().filter(t->t.getId()==id).forEach(t->{
-	    	userRepository.delete(t);	
-	    	System.out.println("delete"+t);
-	    });
-	    return null;
-//		for (User ls : list) {
-//			if (ls.getId() == id) {
-//				userRepository.delete(ls);
-//
-//			}
-//		}
+		try {
+			int id = (Integer) generate.parseJWT(token);
+			List<User> list = this.getUsers();
+			list.stream().filter(t -> t.getId() == id).forEach(t -> {
+				userRepository.delete(t);
+				System.out.println("delete" + t);
+			});
+		} catch (Exception ae) {
+			throw new UserNotFoundException("user Not removed");
+		}
+		return null;
+		// for (User ls : list) {
+		// if (ls.getId() == id) {
+		// userRepository.delete(ls);
+		//
+		// }
+		// }
 	}
-    
-    public JavaMailSenderImpl mailservice() {
-    	//String fromEmail = System.getenv("email");
-		//String password = System.getenv("password");
-    	senderimp.setUsername(System.getenv("email"));
+
+	public JavaMailSenderImpl mailservice() {
+		senderimp.setUsername(System.getenv("email"));
 		senderimp.setPassword(System.getenv("password"));
 		senderimp.setPort(587);
 		Properties prop = new Properties();
@@ -158,7 +169,7 @@ public class UserImplementation implements UserService {
 		prop.put("mail.smtp.starttls.enable", "true");
 		prop.put("mail.smtp.host", "smtp.gmail.com");
 		prop.put("mail.smtp.port", "587");
-		senderimp.setJavaMailProperties(prop);  
+		senderimp.setJavaMailProperties(prop);
 		return senderimp;
-    }
+	}
 }
