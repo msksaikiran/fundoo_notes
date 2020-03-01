@@ -2,6 +2,7 @@ package com.bridgelabz.fundoo_note_api.service;
 
 import java.util.List;
 import com.bridgelabz.fundoo_note_api.dto.LableDto;
+import com.bridgelabz.fundoo_note_api.dto.UpdateLabel;
 import com.bridgelabz.fundoo_note_api.entity.Label;
 
 public interface LabelService {
@@ -10,15 +11,12 @@ public interface LabelService {
 
 	Label createLable(LableDto notes, String token);
 
-	Label removeLabel(String id);
+	List<Label> removeLabel(String id);
 
     List<Label> getLableByUserId(String id);
 
 	Label getLableById(String id);
 
-
-	
-
-	
+	boolean updateLabel(String id,UpdateLabel LabelDto);
 
 }

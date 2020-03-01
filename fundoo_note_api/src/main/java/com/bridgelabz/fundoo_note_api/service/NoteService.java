@@ -11,7 +11,7 @@ public interface NoteService {
 
 	Noteinfo addNotes(NoteDto notes, String token);
 	
-	Noteinfo updateNotes(String id, UpdateNote dto);
+	List<Noteinfo> updateNotes(String id, UpdateNote dto);
 	
     Noteinfo getNote(String id);
 
