@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo_note_api.dto.LableDto;
+import com.bridgelabz.fundoo_note_api.dto.UpdateLabel;
+import com.bridgelabz.fundoo_note_api.dto.UpdateNote;
 import com.bridgelabz.fundoo_note_api.entity.Label;
+import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.exception.UserNotFoundException;
 import com.bridgelabz.fundoo_note_api.response.LabelResponse;
 import com.bridgelabz.fundoo_note_api.response.NoteResponse;
@@ -31,18 +35,26 @@ public class LabelController {
 	@PostMapping(value = "/label/{token}/notes")
 	public ResponseEntity<LabelResponse> createLabel(@RequestBody LableDto label, @PathVariable String token) {
 
-		// notes.setUser(new User(Integer.parseInt(id)));
 		Label note = labelService.createLable(label, token);
 		if (note != null) {
 			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new LabelResponse("Note Details Saved Successfully", label));
+					.body(new LabelResponse("Note Details Saved Successfully", note));
 		} else {
 			return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-					.body(new LabelResponse("Already existing user",label));
+					.body(new LabelResponse("Already existing user",note));
 		}
 	}
 	
 
+	@PutMapping(value="/label/{id}")
+	public ResponseEntity<NoteResponse> updateLabel(@PathVariable String id,@RequestBody UpdateLabel dto){
+		  boolean label = labelService.updateLabel(id,dto);
+		 if(label!=true){
+			 return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Updated successfully", dto));
+		 }
+		 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new NoteResponse("Note Not Exist",  label));
+	}
 	/*
 	 * API to get The All Note Details
 	 */
@@ -52,6 +64,17 @@ public class LabelController {
 		return labelService.getAllLables();
 	}
 	
+	@DeleteMapping(value = "/label/{id}")
+	public ResponseEntity<LabelResponse> deleteLabel(@PathVariable String id) {
+		List<Label> result = labelService.removeLabel(id);
+		if (result != null) {
+			// return result;
+			return ResponseEntity.status(HttpStatus.ACCEPTED)
+					.body(new LabelResponse("Record Deleted succesfully", result));
+		}
+		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+				.body(new LabelResponse("Already Deleted user",result));
+	}
 	
 	/*
 	 * API to getting the Note Details By Id
@@ -62,7 +85,7 @@ public class LabelController {
 		Label result = labelService.getLableById(id);
 		if (result != null) {
 			// String token = generator.jwtToken(result.getId());
-			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", result.getName())
+			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", result.getLableName())
 					.body(new LabelResponse("200-OK", result));
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -86,16 +109,6 @@ public class LabelController {
 	/*
 	 * API to deleting the Note Details By _Id
 	 */
-	@DeleteMapping(value = "/label/{id}")
-	public ResponseEntity<LabelResponse> deleteLabel(@PathVariable String id) {
-		Label result = labelService.removeLabel(id);
-		if (result != null) {
-			// return result;
-			return ResponseEntity.status(HttpStatus.ACCEPTED)
-					.body(new LabelResponse("Record Deleted suc", result));
-		}
-		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-				.body(new LabelResponse("Already Deleted user",result));
-	}
+	
 
 }

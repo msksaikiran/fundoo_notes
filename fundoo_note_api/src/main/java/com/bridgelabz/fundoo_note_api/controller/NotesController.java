@@ -44,12 +44,12 @@ public class NotesController {
 	
 	@PutMapping(value="/notes/{id}")
 	public ResponseEntity<NoteResponse> updateNote(@PathVariable String id,@RequestBody UpdateNote dto){
-		 Noteinfo note = noteService.updateNotes(id,dto);
+		 List<Noteinfo> note = noteService.updateNotes(id,dto);
 		 if(note!=null){
-			 return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("200-OK", note));
+			 return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Note Title Updated", dto));
 		 }
 		 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(new NoteResponse("Note Not Exist",  note));
+					.body(new NoteResponse("Note Not Exist",  dto));
 	}
 	
 	/*
@@ -87,7 +87,7 @@ public class NotesController {
 	@DeleteMapping(value = "/notes/{id}")
 	public ResponseEntity<NoteResponse> deleteNote(@PathVariable String id) {
 		Noteinfo result = noteService.removeNotes(id);
-		if (result != null) {
+		if (result == null) {
 			// return result;
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", "sucess")
 					.body(new NoteResponse("200-OK", result));
