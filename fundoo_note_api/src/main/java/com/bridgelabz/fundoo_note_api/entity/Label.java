@@ -1,8 +1,9 @@
 package com.bridgelabz.fundoo_note_api.entity;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,35 +16,45 @@ public class Label {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int labelId;
+	@Column
 	private String lableName;
+	@Column
 	private int userId;
+	@Column
+	private LocalDateTime UpdateDateAndTime;
 	
 	@OneToMany(mappedBy = "lable")
-    private List<Noteinfo> note;
+    private List<Noteinfo> note=new ArrayList<Noteinfo>();
 
-	public int getLableId() {
+	public int getLabelId() {
 		return labelId;
 	}
 
-	public void setLableId(int lableId) {
-		this.labelId = lableId;
+	public void setLabelId(int labelId) {
+		this.labelId = labelId;
 	}
 
-	public String getName() {
+	public String getLableName() {
 		return lableName;
 	}
 
-	public void setName(String name) {
-		this.lableName = name;
+	public void setLableName(String lableName) {
+		this.lableName = lableName;
 	}
 
 	public int getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId2) {
-		this.userId = userId2;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
-	
-	
+
+	public LocalDateTime getUpdateDateAndTime() {
+		return UpdateDateAndTime;
+	}
+
+	public void setUpdateDateAndTime(LocalDateTime updateDateAndTime) {
+		UpdateDateAndTime = updateDateAndTime;
+	}	
 }

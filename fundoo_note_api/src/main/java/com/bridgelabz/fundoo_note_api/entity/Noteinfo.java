@@ -2,6 +2,7 @@ package com.bridgelabz.fundoo_note_api.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,23 +15,23 @@ public class Noteinfo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long noteId;
-
+	@Column
 	private String title;
-
+	@Column
 	private String description;
-
+	@Column
 	private int isArchieved;
-
+	@Column
 	private int isPinned;
-
+	@Column
 	private int isTrashed;
-
+	@Column
 	private LocalDateTime createdDateAndTime;
-
+	@Column
 	private LocalDateTime upDateAndTime;
-
+	@Column
 	private String colour;
-
+	@Column
 	private LocalDateTime reminder;
 
 	@ManyToOne

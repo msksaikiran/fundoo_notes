@@ -1,28 +1,38 @@
 package com.bridgelabz.fundoo_note_api.entity;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+
 @Entity
 public class User{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
+	@Column
 	private String name;
+	@Column
 	private String email;
+	@Column
 	private String password;
-	private Date date;
+	@Column
+	private LocalDateTime date;
+	@Column
 	private String isVerified;
+	@Column
 	private long number;
 
-	@OneToMany
-	 private List<Noteinfo> note;
+	@OneToMany(mappedBy="user")
+	 private List<Noteinfo> note=new ArrayList<>();
 	
     /*  default constructor  */
 	
@@ -62,11 +72,12 @@ public class User{
 		this.password = password;
 	}
 
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 
