@@ -1,14 +1,26 @@
 package com.bridgelabz.fundoo_note_api.response;
 
+import java.util.List;
+
+import com.bridgelabz.fundoo_note_api.entity.Label;
+
 public class LabelResponse {
 	private String Message;
-	private Object notes;
-	
-	public LabelResponse(String message, Object obj) {
+	private Label notes;
+    private List<Label> result;
+    
+	public LabelResponse(String message, Label result) {
 		super();
 		Message = message;
-		this.notes = obj;
+		this.notes = result;
 	}
+
+
+	public LabelResponse(String message, List<Label> result) {
+		this.Message=message;
+		this.result=result;
+	}
+
 
 	public String getMessage() {
 		return Message;
@@ -18,11 +30,12 @@ public class LabelResponse {
 		Message = message;
 	}
 
-	public Object getObj() {
+	public Label getNotes() {
 		return notes;
 	}
 
-	public void setObj(Object obj) {
-		this.notes = obj;
+	public void setNotes(Label notes) {
+		this.notes = notes;
 	}
+
 }
