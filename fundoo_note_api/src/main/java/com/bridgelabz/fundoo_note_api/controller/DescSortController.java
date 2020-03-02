@@ -14,7 +14,7 @@ import com.bridgelabz.fundoo_note_api.service.LabelService;
 import com.bridgelabz.fundoo_note_api.service.NoteService;
 
 @RestController
-public class SortController {
+public class DescSortController {
 
 	@Autowired
 	private NoteService noteService;
