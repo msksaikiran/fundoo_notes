@@ -1,6 +1,5 @@
 package com.bridgelabz.fundoo_note_api.entity;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
