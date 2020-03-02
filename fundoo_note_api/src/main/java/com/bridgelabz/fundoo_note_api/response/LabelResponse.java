@@ -1,7 +1,5 @@
 package com.bridgelabz.fundoo_note_api.response;
 
-import java.util.List;
-
 import com.bridgelabz.fundoo_note_api.entity.Label;
 
 public class LabelResponse {

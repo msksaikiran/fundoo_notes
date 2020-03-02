@@ -10,7 +10,7 @@ public class NoteDto {
 	private String title;
 	@NotNull
 	private String description;
-	private String noteId;
+	//private String noteId;
 
 	public String getTitle() {
 		return title;

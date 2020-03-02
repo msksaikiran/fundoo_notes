@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo_note_api.dto.NoteDto;
-import com.bridgelabz.fundoo_note_api.dto.Update;
 import com.bridgelabz.fundoo_note_api.dto.UpdateNote;
 import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.response.NoteResponse;

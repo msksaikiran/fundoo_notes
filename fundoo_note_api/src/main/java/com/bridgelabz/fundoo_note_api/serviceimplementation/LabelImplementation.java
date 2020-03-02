@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo_note_api.dto.LableDto;
 import com.bridgelabz.fundoo_note_api.dto.UpdateLabel;
 import com.bridgelabz.fundoo_note_api.entity.Label;
-import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.entity.User;
 import com.bridgelabz.fundoo_note_api.exception.NotesNotFoundException;
 import com.bridgelabz.fundoo_note_api.repository.LabelRepository;

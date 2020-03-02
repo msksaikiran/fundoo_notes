@@ -13,13 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo_note_api.dto.LableDto;
 import com.bridgelabz.fundoo_note_api.dto.UpdateLabel;
-import com.bridgelabz.fundoo_note_api.dto.UpdateNote;
 import com.bridgelabz.fundoo_note_api.entity.Label;
-import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
-import com.bridgelabz.fundoo_note_api.exception.UserNotFoundException;
 import com.bridgelabz.fundoo_note_api.response.LabelResponse;
 import com.bridgelabz.fundoo_note_api.response.NoteResponse;
-import com.bridgelabz.fundoo_note_api.response.Response;
 import com.bridgelabz.fundoo_note_api.service.LabelService;
 
 @RestController
