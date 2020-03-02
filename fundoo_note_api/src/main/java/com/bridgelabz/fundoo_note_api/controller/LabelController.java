@@ -48,12 +48,11 @@ public class LabelController {
 
 	@PutMapping(value="/label/{id}")
 	public ResponseEntity<NoteResponse> updateLabel(@PathVariable String id,@RequestBody UpdateLabel dto){
-		  boolean label = labelService.updateLabel(id,dto);
-		 if(label!=true){
+		  Label label = labelService.updateLabel(id,dto);
+		 if(label!=null){
 			 return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Updated successfully", dto));
 		 }
-		 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(new NoteResponse("Note Not Exist",  label));
+		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist",  label));
 	}
 	/*
 	 * API to get The All Note Details
