@@ -46,7 +46,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			Integer id = (Integer) generate.parseJWT(token);
 			User user = userRepository.getUserById(id);
-			if (user == null) {
+			if (user != null) {
 				Noteinfo note = (Noteinfo) modelMapper.map(notes, Noteinfo.class);
 
 				note.setColour("ash");
@@ -125,6 +125,21 @@ public class NoteImplementation implements NoteService {
 		return notes;
 	}
 	
+	@Override
+	public List<String> ascSortByName() {
+		ArrayList<String> noteTitles=new ArrayList<>();
+		List<Noteinfo> Notelist = this.getAllNotes();
+		/*
+		 * java 8 lambda feature for sorting
+		 */
+		Notelist.forEach(t->{
+			noteTitles.add(t.getTitle());
+		});
+		Collections.sort(noteTitles);
+		return noteTitles;
+	}
+	
+	
 	@Transactional
 	@Override
 	public ArrayList<String> sortByName() {
@@ -184,4 +199,6 @@ public class NoteImplementation implements NoteService {
 		return null;
 
 	}
+
+	
 }

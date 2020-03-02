@@ -22,4 +22,6 @@ public interface NoteService {
 
 	ArrayList<String> sortByName();
 
+	List<String> ascSortByName();
+
 }

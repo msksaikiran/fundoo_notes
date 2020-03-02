@@ -45,7 +45,7 @@ public class LabelImplementation implements LabelService {
 		int userId = (Integer) generate.parseJWT(token);
 		System.out.println(userId);
 		User user = userRepository.getUserById(userId);
-		if (user == null) {
+		if (user != null) {
 			Label label = (Label) modelMapper.map(labelDto, Label.class);
 			label.setUserId(userId);
 			return labelRepository.save(label);
@@ -115,6 +115,23 @@ public class LabelImplementation implements LabelService {
 		return list;
 	}
 
+	@Override
+	public List<String> ascsortByName() {
+		ArrayList<String> lis = new ArrayList<>();
+		List<Label> list = this.getAllLables();
+		/*
+		 * java 8 lambda feature for sorting
+		 */
+		list.forEach(t -> {
+			lis.add(t.getLableName());
+
+		});
+		// System.out.println("NotesId:"+lis);
+		Collections.sort(lis);
+		return lis;
+	}
+	
+	
 	@Transactional
 	@Override
 	public ArrayList<String> sortByName() {
@@ -166,4 +183,6 @@ public class LabelImplementation implements LabelService {
 		return null;
 
 	}
+
+	
 }

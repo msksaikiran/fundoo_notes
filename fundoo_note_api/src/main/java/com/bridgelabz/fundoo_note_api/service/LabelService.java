@@ -22,4 +22,6 @@ public interface LabelService {
 
 	ArrayList<String> sortByName();
 
+	List<String> ascsortByName();
+
 }

@@ -71,14 +71,14 @@ public class UserController {
 
 	/* API for verifying the token generated for the email */
 
-//	@GetMapping(value="/verify/{token}")
-//	public ResponseEntity<Response> verify(@PathVariable("token") String token) throws Exception {
-//		boolean verification = userService.verify(token);
-//		if (verification) {
-//			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("verified", 200, token));
-//		}
-//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("not verified", 400, token));
-//	}
+	@GetMapping(value="/verify/{token}")
+	public ResponseEntity<Response> verify(@PathVariable("token") String token) throws Exception {
+		boolean verification = userService.verify(token);
+		if (verification) {
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("verified", 200, token));
+		}
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("not verified", 400, token));
+	}
 
 	/* API for Getting the all users */
 

@@ -2,16 +2,16 @@ package com.bridgelabz.fundoo_note_api.dto;
 
 public class Update {
 
-	private String password;
+	private String newPassword;
 
 	private String email;
 
 	public String getPassword() {
-		return password;
+		return newPassword;
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+		this.newPassword = password;
 	}
 
 	public String getEmail() {
