@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.bridgelabz.fundoo_note_api.response.LabelResponse;
 import com.bridgelabz.fundoo_note_api.response.NoteResponse;
 import com.bridgelabz.fundoo_note_api.service.LabelService;
 import com.bridgelabz.fundoo_note_api.service.NoteService;
@@ -28,7 +30,7 @@ public class SortController {
 	public ResponseEntity<NoteResponse> sortByNoteTitle() {
 		List<String> result = noteService.sortByName();
 		if (result != null) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("200-OK", result));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Sorted sucessfully", result));
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist", result));
 	}
@@ -38,12 +40,12 @@ public class SortController {
 	 */
 
 	@GetMapping(value = "/label/sortByName")
-	public ResponseEntity<NoteResponse> sortByLabelName() {
+	public ResponseEntity<LabelResponse> sortByLabelName() {
 		List<String> result = labelService.sortByName();
 		if (result != null) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("200-OK", result));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new LabelResponse("sorted sucessfully", result));
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist", result));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LabelResponse("Note Not Exist", result));
 	}
 
 }

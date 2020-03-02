@@ -7,16 +7,13 @@ import com.bridgelabz.fundoo_note_api.entity.Label;
 public class LabelResponse {
 	private String Message;
 	private Label notes;
-	private List<Label> result;
+	private Object result;
 
-	public LabelResponse(String message, Label result) {
+	
+
+	public LabelResponse(String message, Object result) {
 		super();
 		Message = message;
-		this.notes = result;
-	}
-
-	public LabelResponse(String message, List<Label> result) {
-		this.Message = message;
 		this.result = result;
 	}
 
