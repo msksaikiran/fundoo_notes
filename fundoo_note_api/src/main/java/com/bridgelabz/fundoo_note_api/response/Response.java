@@ -1,14 +1,15 @@
 package com.bridgelabz.fundoo_note_api.response;
+
 import lombok.Data;
 
 @Data
 
 public class Response {
-	
+
 	private String Message;
 	private int StatusCode;
 	private Object notes;
-	
+
 	public Response(String message, int statusCode, Object obj) {
 		Message = message;
 		StatusCode = statusCode;
@@ -16,8 +17,8 @@ public class Response {
 	}
 
 	public Response(String message, int statusCode) {
-	this.Message=message;
-	this.StatusCode=statusCode;
+		this.Message = message;
+		this.StatusCode = statusCode;
 	}
 
 	public String getMessage() {

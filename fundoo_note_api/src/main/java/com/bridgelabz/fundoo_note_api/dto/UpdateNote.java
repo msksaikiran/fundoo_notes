@@ -16,6 +16,5 @@ public class UpdateNote {
 	public String toString() {
 		return "UpdateNote [title=" + title + "]";
 	}
-	
-	
+
 }

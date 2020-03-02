@@ -3,7 +3,7 @@ package com.bridgelabz.fundoo_note_api.response;
 public class NoteResponse {
 	private String Message;
 	private Object notes;
-	
+
 	public NoteResponse(String message, Object obj) {
 		super();
 		Message = message;
@@ -26,5 +26,4 @@ public class NoteResponse {
 		this.notes = obj;
 	}
 
-	
 }

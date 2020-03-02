@@ -1,4 +1,5 @@
 package com.bridgelabz.fundoo_note_api.configuration;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,8 +16,9 @@ public class SwaggerConfig {
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("com.bridgelabz.fundoo_note_api.controller")).paths(PathSelectors.any()).build();
-	
+				.apis(RequestHandlerSelectors.basePackage("com.bridgelabz.fundoo_note_api.controller"))
+				.paths(PathSelectors.any()).build();
+
 	}
 
 }

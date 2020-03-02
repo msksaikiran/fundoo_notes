@@ -28,7 +28,6 @@ public class LabelController {
 	@Autowired
 	private LabelService labelService;
 
-
 	/*
 	 * API to add the Note Details
 	 */
@@ -41,28 +40,27 @@ public class LabelController {
 					.body(new LabelResponse("Note Details Saved Successfully", note));
 		} else {
 			return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-					.body(new LabelResponse("Already existing user",note));
+					.body(new LabelResponse("Already existing user", note));
 		}
 	}
-	
 
-	@PutMapping(value="/label/{id}")
-	public ResponseEntity<NoteResponse> updateLabel(@PathVariable String id,@RequestBody UpdateLabel dto){
-		  Label label = labelService.updateLabel(id,dto);
-		 if(label!=null){
-			 return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Updated successfully", dto));
-		 }
-		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist",  label));
+	@PutMapping(value = "/label/{id}")
+	public ResponseEntity<NoteResponse> updateLabel(@PathVariable String id, @RequestBody UpdateLabel dto) {
+		Label label = labelService.updateLabel(id, dto);
+		if (label != null) {
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Updated successfully", dto));
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist", label));
 	}
 	/*
 	 * API to get The All Note Details
 	 */
-	
+
 	@GetMapping("/label/notes")
 	public List<Label> getAllLables() {
 		return labelService.getAllLables();
 	}
-	
+
 	@DeleteMapping(value = "/label/{id}")
 	public ResponseEntity<LabelResponse> deleteLabel(@PathVariable String id) {
 		List<Label> result = labelService.removeLabel(id);
@@ -72,9 +70,9 @@ public class LabelController {
 					.body(new LabelResponse("Record Deleted succesfully", result));
 		}
 		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-				.body(new LabelResponse("Already Deleted user",result));
+				.body(new LabelResponse("Already Deleted user", result));
 	}
-	
+
 	/*
 	 * API to getting the Note Details By Id
 	 */
@@ -87,8 +85,7 @@ public class LabelController {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", result.getLableName())
 					.body(new LabelResponse("200-OK", result));
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(new LabelResponse("Label not existing",result));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LabelResponse("Label not existing", result));
 	}
 	/*
 	 * API to getting the Note Details By User_Id
@@ -102,12 +99,10 @@ public class LabelController {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", "sucess")
 					.body(new LabelResponse("200-OK", result));
 		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND)
-				.body(new LabelResponse("user not Exist",result));
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LabelResponse("user not Exist", result));
 	}
 	/*
 	 * API to deleting the Note Details By _Id
 	 */
-	
 
 }

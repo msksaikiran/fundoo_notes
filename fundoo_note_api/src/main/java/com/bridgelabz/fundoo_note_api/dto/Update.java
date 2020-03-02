@@ -3,7 +3,7 @@ package com.bridgelabz.fundoo_note_api.dto;
 public class Update {
 
 	private String password;
-	
+
 	private String email;
 
 	public String getPassword() {

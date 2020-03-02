@@ -24,7 +24,6 @@ public class NotesController {
 	@Autowired
 	private NoteService noteService;
 
-	
 	/*
 	 * API to add the Note Details
 	 */
@@ -41,17 +40,16 @@ public class NotesController {
 					.body(new Response("Already existing user", 400, notes));
 		}
 	}
-	
-	@PutMapping(value="/notes/{id}")
-	public ResponseEntity<NoteResponse> updateNote(@PathVariable String id,@RequestBody UpdateNote dto){
-		 List<Noteinfo> note = noteService.updateNotes(id,dto);
-		 if(note!=null){
-			 return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Note Title Updated", dto));
-		 }
-		 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(new NoteResponse("Note Not Exist",  dto));
+
+	@PutMapping(value = "/notes/{id}")
+	public ResponseEntity<NoteResponse> updateNote(@PathVariable String id, @RequestBody UpdateNote dto) {
+		List<Noteinfo> note = noteService.updateNotes(id, dto);
+		if (note != null) {
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Note Title Updated", dto));
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist", dto));
 	}
-	
+
 	/*
 	 * API to getting the Note Details By Id
 	 */
@@ -63,8 +61,7 @@ public class NotesController {
 			// String token = generator.jwtToken(result.getId());
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("200-OK", result));
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(new NoteResponse("Note Not Exist",  result));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist", result));
 	}
 	/*
 	 * API to getting the Note Details By User_Id
@@ -79,8 +76,9 @@ public class NotesController {
 					.body(new NoteResponse("200-OK", result));
 		}
 		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-				.body(new NoteResponse("Not an existing user",  result));
+				.body(new NoteResponse("Not an existing user", result));
 	}
+
 	/*
 	 * API to deleting the Note Details By _Id
 	 */
@@ -92,17 +90,16 @@ public class NotesController {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", "sucess")
 					.body(new NoteResponse("200-OK", result));
 		}
-		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-				.body(new NoteResponse("Not existing user",  result));
+		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new NoteResponse("Not existing user", result));
 	}
 
 	/*
 	 * API to get The All Note Details
 	 */
-	
+
 	@GetMapping("/user/notes")
 	public List<Noteinfo> getAllNotes() {
-		
+
 		return noteService.getAllNotes();
 	}
 

@@ -1,4 +1,5 @@
 package com.bridgelabz.fundoo_note_api.serviceimplementation;
+
 /*#
  * Description: implementation part for user when user register,login,update
  * @author : SaiKiranMsk
@@ -77,11 +78,11 @@ public class UserImplementation implements UserService {
 		try {
 			if (useremail == null) {
 				/* using the modelMapper and getting the User */
-				
+
 				User user = (User) modelMapper.map(userDto, User.class);
 
 				/* setting the password as encrypted */
-				//user.setPassword(config.passwordEncoder().encode(userDto.getPassword()));
+				// user.setPassword(config.passwordEncoder().encode(userDto.getPassword()));
 				user.setDate(LocalDateTime.now());
 				user.setIsVerified("false");
 				User result = userRepository.save(user);
@@ -102,7 +103,7 @@ public class UserImplementation implements UserService {
 	@Transactional
 	@Override
 	public Boolean verify(String token) {
-		
+
 		int id = (Integer) generate.parseJWT(token);
 		User user = userRepository.getUserById(id);
 		System.out.println(user.getName());
@@ -165,11 +166,6 @@ public class UserImplementation implements UserService {
 		senderimp.setPassword(System.getenv("password"));
 		senderimp.setPort(587);
 		Properties prop = new Properties();
-//		prop.put("mail.smtp.conectiontimeout","10000");
-//		prop.put("mail.smtp.timeout","10000");
-//		prop.put("mail.smtp.writetimeout","10000");
-//		prop.put("mail.smtp.starttls.enabled","true");
-//		prop.put("mail.smtp.starttls.required","true");
 		prop.put("mail.smtp.auth", "true");
 		prop.put("mail.smtp.host", "smtp.gmail.com");
 		prop.put("mail.smtp.port", "587");

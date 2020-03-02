@@ -12,5 +12,4 @@ public class UpdateLabel {
 		this.lName = lName;
 	}
 
-
 }

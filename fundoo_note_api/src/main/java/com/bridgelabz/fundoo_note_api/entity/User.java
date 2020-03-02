@@ -11,11 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-
 @Entity
-public class User{
+public class User {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	@Column
 	private String name;
@@ -30,14 +29,13 @@ public class User{
 	@Column
 	private long number;
 
-	@OneToMany(mappedBy="user")
-	 private List<Noteinfo> note=new ArrayList<>();
-	
-    /*  default constructor  */
-	
+	@OneToMany(mappedBy = "user")
+	private List<Noteinfo> note = new ArrayList<>();
+
+	/* default constructor */
+
 	public User() {
 	}
-
 
 	public int getId() {
 		return id;
@@ -75,11 +73,9 @@ public class User{
 		return date;
 	}
 
-
 	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
-
 
 	public String getIsVerified() {
 		return isVerified;
@@ -97,7 +93,6 @@ public class User{
 		this.number = number;
 	}
 
-
 //	public List<Noteinfo> getNote() {
 //		return note;
 //	}
@@ -106,7 +101,6 @@ public class User{
 //	public void setNote(List<Noteinfo> note) {
 //		this.note = note;
 //	}
-
 
 	@Override
 	public String toString() {

@@ -10,7 +10,7 @@ public class Register {
 	private String email;
 	private String password;
 	private long number;
-	
+
 	public String getName() {
 		return name;
 	}
@@ -42,6 +42,5 @@ public class Register {
 	public void setNumber(long number) {
 		this.number = number;
 	}
-
 
 }

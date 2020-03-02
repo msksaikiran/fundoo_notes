@@ -14,7 +14,7 @@ public class Noteinfo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long noteId;
+	private Integer noteId;
 	@Column
 	private String title;
 	@Column
@@ -35,17 +35,16 @@ public class Noteinfo {
 	private LocalDateTime reminder;
 
 	@ManyToOne
-    private User user;
-	
-	@ManyToOne
-    private Label lable;
-	
+	private User user;
 
-	public Long getNoteId() {
+	@ManyToOne
+	private Label lable;
+
+	public Integer getNoteId() {
 		return noteId;
 	}
 
-	public void setNoteId(Long noteId) {
+	public void setNoteId(Integer noteId) {
 		this.noteId = noteId;
 	}
 
@@ -137,6 +136,4 @@ public class Noteinfo {
 				+ reminder + ", user=" + user + ", lable=" + lable + "]";
 	}
 
-	
-	
 }

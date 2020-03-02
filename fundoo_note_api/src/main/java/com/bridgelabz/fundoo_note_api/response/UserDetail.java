@@ -1,7 +1,5 @@
 package com.bridgelabz.fundoo_note_api.response;
-import lombok.Data;
 
-@Data
 
 public class UserDetail {
 	private String token;

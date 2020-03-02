@@ -11,5 +11,5 @@ public class LableDto {
 	public void setLName(String lName) {
 		LName = lName;
 	}
-	
+
 }

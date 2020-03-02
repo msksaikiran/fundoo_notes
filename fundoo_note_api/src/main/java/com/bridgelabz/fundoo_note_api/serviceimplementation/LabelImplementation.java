@@ -7,6 +7,7 @@ package com.bridgelabz.fundoo_note_api.serviceimplementation;
  */
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo_note_api.dto.LableDto;
 import com.bridgelabz.fundoo_note_api.dto.UpdateLabel;
 import com.bridgelabz.fundoo_note_api.entity.Label;
+import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.entity.User;
 import com.bridgelabz.fundoo_note_api.exception.NotesNotFoundException;
 import com.bridgelabz.fundoo_note_api.repository.LabelRepository;
@@ -69,8 +71,8 @@ public class LabelImplementation implements LabelService {
 				da.setUpdateDateAndTime(LocalDateTime.now());
 				labelRepository.save(da);
 			});
-			//System.out.println("data::"+data);
-			if (data.equals(Optional.empty())){
+			// System.out.println("data::"+data);
+			if (data.equals(Optional.empty())) {
 				return null;
 			}
 		} catch (Exception ae) {
@@ -90,15 +92,15 @@ public class LabelImplementation implements LabelService {
 		/*
 		 * java 8 streams feature
 		 */
-		Optional<Label> data =null;
+		Optional<Label> data = null;
 		try {
 			data = list.stream().filter(t -> t.getLabelId() == lId).findFirst();
 			data.ifPresent(da -> {
-				labelRepository.delete(da); 
+				labelRepository.delete(da);
 			});
-			if (data.equals(Optional.empty())){
+			if (data.equals(Optional.empty())) {
 				return null;
-			}	
+			}
 		} catch (Exception ae) {
 			throw new NotesNotFoundException("user Record Not Exist");
 		}
@@ -116,6 +118,23 @@ public class LabelImplementation implements LabelService {
 
 	@Transactional
 	@Override
+	public ArrayList<String> sortByName() {
+		ArrayList<String> lis = new ArrayList<>();
+		List<Label> list = this.getAllLables();
+		/*
+		 * java 8 lambda feature for sorting
+		 */
+		list.forEach(t -> {
+			lis.add(t.getLableName());
+
+		});
+		// System.out.println("NotesId:"+lis);
+		Collections.sort(lis, Collections.reverseOrder());
+		return lis;
+	}
+
+	@Transactional
+	@Override
 	public List<Label> getAllLables() {
 		List<Label> notes = new ArrayList<>();
 
@@ -129,7 +148,7 @@ public class LabelImplementation implements LabelService {
 		List<Label> note = new ArrayList<>();
 		labelRepository.findLableByUserId(Integer.parseInt(id)).forEach(note::add);
 		if (note != null) {
-			
+
 			return note;
 		}
 		return null;

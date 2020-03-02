@@ -22,9 +22,9 @@ public class Label {
 	private int userId;
 	@Column
 	private LocalDateTime UpdateDateAndTime;
-	
+
 	@OneToMany(mappedBy = "lable")
-    private List<Noteinfo> note=new ArrayList<Noteinfo>();
+	private List<Noteinfo> note = new ArrayList<Noteinfo>();
 
 	public int getLabelId() {
 		return labelId;
@@ -56,5 +56,5 @@ public class Label {
 
 	public void setUpdateDateAndTime(LocalDateTime updateDateAndTime) {
 		UpdateDateAndTime = updateDateAndTime;
-	}	
+	}
 }

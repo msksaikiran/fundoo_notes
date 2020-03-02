@@ -1,7 +1,9 @@
 package com.bridgelabz.fundoo_note_api.dto;
+
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+
 @Data
 public class NoteDto {
 	@NotNull
@@ -9,7 +11,7 @@ public class NoteDto {
 	@NotNull
 	private String description;
 	private String noteId;
-	
+
 	public String getTitle() {
 		return title;
 	}

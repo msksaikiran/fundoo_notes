@@ -7,16 +7,15 @@ package com.bridgelabz.fundoo_note_api.serviceimplementation;
  */
 import java.util.List;
 import java.util.Optional;
-
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo_note_api.dto.NoteDto;
 import com.bridgelabz.fundoo_note_api.dto.UpdateNote;
-import com.bridgelabz.fundoo_note_api.entity.Label;
 import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.entity.User;
 import com.bridgelabz.fundoo_note_api.exception.NotesNotFoundException;
@@ -47,7 +46,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			Integer id = (Integer) generate.parseJWT(token);
 			User user = userRepository.getUserById(id);
-			if (user != null) {
+			if (user == null) {
 				Noteinfo note = (Noteinfo) modelMapper.map(notes, Noteinfo.class);
 
 				note.setColour("ash");
@@ -93,13 +92,7 @@ public class NoteImplementation implements NoteService {
 		return list;
 	}
 
-	@Transactional
-	@Override
-	public List<Noteinfo> getAllNotes() {
-		List<Noteinfo> notes = new ArrayList<>();
-		noteRepository.findAll().forEach(notes::add);
-		return notes;
-	}
+	
 
 	@Transactional
 	@Override
@@ -123,7 +116,33 @@ public class NoteImplementation implements NoteService {
 		}
 		return list.get(0);
 	}
-
+	
+	@Transactional
+	@Override
+	public List<Noteinfo> getAllNotes() {
+		List<Noteinfo> notes = new ArrayList<>();
+		noteRepository.findAll().forEach(notes::add);
+		return notes;
+	}
+	
+	@Transactional
+	@Override
+	public ArrayList<String> sortByName() {
+		ArrayList<String> noteTitles=new ArrayList<>();
+		List<Noteinfo> Notelist = this.getAllNotes();
+		/*
+		 * java 8 lambda feature for sorting
+		 */
+		Notelist.forEach(t->{
+			noteTitles.add(t.getTitle());
+		});
+		Collections.sort(noteTitles, Collections.reverseOrder());
+		return noteTitles;
+	}
+	
+	
+	@Transactional
+	@Override
 	public List<Noteinfo> getNoteByUserId(String id) {
 		List<Noteinfo> note = new ArrayList<>();
 		try {
@@ -137,6 +156,8 @@ public class NoteImplementation implements NoteService {
 		return null;
 	}
 
+	
+	
 	@Transactional
 	@Override
 	public Noteinfo getNote(String id) {

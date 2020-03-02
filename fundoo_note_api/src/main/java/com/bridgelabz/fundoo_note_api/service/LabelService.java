@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoo_note_api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.bridgelabz.fundoo_note_api.dto.LableDto;
 import com.bridgelabz.fundoo_note_api.dto.UpdateLabel;
@@ -13,10 +14,12 @@ public interface LabelService {
 
 	List<Label> removeLabel(String id);
 
-    List<Label> getLableByUserId(String id);
+	List<Label> getLableByUserId(String id);
 
 	Label getLableById(String id);
 
-	Label updateLabel(String id,UpdateLabel LabelDto);
+	Label updateLabel(String id, UpdateLabel LabelDto);
+
+	ArrayList<String> sortByName();
 
 }
