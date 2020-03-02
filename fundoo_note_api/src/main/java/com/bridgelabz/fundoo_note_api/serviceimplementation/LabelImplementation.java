@@ -1,5 +1,10 @@
 package com.bridgelabz.fundoo_note_api.serviceimplementation;
 
+/*#
+ * Description: implementation part for Label when user makes the request for add_label,update,read,delete label
+ * @author : SaiKiranMsk
+ *     
+ */
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +44,7 @@ public class LabelImplementation implements LabelService {
 		int userId = (Integer) generate.parseJWT(token);
 		System.out.println(userId);
 		User user = userRepository.getUserById(userId);
-		if (user != null) {
+		if (user == null) {
 			Label label = (Label) modelMapper.map(labelDto, Label.class);
 			label.setUserId(userId);
 			return labelRepository.save(label);
@@ -50,7 +55,7 @@ public class LabelImplementation implements LabelService {
 
 	@Transactional
 	@Override
-	public boolean updateLabel(String id, UpdateLabel LabelDto) {
+	public Label updateLabel(String id, UpdateLabel LabelDto) {
 
 		List<Label> list = this.getAllLables();
 		/*
@@ -64,14 +69,15 @@ public class LabelImplementation implements LabelService {
 				da.setUpdateDateAndTime(LocalDateTime.now());
 				labelRepository.save(da);
 			});
-			if (data != null){
-				return list.contains(id);
+			//System.out.println("data::"+data);
+			if (data.equals(Optional.empty())){
+				return null;
 			}
 		} catch (Exception ae) {
 			throw new NotesNotFoundException("Label Record Not Exist");
 		}
 
-		return false;
+		return list.get(0);
 	}
 
 	@Transactional
@@ -90,8 +96,9 @@ public class LabelImplementation implements LabelService {
 			data.ifPresent(da -> {
 				labelRepository.delete(da); 
 			});
-			if (data != null)
-				return list;	
+			if (data.equals(Optional.empty())){
+				return null;
+			}	
 		} catch (Exception ae) {
 			throw new NotesNotFoundException("user Record Not Exist");
 		}
@@ -104,7 +111,7 @@ public class LabelImplementation implements LabelService {
 		// return ls;
 		// }
 		// }
-		return null;
+		return list;
 	}
 
 	@Transactional

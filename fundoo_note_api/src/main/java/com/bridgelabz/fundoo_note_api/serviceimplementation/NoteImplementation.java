@@ -1,5 +1,10 @@
 package com.bridgelabz.fundoo_note_api.serviceimplementation;
 
+/*#
+ * Description: implementation part for Note when user makes the request for add_notes,update,read,delete notes
+ * @author : SaiKiranMsk
+ *     
+ */
 import java.util.List;
 import java.util.Optional;
 
@@ -79,7 +84,9 @@ public class NoteImplementation implements NoteService {
 				da.setCreatedDateAndTime(LocalDateTime.now());
 				noteRepository.save(da);
 			});
-
+			if (data.equals(Optional.empty())){
+				return null;
+			}
 		} catch (Exception ae) {
 			throw new NotesNotFoundException("Label Record Not Exist");
 		}
@@ -108,10 +115,13 @@ public class NoteImplementation implements NoteService {
 			data.ifPresent(da->{
 				noteRepository.delete(da);
 			});	
+			if (data.equals(Optional.empty())){
+				return null;
+			}
 		} catch (Exception ae) {
 			throw new UserNotFoundException("user Not registered");
 		}
-		return null;
+		return list.get(0);
 	}
 
 	public List<Noteinfo> getNoteByUserId(String id) {

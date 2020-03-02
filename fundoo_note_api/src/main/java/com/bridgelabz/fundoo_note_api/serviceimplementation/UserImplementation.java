@@ -1,10 +1,11 @@
 package com.bridgelabz.fundoo_note_api.serviceimplementation;
-
+/*#
+ * Description: implementation part for user when user register,login,update
+ * @author : SaiKiranMsk
+ *     
+ */
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import org.modelmapper.ModelMapper;
@@ -80,7 +81,7 @@ public class UserImplementation implements UserService {
 				User user = (User) modelMapper.map(userDto, User.class);
 
 				/* setting the password as encrypted */
-				user.setPassword(config.passwordEncoder().encode(userDto.getPassword()));
+				//user.setPassword(config.passwordEncoder().encode(userDto.getPassword()));
 				user.setDate(LocalDateTime.now());
 				user.setIsVerified("false");
 				User result = userRepository.save(user);
@@ -101,8 +102,7 @@ public class UserImplementation implements UserService {
 	@Transactional
 	@Override
 	public Boolean verify(String token) {
-		// System.out.println("id is in verification" + (Integer)
-		// generate.parseJWT(token));
+		
 		int id = (Integer) generate.parseJWT(token);
 		User user = userRepository.getUserById(id);
 		System.out.println(user.getName());
@@ -165,8 +165,12 @@ public class UserImplementation implements UserService {
 		senderimp.setPassword(System.getenv("password"));
 		senderimp.setPort(587);
 		Properties prop = new Properties();
+//		prop.put("mail.smtp.conectiontimeout","10000");
+//		prop.put("mail.smtp.timeout","10000");
+//		prop.put("mail.smtp.writetimeout","10000");
+//		prop.put("mail.smtp.starttls.enabled","true");
+//		prop.put("mail.smtp.starttls.required","true");
 		prop.put("mail.smtp.auth", "true");
-		prop.put("mail.smtp.starttls.enable", "true");
 		prop.put("mail.smtp.host", "smtp.gmail.com");
 		prop.put("mail.smtp.port", "587");
 		senderimp.setJavaMailProperties(prop);
