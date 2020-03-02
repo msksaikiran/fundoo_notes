@@ -17,6 +17,6 @@ public interface LabelService {
 
 	Label getLableById(String id);
 
-	boolean updateLabel(String id,UpdateLabel LabelDto);
+	Label updateLabel(String id,UpdateLabel LabelDto);
 
 }
