@@ -69,18 +69,20 @@ public class NoteImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	public List<Noteinfo> updateNotes(String id, UpdateNote updateDto) {
+	public List<Noteinfo> updateNotes(String token,String id, UpdateNote updateDto) {
 
-		List<Noteinfo> list = this.getAllNotes();
+		//List<Noteinfo> notes = this.getNoteByUserId(token);
+		List<Noteinfo> notes = this.getNoteByUserId(token);
+		
 		/*
 		 * java 8 streams feature
 		 */
 		int nId = Integer.parseInt(id);
 		try {
-			Optional<Noteinfo> data = list.stream().filter(t -> t.getNoteId() == nId).findFirst();
+			Optional<Noteinfo> data = notes.stream().filter(t -> t.getNoteId() == nId).findFirst();
 			data.ifPresent(da -> {
 				da.setTitle(updateDto.getTitle());
-				da.setCreatedDateAndTime(LocalDateTime.now());
+				da.setUpDateAndTime(LocalDateTime.now());
 				noteRepository.save(da);
 			});
 			if (data.equals(Optional.empty())){
@@ -89,22 +91,22 @@ public class NoteImplementation implements NoteService {
 		} catch (Exception ae) {
 			throw new NotesNotFoundException("Label Record Not Exist");
 		}
-		return list;
+		return notes;
 	}
 
 	
 
 	@Transactional
 	@Override
-	public Noteinfo removeNotes(String id) {
+	public Noteinfo removeNotes(String token,String id) {
 
-		List<Noteinfo> list = this.getAllNotes();
+		List<Noteinfo> notes = this.getNoteByUserId(token);
 		/*
 		 * java 8 streams feature
 		 */
 		int nId = Integer.parseInt(id);
 		try {
-			Optional<Noteinfo> data = list.stream().filter(t -> t.getNoteId() == nId).findFirst();
+			Optional<Noteinfo> data = notes.stream().filter(t -> t.getNoteId() == nId).findFirst();
 			data.ifPresent(da->{
 				noteRepository.delete(da);
 			});	
@@ -114,7 +116,7 @@ public class NoteImplementation implements NoteService {
 		} catch (Exception ae) {
 			throw new UserNotFoundException("user Not registered");
 		}
-		return list.get(0);
+		return notes.get(0);
 	}
 	
 	@Transactional
@@ -158,15 +160,21 @@ public class NoteImplementation implements NoteService {
 	
 	@Transactional
 	@Override
-	public List<Noteinfo> getNoteByUserId(String id) {
+	public List<Noteinfo> getNoteByUserId(String token) {
+		System.out.println("token:"+token);
+		int uId = (Integer) generate.parseJWT(token);
+		System.out.println("uId:"+uId);
+		
 		List<Noteinfo> note = new ArrayList<>();
 		try {
-			noteRepository.findNoteByUserId(Integer.parseInt(id)).forEach(note::add);
+			 List<Noteinfo> user = noteRepository.findNoteByUserId(uId);
+			 user.forEach(note::add);
 			if (note != null) {
 				return note;
 			}
 		} catch (Exception ae) {
-			throw new NotesNotFoundException("user Not registered");
+			ae.printStackTrace();
+			throw new NotesNotFoundException("invalid Number registered");
 		}
 		return null;
 	}
