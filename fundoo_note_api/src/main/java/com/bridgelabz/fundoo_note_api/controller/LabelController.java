@@ -33,16 +33,16 @@ public class LabelController {
 		Label note = labelService.createLable(label, token);
 		if (note != null) {
 			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new LabelResponse("Note Details Saved Successfully", note));
+					.body(new LabelResponse("Note Details Saved Successfully", label));
 		} else {
 			return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-					.body(new LabelResponse("Already existing user", note));
+					.body(new LabelResponse("Already existing user", label));
 		}
 	}
 
-	@PutMapping(value = "/label/{id}")
-	public ResponseEntity<NoteResponse> updateLabel(@PathVariable String id, @RequestBody UpdateLabel dto) {
-		Label label = labelService.updateLabel(id, dto);
+	@PutMapping(value = "/labels/{id}/users/{token}")
+	public ResponseEntity<NoteResponse> updateLabel(@PathVariable String token,@PathVariable String id, @RequestBody UpdateLabel dto) {
+		Label label = labelService.updateLabel(token,id, dto);
 		if (label != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Updated successfully", dto));
 		}
@@ -57,9 +57,9 @@ public class LabelController {
 		return labelService.getAllLables();
 	}
 
-	@DeleteMapping(value = "/label/{id}")
-	public ResponseEntity<LabelResponse> deleteLabel(@PathVariable String id) {
-		List<Label> result = labelService.removeLabel(id);
+	@DeleteMapping(value = "/labels/{id}/{token}")
+	public ResponseEntity<LabelResponse> deleteLabel(@PathVariable String id,@PathVariable String token) {
+		List<Label> result = labelService.removeLabel(token,id);
 		if (result != null) {
 			// return result;
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
@@ -87,9 +87,9 @@ public class LabelController {
 	 * API to getting the Note Details By User_Id
 	 */
 
-	@GetMapping(value = "/label/user/{id}")
-	public ResponseEntity<LabelResponse> getLabelByUserId(@PathVariable String id) {
-		List<Label> result = labelService.getLableByUserId(id);
+	@GetMapping(value = "/label/user/{token}")
+	public ResponseEntity<LabelResponse> getLabelByUserId(@PathVariable String token) {
+		List<Label> result = labelService.getLableByUserId(token);
 		if (result != null) {
 			// return result;
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", "sucess")
