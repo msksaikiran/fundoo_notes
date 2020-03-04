@@ -161,16 +161,14 @@ public class NoteImplementation implements NoteService {
 	@Transactional
 	@Override
 	public List<Noteinfo> getNoteByUserId(String token) {
-		System.out.println("token:"+token);
-		int uId = (Integer) generate.parseJWT(token);
-		System.out.println("uId:"+uId);
 		
-		List<Noteinfo> note = new ArrayList<>();
+		int uId = (Integer) generate.parseJWT(token);
+		
 		try {
 			 List<Noteinfo> user = noteRepository.findNoteByUserId(uId);
-			 user.forEach(note::add);
-			if (note != null) {
-				return note;
+			 
+			if (user != null) {
+				return user;
 			}
 		} catch (Exception ae) {
 			ae.printStackTrace();
