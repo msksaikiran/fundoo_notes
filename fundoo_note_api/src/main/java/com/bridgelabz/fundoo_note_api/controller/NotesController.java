@@ -26,7 +26,7 @@ public class NotesController {
 	/*
 	 * API to add the Note Details
 	 */
-	@PostMapping(value = "/user/{token}/notes")
+	@PostMapping(value = "/notes/users/{token}")
 	public ResponseEntity<Response> createNotes(@RequestBody NoteDto notes, @PathVariable String token) {
 
 		// notes.setUser(new User(Integer.parseInt(id)));
@@ -40,9 +40,9 @@ public class NotesController {
 		}
 	}
 
-	@PutMapping(value = "/notes/{id}")
-	public ResponseEntity<NoteResponse> updateNote(@PathVariable String id, @RequestBody UpdateNote dto) {
-		List<Noteinfo> note = noteService.updateNotes(id, dto);
+	@PutMapping(value = "/notes/{id}/users/{token}")
+	public ResponseEntity<NoteResponse> updateNote(@PathVariable String token,@PathVariable String id, @RequestBody UpdateNote dto) {
+		List<Noteinfo> note = noteService.updateNotes(token,id, dto);
 		if (note != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Note Title Updated", dto));
 		}
@@ -66,9 +66,9 @@ public class NotesController {
 	 * API to getting the Note Details By User_Id
 	 */
 
-	@GetMapping(value = "/notes/user/{id}")
-	public ResponseEntity<NoteResponse> getNotesByUserId(@PathVariable String id) {
-		List<Noteinfo> result = noteService.getNoteByUserId(id);
+	@GetMapping(value = "/notes/users/{token}")
+	public ResponseEntity<NoteResponse> getNotesByUserId(@PathVariable String token) {
+		List<Noteinfo> result = noteService.getNoteByUserId(token);
 		if (result != null) {
 			// return result;
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", "sucess")
@@ -81,9 +81,9 @@ public class NotesController {
 	/*
 	 * API to deleting the Note Details By _Id
 	 */
-	@DeleteMapping(value = "/notes/{id}")
-	public ResponseEntity<NoteResponse> deleteNote(@PathVariable String id) {
-		Noteinfo result = noteService.removeNotes(id);
+	@DeleteMapping(value = "/notes/{id}/users/{token}")
+	public ResponseEntity<NoteResponse> deleteNote(@PathVariable String id,@PathVariable String token) {
+		Noteinfo result = noteService.removeNotes(token,id);
 		if (result == null) {
 			// return result;
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", "sucess")
@@ -96,7 +96,7 @@ public class NotesController {
 	 * API to get The All Note Details
 	 */
 
-	@GetMapping("/user/notes")
+	@GetMapping("/notes/user/notes")
 	public List<Noteinfo> getAllNotes() {
 
 		return noteService.getAllNotes();
