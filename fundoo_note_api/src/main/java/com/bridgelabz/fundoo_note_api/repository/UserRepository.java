@@ -1,9 +1,12 @@
 package com.bridgelabz.fundoo_note_api.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.entity.User;
 
 @Repository
@@ -26,4 +29,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 	@Query(value = "update user set is_verified=true where id=?", nativeQuery = true)
 	public void verify(int id);
 
+//	@Query(value = "select * from noteinfo where user_id=?", nativeQuery = true)
+//	List<Noteinfo> findNoteByUserId(int id);
 }
