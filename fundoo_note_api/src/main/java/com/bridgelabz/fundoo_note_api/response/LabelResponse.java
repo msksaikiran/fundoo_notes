@@ -4,10 +4,9 @@ import com.bridgelabz.fundoo_note_api.entity.Label;
 
 public class LabelResponse {
 	private String Message;
-	private Label notes;
+	private Label labelDetails;
 	private Object result;
 
-	
 
 	public LabelResponse(String message, Object result) {
 		super();
@@ -23,12 +22,19 @@ public class LabelResponse {
 		Message = message;
 	}
 
-	public Label getNotes() {
-		return notes;
+	public Label getLabelDetails() {
+		return labelDetails;
 	}
 
-	public void setNotes(Label notes) {
-		this.notes = notes;
+	public void setLabelDetails(Label labelDetails) {
+		this.labelDetails = labelDetails;
 	}
 
+	public Object getResult() {
+		return result;
+	}
+
+	public void setResult(Object result) {
+		this.result = result;
+	}
 }

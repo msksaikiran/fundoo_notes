@@ -12,16 +12,17 @@ public interface LabelService {
 
 	Label createLable(LableDto notes, String token);
 
-	List<Label> removeLabel(String id);
+	List<Label> removeLabel(String token, String id);
 
 	List<Label> getLableByUserId(String id);
 
 	Label getLableById(String id);
 
-	Label updateLabel(String id, UpdateLabel LabelDto);
+	Label updateLabel(String id, String token, UpdateLabel LabelDto);
 
 	ArrayList<String> sortByName();
 
 	List<String> ascsortByName();
+
 
 }
