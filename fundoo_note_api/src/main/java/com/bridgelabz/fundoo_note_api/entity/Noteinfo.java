@@ -119,8 +119,8 @@ public class Noteinfo {
 		this.reminder = reminder;
 	}
 
-	public User getUser() {
-		return user;
+	public int getUser() {
+		return user.getId();
 	}
 
 	public void setUser(User user) {
