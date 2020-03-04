@@ -1,11 +1,14 @@
 package com.bridgelabz.fundoo_note_api.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 @Entity
@@ -38,7 +41,7 @@ public class Noteinfo {
 
 	@ManyToOne
 	private Label lable;
-
+	
 	public Integer getNoteId() {
 		return noteId;
 	}

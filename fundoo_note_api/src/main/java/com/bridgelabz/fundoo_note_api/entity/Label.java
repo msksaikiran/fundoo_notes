@@ -23,8 +23,8 @@ public class Label {
 	@Column
 	private LocalDateTime UpdateDateAndTime;
 
-	@OneToMany(mappedBy = "lable")
-	private List<Noteinfo> note = new ArrayList<Noteinfo>();
+//	@OneToMany(mappedBy = "lable")
+//	private List<Noteinfo> note = new ArrayList<Noteinfo>();
 
 	public int getLabelId() {
 		return labelId;

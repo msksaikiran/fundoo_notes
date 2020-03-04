@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -29,9 +30,11 @@ public class User {
 	@Column
 	private long number;
 
-	@OneToMany(mappedBy = "user")
-	private List<Noteinfo> note = new ArrayList<>();
+//	@OneToMany(mappedBy = "user")
+//	private List<Noteinfo> note = new ArrayList<>();
 
+	@ManyToMany
+	private List<Noteinfo> collablare;
 	/* default constructor */
 
 	public User() {
@@ -93,18 +96,18 @@ public class User {
 		this.number = number;
 	}
 
-//	public List<Noteinfo> getNote() {
-//		return note;
-//	}
-//
-//
-//	public void setNote(List<Noteinfo> note) {
-//		this.note = note;
-//	}
-
 	@Override
 	public String toString() {
 		return "UserRecord [id=" + id + ", name=" + name + ", email=" + email + "]";
 	}
+
+	public List<Noteinfo> getCollablare() {
+		return collablare;
+	}
+
+	public void setCollablare(List<Noteinfo> collablare) {
+		this.collablare = collablare;
+	}
+
 
 }
