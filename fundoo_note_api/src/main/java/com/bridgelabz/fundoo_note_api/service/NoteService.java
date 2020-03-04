@@ -12,16 +12,20 @@ public interface NoteService {
 
 	Noteinfo addNotes(NoteDto notes, String token);
 
-	List<Noteinfo> updateNotes(String id, UpdateNote dto);
-
+	List<Noteinfo> updateNotes(String token, String id, UpdateNote updateDto);
+	
 	Noteinfo getNote(String id);
 
 	List<Noteinfo> getNoteByUserId(String id);
 
-	Noteinfo removeNotes(String id);
+	Noteinfo removeNotes(String token, String id);
 
 	ArrayList<String> sortByName();
 
 	List<String> ascSortByName();
+
+	
+
+	
 
 }
