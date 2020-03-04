@@ -69,24 +69,26 @@ public class NoteImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	public List<Noteinfo> updateNotes(String token,String id, UpdateNote updateDto) {
+	public List<Noteinfo> updateNotes(String token, String id, UpdateNote updateDto) {
 
-		//List<Noteinfo> notes = this.getNoteByUserId(token);
+		// List<Noteinfo> notes = this.getNoteByUserId(token);
 		List<Noteinfo> notes = this.getNoteByUserId(token);
-		
+
 		/*
 		 * java 8 streams feature
 		 */
 		int nId = Integer.parseInt(id);
 		try {
-			Optional<Noteinfo> data = notes.stream().filter(t -> t.getNoteId() == nId).findFirst();
-			data.ifPresent(da -> {
-				da.setTitle(updateDto.getTitle());
-				da.setUpDateAndTime(LocalDateTime.now());
-				noteRepository.save(da);
-			});
-			if (data.equals(Optional.empty())){
-				return null;
+			if (notes != null) {
+				Optional<Noteinfo> data = notes.stream().filter(t -> t.getNoteId() == nId).findFirst();
+				data.ifPresent(da -> {
+					da.setTitle(updateDto.getTitle());
+					da.setUpDateAndTime(LocalDateTime.now());
+					noteRepository.save(da);
+				});
+				if (data.equals(Optional.empty())) {
+					return null;
+				}
 			}
 		} catch (Exception ae) {
 			throw new NotesNotFoundException("Label Record Not Exist");
@@ -94,11 +96,9 @@ public class NoteImplementation implements NoteService {
 		return notes;
 	}
 
-	
-
 	@Transactional
 	@Override
-	public Noteinfo removeNotes(String token,String id) {
+	public Noteinfo removeNotes(String token, String id) {
 
 		List<Noteinfo> notes = this.getNoteByUserId(token);
 		/*
@@ -106,19 +106,21 @@ public class NoteImplementation implements NoteService {
 		 */
 		int nId = Integer.parseInt(id);
 		try {
-			Optional<Noteinfo> data = notes.stream().filter(t -> t.getNoteId() == nId).findFirst();
-			data.ifPresent(da->{
-				noteRepository.delete(da);
-			});	
-			if (data.equals(Optional.empty())){
-				return null;
+			if (notes != null) {
+				Optional<Noteinfo> data = notes.stream().filter(t -> t.getNoteId() == nId).findFirst();
+				data.ifPresent(da -> {
+					noteRepository.delete(da);
+				});
+				if (data.equals(Optional.empty())) {
+					return null;
+				}
 			}
 		} catch (Exception ae) {
 			throw new UserNotFoundException("user Not registered");
 		}
 		return notes.get(0);
 	}
-	
+
 	@Transactional
 	@Override
 	public List<Noteinfo> getAllNotes() {
@@ -126,47 +128,45 @@ public class NoteImplementation implements NoteService {
 		noteRepository.findAll().forEach(notes::add);
 		return notes;
 	}
-	
+
 	@Override
 	public List<String> ascSortByName() {
-		ArrayList<String> noteTitles=new ArrayList<>();
+		ArrayList<String> noteTitles = new ArrayList<>();
 		List<Noteinfo> Notelist = this.getAllNotes();
 		/*
 		 * java 8 lambda feature for sorting
 		 */
-		Notelist.forEach(t->{
+		Notelist.forEach(t -> {
 			noteTitles.add(t.getTitle());
 		});
 		Collections.sort(noteTitles);
 		return noteTitles;
 	}
-	
-	
+
 	@Transactional
 	@Override
 	public ArrayList<String> sortByName() {
-		ArrayList<String> noteTitles=new ArrayList<>();
+		ArrayList<String> noteTitles = new ArrayList<>();
 		List<Noteinfo> Notelist = this.getAllNotes();
 		/*
 		 * java 8 lambda feature for sorting
 		 */
-		Notelist.forEach(t->{
+		Notelist.forEach(t -> {
 			noteTitles.add(t.getTitle());
 		});
 		Collections.sort(noteTitles, Collections.reverseOrder());
 		return noteTitles;
 	}
-	
-	
+
 	@Transactional
 	@Override
 	public List<Noteinfo> getNoteByUserId(String token) {
-		
+
 		int uId = (Integer) generate.parseJWT(token);
-		
+
 		try {
-			 List<Noteinfo> user = noteRepository.findNoteByUserId(uId);
-			 
+			List<Noteinfo> user = noteRepository.findNoteByUserId(uId);
+
 			if (user != null) {
 				return user;
 			}
@@ -177,8 +177,6 @@ public class NoteImplementation implements NoteService {
 		return null;
 	}
 
-	
-	
 	@Transactional
 	@Override
 	public Noteinfo getNote(String id) {
@@ -195,16 +193,14 @@ public class NoteImplementation implements NoteService {
 		 */
 
 		/*
-		 * Login userlogindto = new Login(); List<Noteinfo> list =
-		 * this.getAllNotes();
+		 * Login userlogindto = new Login(); List<Noteinfo> list = this.getAllNotes();
 		 * 
-		 * for (Noteinfo ls : list) { if (ls.getNoteId() ==
-		 * Integer.parseInt(id)) { userlogindto.setEmail(ls.getTitle());
+		 * for (Noteinfo ls : list) { if (ls.getNoteId() == Integer.parseInt(id)) {
+		 * userlogindto.setEmail(ls.getTitle());
 		 * userlogindto.setPassword(ls.getDescription()); return ls; } }
 		 */
 		return null;
 
 	}
 
-	
 }

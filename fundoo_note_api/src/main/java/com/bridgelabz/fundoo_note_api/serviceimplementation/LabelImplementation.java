@@ -56,23 +56,25 @@ public class LabelImplementation implements LabelService {
 
 	@Transactional
 	@Override
-	public Label updateLabel(String id, UpdateLabel LabelDto) {
+	public Label updateLabel(String id, String token, UpdateLabel LabelDto) {
 
-		List<Label> list = this.getAllLables();
+		int lId = Integer.parseInt(id);
+		List<Label> list = this.getLableByUserId(token);
 		/*
 		 * java 8 streams feature
 		 */
-		int lId = Integer.parseInt(id);
 		try {
-			Optional<Label> data = list.stream().filter(t -> t.getLabelId() == lId).findFirst();
-			data.ifPresent(da -> {
-				da.setLableName(LabelDto.getlName());
-				da.setUpdateDateAndTime(LocalDateTime.now());
-				labelRepository.save(da);
-			});
-			// System.out.println("data::"+data);
-			if (data.equals(Optional.empty())) {
-				return null;
+			if (list != null) {
+				Optional<Label> data = list.stream().filter(t -> t.getLabelId() == lId).findFirst();
+				data.ifPresent(da -> {
+					da.setLableName(LabelDto.getlName());
+					da.setUpdateDateAndTime(LocalDateTime.now());
+					labelRepository.save(da);
+				});
+				// System.out.println("data::"+data);
+				if (data.equals(Optional.empty())) {
+					return null;
+				}
 			}
 		} catch (Exception ae) {
 			throw new NotesNotFoundException("Label Record Not Exist");
@@ -83,22 +85,23 @@ public class LabelImplementation implements LabelService {
 
 	@Transactional
 	@Override
-	public List<Label> removeLabel(String id) {
+	public List<Label> removeLabel(String token, String id) {
 
 		int lId = Integer.parseInt(id);
-		List<Label> list = this.getAllLables();
-		System.out.println(list);
+		List<Label> list = this.getLableByUserId(token);
 		/*
 		 * java 8 streams feature
 		 */
 		Optional<Label> data = null;
 		try {
-			data = list.stream().filter(t -> t.getLabelId() == lId).findFirst();
-			data.ifPresent(da -> {
-				labelRepository.delete(da);
-			});
-			if (data.equals(Optional.empty())) {
-				return null;
+			if (list != null) {
+				data = list.stream().filter(t -> t.getLabelId() == lId).findFirst();
+				data.ifPresent(da -> {
+					labelRepository.delete(da);
+				});
+				if (data.equals(Optional.empty())) {
+					return null;
+				}
 			}
 		} catch (Exception ae) {
 			throw new NotesNotFoundException("user Record Not Exist");
@@ -130,8 +133,7 @@ public class LabelImplementation implements LabelService {
 		Collections.sort(lis);
 		return lis;
 	}
-	
-	
+
 	@Transactional
 	@Override
 	public ArrayList<String> sortByName() {
@@ -160,12 +162,13 @@ public class LabelImplementation implements LabelService {
 
 	@Transactional
 	@Override
-	public List<Label> getLableByUserId(String id) {
-		List<Label> note = new ArrayList<>();
-		labelRepository.findLableByUserId(Integer.parseInt(id)).forEach(note::add);
-		if (note != null) {
+	public List<Label> getLableByUserId(String token) {
+		// List<Label> note = new ArrayList<>();
+		int id = (Integer) generate.parseJWT(token);
+		List<Label> label = labelRepository.findLableByUserId(id);
+		if (label != null) {
 
-			return note;
+			return label;
 		}
 		return null;
 	}
@@ -184,5 +187,4 @@ public class LabelImplementation implements LabelService {
 
 	}
 
-	
 }
