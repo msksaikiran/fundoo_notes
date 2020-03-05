@@ -8,9 +8,9 @@ import com.bridgelabz.fundoo_note_api.entity.User;
 public interface CollabratorService {
 	
 	
-	Noteinfo addCollabrator(String noteId, String token, String email);
+	List<Noteinfo> addCollabrator(String noteId, String token, String email);
 
-	List<User> getAllCollabrator(String token);
+	User getAllCollabrator(String token);
 
 	Noteinfo deleteCollabrator(String NoteId, String token, String email);
 

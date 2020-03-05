@@ -12,16 +12,20 @@ import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo_note_api.dto.LableDto;
+import com.bridgelabz.fundoo_note_api.dto.NoteDto;
 import com.bridgelabz.fundoo_note_api.dto.UpdateLabel;
 import com.bridgelabz.fundoo_note_api.entity.Label;
+import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.entity.User;
 import com.bridgelabz.fundoo_note_api.exception.NotesNotFoundException;
 import com.bridgelabz.fundoo_note_api.repository.LabelRepository;
 import com.bridgelabz.fundoo_note_api.repository.UserRepository;
 import com.bridgelabz.fundoo_note_api.service.LabelService;
+import com.bridgelabz.fundoo_note_api.service.NoteService;
 import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 
 @Service
@@ -39,6 +43,9 @@ public class LabelImplementation implements LabelService {
 	@Autowired
 	private JwtGenerator generate;
 
+	@Autowired
+	private NoteService noteService;
+
 	@Transactional
 	@Override
 	public Label createLable(LableDto labelDto, String token) {
@@ -54,6 +61,64 @@ public class LabelImplementation implements LabelService {
 		return null;
 	}
 
+//	@Transactional
+//	@Override
+//	public void createLabelAndMAp(LabelDto labelDto, String token) {
+//		Long id = null;
+//		try {
+//			id = (Long) generate.parseJWT(token);
+//		} catch (Exception e) {
+//			throw new UserException("user doesn't exist with id");
+//		}
+//		UserInformation user = Repository.findUserById(id);
+//		if (user == null) {
+//			BeanUtils.copyProperties(labelDto, LabelDto.class);
+//
+//			labelData.setUserId(user.getUserId());
+//			LabelRepo.save(labelData);
+//			NoteData note = noteRepo.findById(id);
+//
+//			note.getList().add(labelData);
+//			noteRepo.save(note);
+//		} else {
+//			throw new UserException("label with that name is already present ");
+//		}
+//	}
+	
+	@Transactional
+	@Override
+	public Label addNotesToLabel(NoteDto notes, String token,String labelId) {
+		
+		Noteinfo note = noteService.addNotes(notes, token);
+		//Noteinfo note = (Noteinfo)modelMapper.map(notes, Noteinfo.class);
+		int lId = Integer.parseInt(labelId);
+		
+		List<Label> lables = this.getLableByUserId(token);
+		
+		try {
+	    Optional<Label> labelInfo = lables.stream().filter(t->t.getLabelId()==lId).findFirst();
+
+		labelInfo.ifPresent(data->{
+
+			data.setLabelId(lId);
+			data.setUserId(1);
+			data.setUpdateDateAndTime(LocalDateTime.now());
+			data.setLableName("dsad");
+			System.out.println("###");
+			note.getLable().addAll(lables);
+		});
+		
+		if(labelInfo.equals(Optional.empty())) {
+			return null;
+		}
+		
+		}catch(Exception ae) {
+			ae.printStackTrace();
+		}
+		return lables.get(0);
+		
+	}
+		
 	@Transactional
 	@Override
 	public Label updateLabel(String id, String token, UpdateLabel LabelDto) {
@@ -129,7 +194,6 @@ public class LabelImplementation implements LabelService {
 			lis.add(t.getLableName());
 
 		});
-		// System.out.println("NotesId:"+lis);
 		Collections.sort(lis);
 		return lis;
 	}
@@ -167,8 +231,9 @@ public class LabelImplementation implements LabelService {
 		int id = (Integer) generate.parseJWT(token);
 		List<Label> label = labelRepository.findLableByUserId(id);
 		if (label != null) {
-
+			System.out.println(label+"userlbbb");
 			return label;
+			
 		}
 		return null;
 	}

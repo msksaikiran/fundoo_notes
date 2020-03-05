@@ -3,6 +3,7 @@ package com.bridgelabz.fundoo_note_api.service;
 import java.util.ArrayList;
 import java.util.List;
 import com.bridgelabz.fundoo_note_api.dto.LableDto;
+import com.bridgelabz.fundoo_note_api.dto.NoteDto;
 import com.bridgelabz.fundoo_note_api.dto.UpdateLabel;
 import com.bridgelabz.fundoo_note_api.entity.Label;
 
@@ -23,6 +24,8 @@ public interface LabelService {
 	ArrayList<String> sortByName();
 
 	List<String> ascsortByName();
+
+	Label addNotesToLabel(NoteDto notes, String token, String labelId);
 
 
 }

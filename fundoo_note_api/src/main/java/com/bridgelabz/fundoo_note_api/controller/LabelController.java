@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo_note_api.dto.LableDto;
+import com.bridgelabz.fundoo_note_api.dto.NoteDto;
 import com.bridgelabz.fundoo_note_api.dto.UpdateLabel;
 import com.bridgelabz.fundoo_note_api.entity.Label;
 import com.bridgelabz.fundoo_note_api.response.LabelResponse;
@@ -25,7 +26,7 @@ public class LabelController {
 	private LabelService labelService;
 
 	/*
-	 * API to add the Note Details
+	 * API to add the Label Details
 	 */
 	@PostMapping(value = "/label/{token}/notes")
 	public ResponseEntity<LabelResponse> createLabel(@RequestBody LableDto label, @PathVariable String token) {
@@ -40,6 +41,22 @@ public class LabelController {
 		}
 	}
 
+	@PostMapping(value = "/label/{lid}/{token}")
+	public ResponseEntity<LabelResponse> addNotesToLabel(@RequestBody NoteDto label, @PathVariable String token,@PathVariable String lid) {
+
+		Label lnote = labelService.addNotesToLabel(label, token,lid);
+		if (lnote != null) {
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(new LabelResponse("Note Details Saved Successfully To Label", label));
+		} else {
+			return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
+					.body(new LabelResponse("Already existing user", label));
+		}
+	}
+	
+	/*
+	 * API to add the update Label Details
+	 */
 	@PutMapping(value = "/labels/{id}/users/{token}")
 	public ResponseEntity<NoteResponse> updateLabel(@PathVariable String token,@PathVariable String id, @RequestBody UpdateLabel dto) {
 		Label label = labelService.updateLabel(token,id, dto);
@@ -48,15 +65,10 @@ public class LabelController {
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist", label));
 	}
+	
 	/*
-	 * API to get The All Note Details
+	 * API to add the delete Label Details
 	 */
-
-	@GetMapping("/label/notes")
-	public List<Label> getAllLables() {
-		return labelService.getAllLables();
-	}
-
 	@DeleteMapping(value = "/labels/{id}/{token}")
 	public ResponseEntity<LabelResponse> deleteLabel(@PathVariable String id,@PathVariable String token) {
 		List<Label> result = labelService.removeLabel(token,id);
@@ -68,9 +80,9 @@ public class LabelController {
 		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
 				.body(new LabelResponse("Already Deleted user", result));
 	}
-
+	
 	/*
-	 * API to getting the Note Details By Id
+	 * API to getting the Label Details By Id
 	 */
 
 	@GetMapping(value = "/label/notes/{id}")
@@ -83,8 +95,20 @@ public class LabelController {
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LabelResponse("Label not existing", result));
 	}
+	
+	
 	/*
-	 * API to getting the Note Details By User_Id
+	 * API to get The All label Details
+	 */
+
+	@GetMapping("/label/notes")
+	public List<Label> getAllLables() {
+		return labelService.getAllLables();
+	}
+
+		
+	/*
+	 * API to getting the Label Details By User_Id
 	 */
 
 	@GetMapping(value = "/label/user/{token}")

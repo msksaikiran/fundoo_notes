@@ -1,6 +1,7 @@
 package com.bridgelabz.fundoo_note_api.serviceimplementation;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -19,35 +20,46 @@ import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 public class CollabratorServiceImplementation implements CollabratorService {
 	@Autowired
 	private JwtGenerator generate;
-//User user = new UserInformation();
+	
 	@Autowired
 	private UserRepository repository;
+	
 	@Autowired
 	private NoteRepository noteRepo;
 
 	@Transactional
 	@Override
-	public Noteinfo addCollabrator(String NoteId, String token, String email) {
+	public List<Noteinfo> addCollabrator(String NoteId, String token, String email) {
 
 		User collabrator = repository.getUserByEmail(email);
 		int noteId = Integer.parseInt(NoteId);
+		System.out.println("NoteId:" + noteId);
 		User user;
-		try {
-			int id = (int) generate.parseJWT(token);
-			user = repository.getUserById(id);
-		} catch (Exception e) {
-			throw new UserNotFoundException("User doesnot exist with this id");
-		}
-		if (user != null) {
-			if (collabrator != null) {
-				Noteinfo note = noteRepo.findNoteById(noteId);
-				collabrator.getCollablare().add(note);
-				return note;
+		if (collabrator != null) {
+			try {
+				int uid = (int) generate.parseJWT(token);
+				System.out.println("UserId:" + uid);
+
+				List<Noteinfo> note = noteRepo.findNoteByUserId(uid);
+				if (note != null) {
+					Optional<Noteinfo> data = note.stream().filter(t -> t.getNoteId() == noteId).findFirst();
+					System.out.println(data);
+					data.ifPresent(da -> {
+						
+						collabrator.getCollablare().add(da);
+						
+						System.out.println("da::"+da);
+					});
+
+					// collabrator.setCollablare(note);
+					return note;
+				} else {
+					throw new UserNotFoundException("user doesnot exist to collabrate");
+				}
+			} catch (Exception e) {
+				throw new UserNotFoundException("User doesnot exist with this id");
 			}
 
-			else {
-				throw new UserNotFoundException("user doesnot exist to collabrate");
-			}
 		} else {
 			throw new UserNotFoundException("user not present");
 		}
@@ -56,10 +68,10 @@ public class CollabratorServiceImplementation implements CollabratorService {
 
 	@Transactional
 	@Override
-	public List<User> getAllCollabrator(String token) {
+	public User getAllCollabrator(String token) {
 		int id = (int) generate.parseJWT(token);
-		List<User> user = repository.getCollobaraterById(id);
-		//List<Noteinfo> note = user.getCollablare();
+		User user = repository.getUserById(id);
+		// Object note = user.getCollablare();
 		return user;
 	}
 

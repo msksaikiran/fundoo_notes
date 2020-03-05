@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -15,7 +16,7 @@ public class Label {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int labelId;
+	private int Id;
 	@Column
 	private String lableName;
 	@Column
@@ -23,15 +24,16 @@ public class Label {
 	@Column
 	private LocalDateTime UpdateDateAndTime;
 
-//	@OneToMany(mappedBy = "lable")
-//	private List<Noteinfo> note = new ArrayList<Noteinfo>();
+//	@ManyToMany(targetEntity = Noteinfo.class)
+	
+	//private List<Noteinfo> note ;
 
 	public int getLabelId() {
-		return labelId;
+		return Id;
 	}
 
 	public void setLabelId(int labelId) {
-		this.labelId = labelId;
+		this.Id = labelId;
 	}
 
 	public String getLableName() {
@@ -57,4 +59,12 @@ public class Label {
 	public void setUpdateDateAndTime(LocalDateTime updateDateAndTime) {
 		UpdateDateAndTime = updateDateAndTime;
 	}
+
+	@Override
+	public String toString() {
+		return "Label [Id=" + Id + ", lableName=" + lableName + ", userId=" + userId + ", UpdateDateAndTime="
+				+ UpdateDateAndTime + "]";
+	}
+
+	
 }

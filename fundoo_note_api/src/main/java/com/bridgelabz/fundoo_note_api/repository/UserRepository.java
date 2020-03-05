@@ -29,8 +29,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 	@Query(value = "update user set is_verified=true where id=?", nativeQuery = true)
 	public void verify(int id);
 
-	@Query(value = "select collablare_note_id  from user_collablare where user_id=?" , nativeQuery = true)
-	public List<User> getCollobaraterById(int user_id);
+	@Query(value = "select * from user_collablare  where user_id=?" , nativeQuery = true)
+	public List<User>  getCollobaraterById(int user_id);
 
 //	@Query(value = "select * from noteinfo where user_id=?", nativeQuery = true)
 //	List<Noteinfo> findNoteByUserId(int id);

@@ -16,7 +16,7 @@ public class Noteinfo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer noteId;
+	private Integer id;
 	@Column
 	private String title;
 	@Column
@@ -39,15 +39,15 @@ public class Noteinfo {
 	@ManyToOne
 	private User user;
 
-	@ManyToOne
-	private Label lable;
-	
+	@ManyToMany(targetEntity = Label.class)
+	private List<Label> lable;
+
 	public Integer getNoteId() {
-		return noteId;
+		return id;
 	}
 
 	public void setNoteId(Integer noteId) {
-		this.noteId = noteId;
+		this.id = noteId;
 	}
 
 	public String getTitle() {
@@ -130,9 +130,18 @@ public class Noteinfo {
 		this.user = user;
 	}
 
+	
+	public List<Label> getLable() {
+		return lable;
+	}
+
+	public void setLable(List<Label> lable) {
+		this.lable = lable;
+	}
+
 	@Override
 	public String toString() {
-		return "Noteinfo [noteId=" + noteId + ", title=" + title + ", description=" + description + ", isArchieved="
+		return "Noteinfo [noteId=" + id + ", title=" + title + ", description=" + description + ", isArchieved="
 				+ isArchieved + ", isPinned=" + isPinned + ", isTrashed=" + isTrashed + ", createdDateAndTime="
 				+ createdDateAndTime + ", upDateAndTime=" + upDateAndTime + ", colour=" + colour + ", reminder="
 				+ reminder + ", user=" + user + ", lable=" + lable + "]";
