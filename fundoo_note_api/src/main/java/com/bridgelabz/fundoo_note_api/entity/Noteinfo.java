@@ -39,7 +39,7 @@ public class Noteinfo {
 	@ManyToOne
 	private User user;
 
-	@ManyToMany(targetEntity = Label.class)
+	@ManyToMany
 	private List<Label> lable;
 
 	public Integer getNoteId() {

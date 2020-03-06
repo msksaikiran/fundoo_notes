@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo_note_api.dto.Register;
 import com.bridgelabz.fundoo_note_api.dto.Update;
+import com.bridgelabz.fundoo_note_api.dto.UserLogin;
 import com.bridgelabz.fundoo_note_api.entity.User;
 import com.bridgelabz.fundoo_note_api.response.Response;
 import com.bridgelabz.fundoo_note_api.response.UserDetail;
@@ -28,9 +29,9 @@ public class UserController {
 
 	/* API for user login */
 
-	@GetMapping(value = "/user/login/{token}")
-	public ResponseEntity<UserDetail> loginUser(@PathVariable String token) {
-		User result = userService.login(token);
+	@GetMapping(value = "/user/login")
+	public ResponseEntity<UserDetail> loginUser(@RequestBody UserLogin user) {
+		User result = userService.login(user);
 		if (result != null) {
 			String parseToken = generator.jwtToken(result.getId());
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
@@ -50,7 +51,7 @@ public class UserController {
 					.body(new Response("Registration Successfully", 200, userRecord));
 		} else {
 			return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-					.body(new Response("Already existing user", 400, userRecord));
+					.body(new Response("Already existing user", 208, userRecord));
 		}
 	}
 

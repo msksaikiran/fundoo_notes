@@ -37,8 +37,7 @@ public class User {
 
 	@ManyToMany
 	
-	        //@JoinColumn(name="Email_ID", referencedColumnName="id")
-	   
+     //@JoinColumn(name="Email_ID", referencedColumnName="id")
 	//@JoinTable(name= "Collabarate",joinColumns = {@JoinColumn (name="note_id")},inverseJoinColumns = {@JoinColumn (name="user_id")})
 	private List<Noteinfo> collablare;
 	

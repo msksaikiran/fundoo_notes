@@ -89,8 +89,9 @@ public class LabelImplementation implements LabelService {
 	@Override
 	public Label addNotesToLabel(NoteDto notes, String token,String labelId) {
 		
+	//	List<Label> labek=new ArrayL
 		Noteinfo note = noteService.addNotes(notes, token);
-		//Noteinfo note = (Noteinfo)modelMapper.map(notes, Noteinfo.class);
+		
 		int lId = Integer.parseInt(labelId);
 		
 		List<Label> lables = this.getLableByUserId(token);
@@ -100,12 +101,14 @@ public class LabelImplementation implements LabelService {
 
 		labelInfo.ifPresent(data->{
 
-			data.setLabelId(lId);
-			data.setUserId(1);
-			data.setUpdateDateAndTime(LocalDateTime.now());
-			data.setLableName("dsad");
-			System.out.println("###");
-			note.getLable().addAll(lables);
+//			data.setLabelId(lId);
+//			data.setUserId(1);
+//			data.setUpdateDateAndTime(LocalDateTime.now());
+//			data.setLableName("dsad");
+			//data.
+			System.out.println("###"+data);
+			note.getLable().add(data);
+			//note.setLable(data.getUserId());
 		});
 		
 		if(labelInfo.equals(Optional.empty())) {

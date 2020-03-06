@@ -11,8 +11,8 @@ import com.bridgelabz.fundoo_note_api.response.ExceptionResponse;
 @ControllerAdvice
 public class CustomisedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(UserNotFoundException.class)
-	public final ResponseEntity<ExceptionResponse> handlerUserNotFoundException(UserNotFoundException ex) {
+	@ExceptionHandler(UserException.class)
+	public final ResponseEntity<ExceptionResponse> handlerUserException(UserException ex) {
 		// new ExceptionResponse(new Date(), ex.getMessage());
 		return new ResponseEntity<ExceptionResponse>(HttpStatus.NOT_FOUND);
 	}

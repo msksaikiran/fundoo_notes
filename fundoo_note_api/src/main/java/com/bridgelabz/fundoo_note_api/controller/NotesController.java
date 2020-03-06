@@ -17,6 +17,7 @@ import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.response.NoteResponse;
 import com.bridgelabz.fundoo_note_api.response.Response;
 import com.bridgelabz.fundoo_note_api.service.NoteService;
+import com.bridgelabz.fundoo_note_api.dto.ReminderDto;
 
 @RestController
 public class NotesController {
@@ -40,9 +41,13 @@ public class NotesController {
 		}
 	}
 
+	/*
+	 * API to Update the Note Details By Id
+	 */
 	@PutMapping(value = "/notes/{id}/users/{token}")
-	public ResponseEntity<NoteResponse> updateNote(@PathVariable String token,@PathVariable String id, @RequestBody UpdateNote dto) {
-		List<Noteinfo> note = noteService.updateNotes(token,id, dto);
+	public ResponseEntity<NoteResponse> updateNote(@PathVariable String token, @PathVariable String id,
+			@RequestBody UpdateNote dto) {
+		List<Noteinfo> note = noteService.updateNotes(token, id, dto);
 		if (note != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Note Title Updated", dto));
 		}
@@ -71,7 +76,7 @@ public class NotesController {
 		List<Noteinfo> result = noteService.getNoteByUserId(token);
 		if (result != null) {
 			// return result;
-			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", "sucess")
+			return ResponseEntity.status(HttpStatus.ACCEPTED).header(token, "sucess")
 					.body(new NoteResponse("200-OK", result));
 		}
 		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
@@ -81,9 +86,9 @@ public class NotesController {
 	/*
 	 * API to deleting the Note Details By _Id
 	 */
-	@DeleteMapping(value = "/notes/{id}/users/{token}")
-	public ResponseEntity<NoteResponse> deleteNote(@PathVariable String id,@PathVariable String token) {
-		Noteinfo result = noteService.removeNotes(token,id);
+	@DeleteMapping(value = "/notes/{noteId}/users/{token}")
+	public ResponseEntity<NoteResponse> deleteNote(@PathVariable String noteId, @PathVariable String token) {
+		Noteinfo result = noteService.removeNotes(token, noteId);
 		if (result == null) {
 			// return result;
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", "sucess")
@@ -92,6 +97,76 @@ public class NotesController {
 		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new NoteResponse("Not existing user", result));
 	}
 
+	/*
+	 * API for pin a Note
+	 */
+	@PutMapping("/notes/pin/{noteId}/users/{token}")
+	public ResponseEntity<Response> pin(@PathVariable String noteId, @PathVariable String token) {
+		noteService.pinNote(noteId, token);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("note pined", 200));
+	}
+
+	/* API for archieve a Note */
+	@PutMapping("/note/archieve/{noteId}/users/{token}")
+	public ResponseEntity<Response> archieve(@PathVariable String noteId, @PathVariable String token) {
+		noteService.archieveNote(noteId, token);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new Response("note archieved", 200));
+	}
+
+	/*
+	 * API for updating color to a Note
+	 */
+	@PutMapping("/notes/{colour}/{noteId}/users/{token}")
+	public ResponseEntity<Response> addColour(@PathVariable String noteId, @PathVariable String colour,
+			@PathVariable String token) {
+		noteService.addColour(noteId, token, colour);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("note colour changed", 200));
+
+	}
+
+	/* API for getting all archieve notes Notes */
+	@GetMapping("/notes/getAllArchieve/users/{token}")
+	public ResponseEntity<Response> getArchieve(@PathVariable String token) {
+		List<Noteinfo> list = noteService.getarchieved(token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response(" archieved notes", 200, list));
+	}
+
+	/*
+	 * API for getting all trashed Notes
+	 */
+	@GetMapping("/notes/getAlltrashed/users/{token}")
+	public ResponseEntity<Response> getTrashed(@PathVariable String token) {
+		List<Noteinfo> list = noteService.getAlltrashednotes(token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response(" trashed notes", 200, list));
+	}
+
+	/*
+	 * API for getting all Pinned Notes
+	 */
+	@GetMapping("/notes/getAllPinned/users/{token}")
+	public ResponseEntity<Response> getPinned(@PathVariable String token) {
+		List<Noteinfo> list = noteService.getAllPinneded(token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response(" pinned notes", 200, list));
+	}
+
+	/*
+	 * API for adding remainder to Notes
+	 */
+	@PostMapping("/notes/addremainder/{noteId}/users/{token}")
+	public ResponseEntity<Response> addRemainder(@PathVariable String token, @PathVariable String noteId,
+			@RequestBody ReminderDto remainder) {
+		noteService.addReminder(noteId, token, remainder);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response(" reminderAdded notes", 200));
+	}
+
+	/*
+	 * API for removing remainder Notes
+	 */
+	@DeleteMapping("/notes/removeRemainder/{noteId}/users/{token}")
+	public ResponseEntity<Response> removeRemainder(@PathVariable String token, @PathVariable String noteId) {
+		noteService.removeReminder(noteId, token);
+		return ResponseEntity.status(HttpStatus.OK).body(new Response("Reminder notes Removed", 200));
+	}
 	/*
 	 * API to get The All Note Details
 	 */

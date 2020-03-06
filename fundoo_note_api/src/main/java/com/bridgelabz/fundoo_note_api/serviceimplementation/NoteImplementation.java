@@ -20,13 +20,12 @@ import com.bridgelabz.fundoo_note_api.dto.UpdateNote;
 import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.entity.User;
 import com.bridgelabz.fundoo_note_api.exception.NotesNotFoundException;
-import com.bridgelabz.fundoo_note_api.exception.UserNotFoundException;
+import com.bridgelabz.fundoo_note_api.exception.UserException;
 import com.bridgelabz.fundoo_note_api.repository.LabelRepository;
 import com.bridgelabz.fundoo_note_api.repository.NoteRepository;
 import com.bridgelabz.fundoo_note_api.repository.UserRepository;
 import com.bridgelabz.fundoo_note_api.service.NoteService;
 import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
-
 
 @Service
 public class NoteImplementation implements NoteService {
@@ -42,8 +41,6 @@ public class NoteImplementation implements NoteService {
 	@Autowired
 	private JwtGenerator generate;
 
-	
-	
 	@Transactional
 	@Override
 	public Noteinfo addNotes(NoteDto notes, String token) {
@@ -71,7 +68,6 @@ public class NoteImplementation implements NoteService {
 		// BeanUtils.copyProperties(notes,Noteinfo.class);
 		return null;
 	}
-
 
 	@Transactional
 	@Override
@@ -122,7 +118,7 @@ public class NoteImplementation implements NoteService {
 				}
 			}
 		} catch (Exception ae) {
-			throw new UserNotFoundException("user Not registered");
+			throw new UserException("user Not registered");
 		}
 		return notes.get(0);
 	}
@@ -164,137 +160,204 @@ public class NoteImplementation implements NoteService {
 		return noteTitles;
 	}
 
-	
 	@Transactional
 	@Override
-	public void archieveNote(String id, String token) {
+	public String archieveNote(String id, String token) {
+		List<Noteinfo> notes = this.getNoteByUserId(token);
+		/*
+		 * java 8 streams feature
+		 */
+		int nId = Integer.parseInt(id);
 		try {
-	int userid=(int)generate.parseJWT(token);
-	User userData = userRepository.getUserById(userid);
-	Noteinfo noteData = noteRepository.findNoteById(Integer.parseInt(id));
-	if(noteData!=null) {
-		noteData.setIsPinned(0);
-		noteData.setIsArchieved(1);
-		noteData.setUpDateAndTime(LocalDateTime.now());
-		noteRepository.save(noteData);
-	}
+			if (notes != null) {
+				Optional<Noteinfo> data = notes.stream().filter(t -> t.getNoteId() == nId).findFirst();
+				data.ifPresent(da -> {
+					da.setIsPinned(0);
+					da.setIsArchieved(1);
+					da.setUpDateAndTime(LocalDateTime.now());
+					noteRepository.save(da);
+				});
+				if (data.equals(Optional.empty())) {
+					return "notes not archieved";
+				}
+			}
+		} catch (Exception ae) {
+			throw new UserException("user Not registered");
 		}
-		catch(Exception e) {
-			throw new UserNotFoundException("user is not present");
-	}
-	}
-
-
-//@Transactional
-//	@Override
-//	public void pinNote(String id, String token) {
-//	try {
-//		int userid=(int)generate.parseJWT(token);
-//		User userData = userRepository.getUserById(userid);
-//		 Noteinfo noteData = noteRepository.findNoteById(Integer.parseInt(id));
-//		if(noteData!=null) {
-//			noteData.setIsArchieved(0);
-//			noteData.setIsPinned(1);
-//			noteData.setUpDateAndTime(LocalDateTime.now());
-//			noteRepository.save(noteData);
-//	}
-//	}catch(Exception e) {
-//		throw new UserNotFoundException("user is not present");
-//}	
-//	}
-
-//@Transactional
-//@Override
-//public List<Noteinfo> gettrashednotes(String token) {
-//	try {
-//		int userid=(int)generate.parseJWT(token);
-//		User userData = userRepository.getUserById(userid);
-//		if(userData!=null) {
-//			List<Noteinfo> list =noteRepository.restoreNote(userid);
-//			return list;
-//		}
-//		}		catch (Exception e) {
-//				throw new UserNotFoundException("error occured ");
-//		}
-//	return null;
-//	}
-//@Transactional
-//@Override
-//public List<Noteinfo> getarchieved(String token) {
+//		
 //		try {
-//			int userid=(int)generate.parseJWT(token);
-//			User userData = userRepository.getUserById(userid);
-//			if(userData!=null) {
-//				List<Noteinfo> list =noteRepository.getArchievedNotes(userid);
-//				return list;
-//			}
-//			}		catch (Exception e) {
-//					throw new UserNotFoundException("error occured ");
-//			}
-//		return null;
-//
-//}
-//@Transactional
-//@Override
-//public void addColour(String noteId, String token, String colour) {
-//	try {
-//		int userid=(int)generate.parseJWT(token);
-//		User userData = userRepository.getUserById(userid);
-//	    Noteinfo noteData = noteRepository.findNoteById(Integer.parseInt(noteId));
-//		if(noteData!=null) {
-//			noteData.setColour(colour);
-//			noteRepository.save(noteData);
-//			}}catch(Exception e) {
-//			throw new UserNotFoundException("user is not present");
-//	}	
-//}
-//@Transactional
-//@Override
-//public List<Noteinfo> getPinneded(String token) {
-//	try {
-//		int userid=(int)generate.parseJWT(token);
-//		User userData = userRepository.getUserById(userid);
-//		if(userData!=null) {
-//			List<Noteinfo> list =noteRepository.getPinnededNotes(userid);
-//			return list;
+//	int userid=(int)generate.parseJWT(token);
+//	User userData = userRepository.getUserById(userid);
+//	Noteinfo noteData = noteRepository.findNoteById(Integer.parseInt(id));
+//	if(noteData!=null) {
+//		noteData.setIsPinned(0);
+//		noteData.setIsArchieved(1);
+//		noteData.setUpDateAndTime(LocalDateTime.now());
+//		noteRepository.save(noteData);
+//	}
 //		}
-//		}		catch (Exception e) {
-//				throw new UserNotFoundException("error occured ");
-//		}
-//}
-//@Transactional
-//@Override
-//public void addReminder(String id, String token, ReminderDto reminder) {
-//
-//	try {
-//		int userid=(int)generate.parseJWT(token);
-//		User userData = userRepository.getUserById(userid);
-//		 Noteinfo noteData = noteRepository.findNoteById(Integer.parseInt(id));
-//		if(noteData!=null) {
-//			noteData.setReminder(reminder.getRemainder());
-//			noteRepository.save(noteData);
-//			}}catch(Exception e) {
+//		catch(Exception e) {
 //			throw new UserNotFoundException("user is not present");
-//	}	
-//	
-//}
+//	}
+		return token;
+	}
 
-//@Transactional
-//@Override
-//public void removeReminder(Long noteid, String token, ReminderDto remainder) {
-//
-//	try {
-//		Long userid=(Long)generate.parseJWT(token);
-//		userData = repository.findUserById(userid);
-//		NoteData noteData = noteRepository.findById(noteid);
-//		if(noteData!=null) {
-//			noteData.setReminder(null);
-//			noteRepository.save(noteData);
-//			}}catch(Exception e) {
-//			throw new UserException("user is not present");
-//	}	
-//	
-//		}
+	@Transactional
+	@Override
+	public String pinNote(String id, String token) {
+		List<Noteinfo> notes = this.getNoteByUserId(token);
+		/*
+		 * java 8 streams feature
+		 */
+		int nId = Integer.parseInt(id);
+		try {
+			if (notes != null) {
+				Optional<Noteinfo> data = notes.stream().filter(t -> t.getNoteId() == nId).findFirst();
+				data.ifPresent(da -> {
+					da.setIsPinned(1);
+					da.setIsArchieved(0);
+					da.setUpDateAndTime(LocalDateTime.now());
+					noteRepository.save(da);
+				});
+				if (data.equals(Optional.empty())) {
+					return "notes not pinned";
+				}
+			}
+		} catch (Exception ae) {
+			throw new UserException("user Not registered");
+		}
+		return token;
+
+	}
+
+	@Transactional
+	@Override
+	public List<Noteinfo> getAlltrashednotes(String token) {
+
+		try {
+			int userid = (int) generate.parseJWT(token);
+			User userData = userRepository.getUserById(userid);
+			if (userData != null) {
+				List<Noteinfo> list = noteRepository.restoreNote(userid);
+				return list;
+			}
+		} catch (Exception e) {
+			throw new UserException("error occured ");
+		}
+		return null;
+	}
+
+	@Transactional
+	@Override
+	public List<Noteinfo> getarchieved(String token) {
+		try {
+			int userid = (int) generate.parseJWT(token);
+			User userData = userRepository.getUserById(userid);
+			if (userData != null) {
+				List<Noteinfo> list = noteRepository.getArchievedNotes(userid);
+				return list;
+			}
+		} catch (Exception e) {
+			throw new UserException("error occured ");
+		}
+		return null;
+
+	}
+
+	@Transactional
+	@Override
+	public String addColour(String id, String token, String colour) {
+
+		List<Noteinfo> notes = this.getNoteByUserId(token);
+		/*
+		 * java 8 streams feature
+		 */
+		int nId = Integer.parseInt(id);
+		try {
+			if (notes != null) {
+				Optional<Noteinfo> data = notes.stream().filter(t -> t.getNoteId() == nId).findFirst();
+				data.ifPresent(da -> {
+					da.setColour(colour);
+					noteRepository.save(da);
+				});
+				if (data.equals(Optional.empty())) {
+					return "notes not coloured";
+				}
+			}
+		} catch (Exception ae) {
+			throw new UserException("user Not registered");
+		}
+		return colour;
+	}
+
+	@Transactional
+	@Override
+	public List<Noteinfo> getAllPinneded(String token) {
+		try {
+			int userid = (int) generate.parseJWT(token);
+			User userData = userRepository.getUserById(userid);
+			if (userData != null) {
+				List<Noteinfo> list = noteRepository.getPinnededNotes(userid);
+				return list;
+			}
+		} catch (Exception e) {
+			throw new UserException("error occured ");
+		}
+		return null;
+	}
+
+	@Transactional
+	@Override
+	public String addReminder(String id, String token, ReminderDto reminder) {
+		List<Noteinfo> notes = this.getNoteByUserId(token);
+		/*
+		 * java 8 streams feature
+		 */
+		int nId = Integer.parseInt(id);
+		try {
+			if (notes != null) {
+				Optional<Noteinfo> data = notes.stream().filter(t -> t.getNoteId() == nId).findFirst();
+				data.ifPresent(noteData -> {
+					noteData.setReminder(reminder.getRemainder());
+					noteRepository.save(noteData);
+				});
+				if (data.equals(Optional.empty())) {
+					return "notes not pinned";
+				}
+			}
+		} catch (Exception ae) {
+			throw new UserException("user Not registered");
+		}
+		return token;
+
+	}
+
+	@Transactional
+	@Override
+	public String removeReminder(String id, String token) {
+		List<Noteinfo> notes = this.getNoteByUserId(token);
+		/*
+		 * java 8 streams feature
+		 */
+		int nId = Integer.parseInt(id);
+		try {
+			if (notes != null) {
+				Optional<Noteinfo> data = notes.stream().filter(t -> t.getNoteId() == nId).findFirst();
+				data.ifPresent(noteData -> {
+					noteData.setReminder(null);
+					noteRepository.save(noteData);
+				});
+				if (data.equals(Optional.empty())) {
+					return "notes not pinned";
+				}
+			}
+		} catch (Exception ae) {
+			throw new UserException("user Not registered");
+		}
+		return token;
+
+	}
+
 	@Transactional
 	@Override
 	public List<Noteinfo> getNoteByUserId(String token) {

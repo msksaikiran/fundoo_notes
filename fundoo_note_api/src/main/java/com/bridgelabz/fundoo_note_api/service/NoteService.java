@@ -25,20 +25,21 @@ public interface NoteService {
 
 	List<String> ascSortByName();
 
-	void archieveNote(String id, String token);
+	String archieveNote(String id, String token);
 
-//	void pinNote(String id, String token);
-//
-//	List<Noteinfo> gettrashednotes(String token);
-//
-//	List<Noteinfo> getarchieved(String token);
-//
-//	void addColour(String noteId, String token, String colour);
-//
-//	List<Noteinfo> getPinneded(String token);
-//
-//	void addReminder(String id, String token, ReminderDto reminder);
+	String pinNote(String id, String token);
 
+	List<Noteinfo> getAlltrashednotes(String token);
+
+	List<Noteinfo> getarchieved(String token);
+
+	String addColour(String id, String token, String colour);
+
+	List<Noteinfo> getAllPinneded(String token);
+
+	String addReminder(String id, String token, ReminderDto reminder);
+
+	String removeReminder(String id, String token);
 	
 
 }

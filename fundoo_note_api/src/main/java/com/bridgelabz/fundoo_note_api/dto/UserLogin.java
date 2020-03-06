@@ -12,9 +12,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Register {
-	private String name;
-	private String email;
+public class UserLogin {
+
+	private String userEmail;
 	private String password;
-	private long number;
+	
+	
 }

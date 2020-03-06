@@ -15,6 +15,15 @@ public interface NoteRepository extends CrudRepository<Noteinfo, Integer> {
 	@Query(value = "select * from noteinfo where user_id=?", nativeQuery = true)
 	List<Noteinfo> findNoteByUserId(int id);
 
+	@Query(value="select * from  noteinfo where user_id=? AND is_trashed =1",nativeQuery = true)
+	List<Noteinfo> restoreNote(int userid);
+	
+	@Query(value="select * from  noteinfo where user_id=? AND is_archieved =1",nativeQuery = true)
+	List<Noteinfo> getArchievedNotes(int userid);
+	
+	@Query(value="select * from  noteinfo where user_id=? AND is_pinned =1",nativeQuery = true)
+	List<Noteinfo> getPinnededNotes(int userid);
+
 //	List<Noteinfo> restoreNote(int userid);
 //
 //	List<Noteinfo> getArchievedNotes(int userid);
