@@ -1,6 +1,7 @@
 package com.bridgelabz.fundoo_note_api.exception;
 
-import org.springframework.http.HttpStatus;
+import java.time.LocalDateTime;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,12 +10,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.bridgelabz.fundoo_note_api.response.ExceptionResponse;
 
 @ControllerAdvice
-public class CustomisedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+public class CustomisedNoteExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler(UserException.class)
-	public final ResponseEntity<ExceptionResponse> handlerUserException(UserException ex) {
-		// new ExceptionResponse(new Date(), ex.getMessage());
-		return new ResponseEntity<ExceptionResponse>(HttpStatus.NOT_FOUND);
+	@ExceptionHandler(NoteException.class)
+	public final ResponseEntity<ExceptionResponse> handlerUserException(NoteException ex) {
+		
+		
+		return ResponseEntity.status(ex.getStatusCode()).body(new ExceptionResponse(LocalDateTime.now(),ex.getMessage()));
+	
 	}
 
 }

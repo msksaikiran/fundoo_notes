@@ -11,12 +11,19 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Entity
+@Data
+@NoArgsConstructor
+@ToString
 public class Label {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int Id;
+	private long lId;
 	@Column
 	private String lableName;
 	@Column
@@ -24,47 +31,7 @@ public class Label {
 	@Column
 	private LocalDateTime UpdateDateAndTime;
 
-//	@ManyToMany(targetEntity = Noteinfo.class)
-	
-	//private List<Noteinfo> note ;
-
-	public int getLabelId() {
-		return Id;
-	}
-
-	public void setLabelId(int labelId) {
-		this.Id = labelId;
-	}
-
-	public String getLableName() {
-		return lableName;
-	}
-
-	public void setLableName(String lableName) {
-		this.lableName = lableName;
-	}
-
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-
-	public LocalDateTime getUpdateDateAndTime() {
-		return UpdateDateAndTime;
-	}
-
-	public void setUpdateDateAndTime(LocalDateTime updateDateAndTime) {
-		UpdateDateAndTime = updateDateAndTime;
-	}
-
-	@Override
-	public String toString() {
-		return "Label [Id=" + Id + ", lableName=" + lableName + ", userId=" + userId + ", UpdateDateAndTime="
-				+ UpdateDateAndTime + "]";
-	}
-
+    	@ManyToMany(targetEntity = Noteinfo.class)
+	    private List<Noteinfo> note ;
 	
 }

@@ -1,28 +1,30 @@
 package com.bridgelabz.fundoo_note_api.repository;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 
 @Repository
-public interface NoteRepository extends CrudRepository<Noteinfo, Integer> {
+public interface NoteRepository extends CrudRepository<Noteinfo, Long> {
 
-	@Query(value = "select * from noteinfo where id=?", nativeQuery = true)
-	Noteinfo findNoteById(int id);
+	@Query(value = "select * from noteinfo where nid=?", nativeQuery = true)
+	Optional<Noteinfo> findNoteById(long id);
 
 	@Query(value = "select * from noteinfo where user_id=?", nativeQuery = true)
-	List<Noteinfo> findNoteByUserId(int id);
+	List<Noteinfo> findNoteByUserId(long id);
 
 	@Query(value="select * from  noteinfo where user_id=? AND is_trashed =1",nativeQuery = true)
-	List<Noteinfo> restoreNote(int userid);
+	List<Noteinfo> restoreNote(long userid);
 	
 	@Query(value="select * from  noteinfo where user_id=? AND is_archieved =1",nativeQuery = true)
-	List<Noteinfo> getArchievedNotes(int userid);
+	List<Noteinfo> getArchievedNotes(long userid);
 	
 	@Query(value="select * from  noteinfo where user_id=? AND is_pinned =1",nativeQuery = true)
-	List<Noteinfo> getPinnededNotes(int userid);
+	List<Noteinfo> getPinnededNotes(long userid);
 
 //	List<Noteinfo> restoreNote(int userid);
 //

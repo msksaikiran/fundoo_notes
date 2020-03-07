@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo_note_api.dto.LableDto;
 import com.bridgelabz.fundoo_note_api.dto.NoteDto;
@@ -21,7 +22,8 @@ import com.bridgelabz.fundoo_note_api.dto.UpdateLabel;
 import com.bridgelabz.fundoo_note_api.entity.Label;
 import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.entity.User;
-import com.bridgelabz.fundoo_note_api.exception.NotesNotFoundException;
+import com.bridgelabz.fundoo_note_api.exception.LabelException;
+import com.bridgelabz.fundoo_note_api.exception.UserException;
 import com.bridgelabz.fundoo_note_api.repository.LabelRepository;
 import com.bridgelabz.fundoo_note_api.repository.UserRepository;
 import com.bridgelabz.fundoo_note_api.service.LabelService;
@@ -49,12 +51,13 @@ public class LabelImplementation implements LabelService {
 	@Transactional
 	@Override
 	public Label createLable(LableDto labelDto, String token) {
-		int userId = (Integer) generate.parseJWT(token);
+		long userId = (long) generate.parseJWT(token);
 		System.out.println(userId);
-		User user = userRepository.getUserById(userId);
+		User user = userRepository.getUserById(userId)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));;
 		if (user != null) {
 			Label label = (Label) modelMapper.map(labelDto, Label.class);
-			label.setUserId(userId);
+			//label.set;
 			return labelRepository.save(label);
 		}
 		// BeanUtils.copyProperties(notes,Noteinfo.class);
@@ -97,7 +100,7 @@ public class LabelImplementation implements LabelService {
 		List<Label> lables = this.getLableByUserId(token);
 		
 		try {
-	    Optional<Label> labelInfo = lables.stream().filter(t->t.getLabelId()==lId).findFirst();
+	    Optional<Label> labelInfo = lables.stream().filter(t->t.getLId()==lId).findFirst();
 
 		labelInfo.ifPresent(data->{
 
@@ -107,7 +110,7 @@ public class LabelImplementation implements LabelService {
 //			data.setLableName("dsad");
 			//data.
 			System.out.println("###"+data);
-			note.getLable().add(data);
+			//note.getLable().add(data);
 			//note.setLable(data.getUserId());
 		});
 		
@@ -133,7 +136,7 @@ public class LabelImplementation implements LabelService {
 		 */
 		try {
 			if (list != null) {
-				Optional<Label> data = list.stream().filter(t -> t.getLabelId() == lId).findFirst();
+				Optional<Label> data = list.stream().filter(t -> t.getLId() == lId).findFirst();
 				data.ifPresent(da -> {
 					da.setLableName(LabelDto.getlName());
 					da.setUpdateDateAndTime(LocalDateTime.now());
@@ -145,7 +148,7 @@ public class LabelImplementation implements LabelService {
 				}
 			}
 		} catch (Exception ae) {
-			throw new NotesNotFoundException("Label Record Not Exist");
+			throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,"Label Not Updated due to Internel server problem");
 		}
 
 		return list.get(0);
@@ -163,7 +166,7 @@ public class LabelImplementation implements LabelService {
 		Optional<Label> data = null;
 		try {
 			if (list != null) {
-				data = list.stream().filter(t -> t.getLabelId() == lId).findFirst();
+				data = list.stream().filter(t -> t.getLId() == lId).findFirst();
 				data.ifPresent(da -> {
 					labelRepository.delete(da);
 				});
@@ -172,7 +175,7 @@ public class LabelImplementation implements LabelService {
 				}
 			}
 		} catch (Exception ae) {
-			throw new NotesNotFoundException("user Record Not Exist");
+			throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,"Label Not Deleted due to Internel server problem");
 		}
 		/*
 		 * java 5 Extendedfor feature
@@ -231,7 +234,7 @@ public class LabelImplementation implements LabelService {
 	@Override
 	public List<Label> getLableByUserId(String token) {
 		// List<Label> note = new ArrayList<>();
-		int id = (Integer) generate.parseJWT(token);
+		long id = (long) generate.parseJWT(token);
 		List<Label> label = labelRepository.findLableByUserId(id);
 		if (label != null) {
 			System.out.println(label+"userlbbb");

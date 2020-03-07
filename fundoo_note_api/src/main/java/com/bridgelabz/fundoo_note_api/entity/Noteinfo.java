@@ -11,12 +11,19 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Entity
+@Data
+@NoArgsConstructor
+@ToString
 public class Noteinfo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private long nid;
 	@Column
 	private String title;
 	@Column
@@ -36,115 +43,12 @@ public class Noteinfo {
 	@Column
 	private LocalDateTime reminder;
 
-	@ManyToOne
-	private User user;
+//	@ManyToOne
+//	private User user;
 
-	@ManyToMany
-	private List<Label> lable;
-
-	public Integer getNoteId() {
-		return id;
-	}
-
-	public void setNoteId(Integer noteId) {
-		this.id = noteId;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public int getIsArchieved() {
-		return isArchieved;
-	}
-
-	public void setIsArchieved(int isArchieved) {
-		this.isArchieved = isArchieved;
-	}
-
-	public int getIsPinned() {
-		return isPinned;
-	}
-
-	public void setIsPinned(int isPinned) {
-		this.isPinned = isPinned;
-	}
-
-	public int getIsTrashed() {
-		return isTrashed;
-	}
-
-	public void setIsTrashed(int isTrashed) {
-		this.isTrashed = isTrashed;
-	}
-
-	public LocalDateTime getCreatedDateAndTime() {
-		return createdDateAndTime;
-	}
-
-	public void setCreatedDateAndTime(LocalDateTime createdDateAndTime) {
-		this.createdDateAndTime = createdDateAndTime;
-	}
-
-	public LocalDateTime getUpDateAndTime() {
-		return upDateAndTime;
-	}
-
-	public void setUpDateAndTime(LocalDateTime upDateAndTime) {
-		this.upDateAndTime = upDateAndTime;
-	}
-
-	public String getColour() {
-		return colour;
-	}
-
-	public void setColour(String colour) {
-		this.colour = colour;
-	}
-
-	public LocalDateTime getReminder() {
-		return reminder;
-	}
-
-	public void setReminder(LocalDateTime reminder) {
-		this.reminder = reminder;
-	}
-
-	public int getUser() {
-		return user.getId();
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
+//	@ManyToMany(targetEntity = Label.class)
+//	private List<Label> lable;
 
 	
-	public List<Label> getLable() {
-		return lable;
-	}
-
-	public void setLable(List<Label> lable) {
-		this.lable = lable;
-	}
-
-	@Override
-	public String toString() {
-		return "Noteinfo [noteId=" + id + ", title=" + title + ", description=" + description + ", isArchieved="
-				+ isArchieved + ", isPinned=" + isPinned + ", isTrashed=" + isTrashed + ", createdDateAndTime="
-				+ createdDateAndTime + ", upDateAndTime=" + upDateAndTime + ", colour=" + colour + ", reminder="
-				+ reminder + ", user=" + user + ", lable=" + lable + "]";
-	}
 
 }

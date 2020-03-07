@@ -12,12 +12,17 @@ public interface UserService {
 
 	User register(Register userRecord);
 
-	User forgotPassword(Update updateDto);
+	User forgotPassword(String newPassword, String token);
 
-	List<User> getUsers();
+	//List<User> getUsers();
 
-	User removeUser(String id);
+	//User removeUser(String id);
 
 	Boolean verify(String token);
+
+    String emailVerify(String email);
+
+    User getUser(String token);	
+
 
 }

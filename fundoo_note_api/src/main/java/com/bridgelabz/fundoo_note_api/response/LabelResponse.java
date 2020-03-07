@@ -3,6 +3,7 @@ package com.bridgelabz.fundoo_note_api.response;
 import com.bridgelabz.fundoo_note_api.entity.Label;
 
 public class LabelResponse {
+	
 	private String Message;
 	private Label labelDetails;
 	private Object result;

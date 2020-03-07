@@ -11,14 +11,14 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @ToString
-public class UserException extends RuntimeException {
+public class LabelException extends RuntimeException {
 	
 	private static final long serialVersionUID = 1L;
 
 	private HttpStatus statusCode;
 	private String statusMessage;
 	
-	public  UserException(HttpStatus statusCode, String message) {
+	public  LabelException(HttpStatus statusCode, String message) {
 		super(message);
 		this.statusCode=statusCode;
 		this.statusMessage=message;

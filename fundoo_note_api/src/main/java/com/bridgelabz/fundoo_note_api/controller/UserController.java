@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo_note_api.dto.Register;
-import com.bridgelabz.fundoo_note_api.dto.Update;
 import com.bridgelabz.fundoo_note_api.dto.UserLogin;
 import com.bridgelabz.fundoo_note_api.entity.User;
 import com.bridgelabz.fundoo_note_api.response.Response;
-import com.bridgelabz.fundoo_note_api.response.UserDetail;
 import com.bridgelabz.fundoo_note_api.service.UserService;
 import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 
@@ -29,18 +27,20 @@ public class UserController {
 
 	/* API for user login */
 
-	@GetMapping(value = "/user/login")
-	public ResponseEntity<UserDetail> loginUser(@RequestBody UserLogin user) {
+	
+	@PostMapping(value = "/user/login")
+	public ResponseEntity<Response> loginUser(@RequestBody UserLogin user) {
 		User result = userService.login(user);
 		if (result != null) {
-			String parseToken = generator.jwtToken(result.getId());
+			   generator.jwtToken(result.getUid());
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-					.body(new UserDetail(parseToken, "You have Loggined in Successfully", result));
+			              .body(new Response("You have Loggined in Successfully"));
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(new UserDetail("Login failed", "400-Not-Found", result));
+				.body(new Response("Loggined in Failed"));
 
 	}
+	
 	/* API for user register */
 
 	@PostMapping(value = "/user/add-user")
@@ -48,26 +48,35 @@ public class UserController {
 		User user = userService.register(userRecord);
 		if (user != null) {
 			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new Response("Registration Successfully", 200, userRecord));
+					.body(new Response("Registration Successfully"));
 		} else {
 			return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-					.body(new Response("Already existing user", 208, userRecord));
+					.body(new Response("Already existing user"));
 		}
+	}
+
+	@PostMapping(value = "/user/{emailId}")
+	public ResponseEntity<Response> emailVerify(@PathVariable String emailId) {
+
+		String result = userService.emailVerify(emailId);
+		if (result != null) {
+			return ResponseEntity.status(HttpStatus.ACCEPTED)
+					.body(new Response("email sent Successfully"));
+		}
+		return null; 
 	}
 
 	/* API for user Forgot Passsword */
 
-	@PutMapping(value = "/user/forgot")
-	public ResponseEntity<Response> forgetPassword(@RequestBody Update updateDto) {
+	@PutMapping(value = "/user/{newPassword}/{token}")
+	public ResponseEntity<Response> forgetPassword(@PathVariable String newPassword,@PathVariable String token) {
 
-		User result = userService.forgotPassword(updateDto);
+		User result = userService.forgotPassword(newPassword,token);
 		if (result != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-					.body(new Response("Password Updated Successfully", 200, User.class));
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body(new Response("emailId doesn't matched", 402, updateDto.getEmail()));
+					.body(new Response("Password Updated Successfully"));
 		}
+		return null; 
 	}
 
 	/* API for verifying the token generated for the email */
@@ -76,9 +85,15 @@ public class UserController {
 	public ResponseEntity<Response> verify(@PathVariable("token") String token) throws Exception {
 		boolean verification = userService.verify(token);
 		if (verification) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("verified", 200, token));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("verified"));
 		}
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("not verified", 400, token));
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("not verified"));
+	}
+	
+	@GetMapping(value="/user/{token}") 
+	public User getUser(@PathVariable String token) 
+	{
+		return userService.getUser(token); 
 	}
 
 	/* API for Getting the all users */

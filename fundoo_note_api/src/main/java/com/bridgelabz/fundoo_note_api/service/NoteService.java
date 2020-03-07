@@ -2,10 +2,13 @@ package com.bridgelabz.fundoo_note_api.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import com.bridgelabz.fundoo_note_api.dto.NoteDto;
 import com.bridgelabz.fundoo_note_api.dto.ReminderDto;
 import com.bridgelabz.fundoo_note_api.dto.UpdateNote;
 import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
+import com.bridgelabz.fundoo_note_api.exception.NoteException;
 
 public interface NoteService {
 
@@ -27,7 +30,7 @@ public interface NoteService {
 
 	String archieveNote(String id, String token);
 
-	String pinNote(String id, String token);
+	Noteinfo pinNote(String id, String token);
 
 	List<Noteinfo> getAlltrashednotes(String token);
 

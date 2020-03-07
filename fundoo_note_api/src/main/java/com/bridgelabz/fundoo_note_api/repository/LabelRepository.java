@@ -10,10 +10,10 @@ import com.bridgelabz.fundoo_note_api.entity.Label;
 @Repository
 public interface LabelRepository extends CrudRepository<Label, Integer> {
 
-	@Query(value = "select * from label where id=?", nativeQuery = true)
-	Label findLableById(int id);
+	@Query(value = "select * from label where lid=?", nativeQuery = true)
+	Label findLableById(long id);
 
 	@Query(value = "select * from label where user_id=?", nativeQuery = true)
-	List<Label> findLableByUserId(int user_id);
+	List<Label> findLableByUserId(long user_id);
 
 }

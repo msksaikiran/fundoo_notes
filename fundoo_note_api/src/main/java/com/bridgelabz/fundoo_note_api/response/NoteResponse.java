@@ -4,10 +4,10 @@ public class NoteResponse {
 	private String Message;
 	private Object notes;
 
-	public NoteResponse(String message, Object obj) {
+	public NoteResponse(String message, Object notes) {
 		super();
 		Message = message;
-		this.notes = obj;
+		this.notes = notes;
 	}
 
 	public String getMessage() {
@@ -22,8 +22,8 @@ public class NoteResponse {
 		return notes;
 	}
 
-	public void setObj(Object obj) {
-		this.notes = obj;
+	public void setObj(Object notes) {
+		this.notes = notes;
 	}
 
 }

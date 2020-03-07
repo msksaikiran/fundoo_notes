@@ -11,8 +11,8 @@ import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.entity.User;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Integer> {
-	@Query(value = "select * from user where id=?", nativeQuery = true)
+public interface UserRepository extends CrudRepository<User, Long> {
+	@Query(value = "select * from user where uid=?", nativeQuery = true)
     String login();
 
 	@Query(value = "insert into user (date, email, is_verified, name, number, password, id) values (?, ?, ?, ?, ?, ?, ?)", nativeQuery = true)
@@ -21,19 +21,18 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 	@Query(value = "update user set password=? where email=?", nativeQuery = true)
 	User forgotPassword(String password, String email);
 
-	@Query(value = "select * from user where id=?", nativeQuery = true)
-	User getUserById(int id);
+	@Query(value = "select * from user where uid=?", nativeQuery = true)
+	Optional<User> getUserById(long id);
 
 	@Query(value = "select * from user where email=?", nativeQuery = true)
     Optional<User> findUserByEmail(String email);
 
-	@Query(value = "update user set is_verified=true where id=?", nativeQuery = true)
-	void verify(int id);
+	@Query(value = "update user set is_verified=true where uid=?", nativeQuery = true)
+	boolean verify(long id);
 
 	@Query(value = "select * from user_collablare  where user_id=?" , nativeQuery = true)
-	List<User>  getCollobaraterById(int user_id);
+	List<User>  getCollobaraterById(long user_id);
 
-	//public void findUserByEmail(String userEmail);
 
 //	@Query(value = "select * from noteinfo where user_id=?", nativeQuery = true)
 //	List<Noteinfo> findNoteByUserId(int id);

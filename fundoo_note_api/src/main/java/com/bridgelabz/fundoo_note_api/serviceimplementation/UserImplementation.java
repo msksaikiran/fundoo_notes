@@ -1,26 +1,21 @@
 package com.bridgelabz.fundoo_note_api.serviceimplementation;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 /*#
  * Description: implementation part for user when user register,login,update
  * @author : SaiKiranMsk
  *     
  */
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.bridgelabz.fundoo_note_api.dto.Register;
-import com.bridgelabz.fundoo_note_api.dto.Update;
 import com.bridgelabz.fundoo_note_api.dto.UserLogin;
 import com.bridgelabz.fundoo_note_api.entity.User;
 import com.bridgelabz.fundoo_note_api.exception.UserException;
@@ -29,166 +24,138 @@ import com.bridgelabz.fundoo_note_api.service.UserService;
 import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 import com.bridgelabz.fundoo_note_api.utility.MailService;
 
-
 @Service
 public class UserImplementation implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
-	private PasswordEncoder passwordEncode;
+	private BCryptPasswordEncoder passEncryption;
 	@Autowired
 	private JwtGenerator generate;
-	
 	@Autowired
 	private JavaMailSenderImpl senderimp;
 
-	
+	User userDetails = new User();
+
+	@Transactional
 	@Override
 	public User login(UserLogin userdto) {
-	
-	    Optional<User> user = userRepository.findUserByEmail(userdto.getUserEmail());
-	    User userDetails=new User();
-	    if(user.isPresent()) {
-	    	BeanUtils.copyProperties(userdto, userDetails);
-	    	if ((userDetails.getIsVerified().equals("true") && (passwordEncode.matches(userDetails.getPassword(),userdto.getPassword())))) 
-	    	{
-	    		/* send the email verification to the register user */
 
-				this.mailservice();
-				MailService.senMail(user, senderimp, generate.jwtToken(userDetails.getId()));
+		User user = userRepository.findUserByEmail(userdto.getEmail())
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user note register1"));
 
-	    	}
-	    }
-			
-		return null;
+		BeanUtils.copyProperties(userdto, userDetails);
+		if ((user.isVerified() == true) && passEncryption.matches(userdto.getPassword(), user.getPassword())) {
+			/*
+			 * send the email verification to the register user
+			 */
+			this.mailservice();
+			MailService.senMail(userDetails, senderimp, generate.jwtToken(user.getUid()));
+			return user;
+		}
+
+		throw new UserException(HttpStatus.BAD_GATEWAY, "password Incorrect");
 	}
-	
-	
-	
-//	@Transactional
-//	@Override
-//	public User login(String token) {
-//
-//		/* with using the query */
-//
-//		// BeanUtils.copyProperties(userDto,User.class);
-//		int id = (Integer) generate.parseJWT(token);
-//		User user = userRepository.getUserById(id);
-//		if (user != null) {
-//			return user;
-//		}
-//
-//		/* without using the query */
-//
-//		// Userlogin userlogindto = new Userlogin();
-//		// List<UserRecord> list = this.getUsers(userRecord);
-//		//
-//		// for (UserRecord ls : list) {
-//		
-//		// if (ls.getId() == id&&config.passwordEncoder().matches(userRecord.getPassword(),
-//		// ls.getPassword())) {
-//		// userlogindto.setPassword(ls.getName());
-//		// }
-//		//
-//		// return ls;
-//		// }
-//		// }
-//		return null;
-//
-//	}
 
-	@SuppressWarnings("unused")
 	@Transactional
 	@Override
 	public User register(Register userDto) {
 
 		Optional<User> useremail = userRepository.findUserByEmail(userDto.getEmail());
-		if(useremail.isPresent()) 
-			throw new UserException(208,"user already Exist");
+		if (useremail.isPresent())
+			throw new UserException(HttpStatus.ALREADY_REPORTED, "user already Exist");
 		try {
-			if (useremail == null) {
-				/* using the modelMapper and getting the User */
 
-				User user=new User();
-				BeanUtils.copyProperties(userDto, user);
+			BeanUtils.copyProperties(userDto, userDetails);
 
-				/* setting the password as encrypted */
-			    user.setPassword(passwordEncode.encode(userDto.getPassword()));
-				user.setDate(LocalDateTime.now());
-				user.setIsVerified("false");
-				User result = userRepository.save(user);
+			/* setting the password as encrypted */
+			userDetails.setPassword(passEncryption.encode(userDto.getPassword()));
+			userDetails.setDate(LocalDateTime.now());
+			User result = userRepository.save(userDetails);
 
-				/* send the email verification to the register user */
+			/* send the email verification to the register user */
 
-				this.mailservice();
-				MailService.senMail(user, senderimp, generate.jwtToken(user.getId()));
+			this.mailservice();
+			MailService.senMail(userDetails, senderimp, generate.jwtToken(userDetails.getUid()));
 
-				return result;
-			}
+			return result;
+
 		} catch (Exception ae) {
-			throw new UserException("user Not registered");
+			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, "user Not registered");
 		}
-		return null;
 	}
 
 	@Transactional
 	@Override
 	public Boolean verify(String token) {
 
-		int id = (Integer) generate.parseJWT(token);
-		User user = userRepository.getUserById(id);
-		System.out.println(user.getName());
-		user.setIsVerified("true");
-		User users = userRepository.save(user);
-		if (users != null) {
-			return true;
-		}
-		return false;
+		long id = (Long) generate.parseJWT(token);
+		User user = userRepository.getUserById(id)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));;
+		user.setVerified(true);
+		boolean users = userRepository.save(user) != null ? true : false;
+
+		return users;
 	}
 
 	@Transactional
 	@Override
-	public User forgotPassword(Update userDto) {
+	public String emailVerify(String email) {
+		User user = userRepository.findUserByEmail(email)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user note register1"));
+		/* send the email verification to the register user */
+		this.mailservice();
+		MailService.senMail(user, senderimp, generate.jwtToken(user.getUid()));
+		return "email sent";
+	}
+
+	@Transactional
+	@Override
+	public User forgotPassword(String newpassword, String token) {
+
+		long id = (Long) generate.parseJWT(token);
+		User user = userRepository.getUserById(id)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));
+		user.setPassword(passEncryption.encode(newpassword));
+		return userRepository.save(user);
+
+	}
+
+	@Override
+	public User getUser(String token) {
+		long id = (Long) generate.parseJWT(token);
+		User user = userRepository.getUserById(id)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));
+		
+		return user;
+	}
 	
-			Optional<User> userEmail = userRepository.findUserByEmail(userDto.getEmail());
-			if (userEmail.isPresent())
-				throw new UserException(404,"user not found");
-			User use = new User();
-			BeanUtils.copyProperties(userDto, use);
-			use.setPassword(passwordEncode.encode(use.getPassword()));
-			return userRepository.save(use);
-	}
+	
+	
+//	@Transactional
+//	@Override
+//	public List<User> getUsers() {
+//		List<User> ls = new ArrayList<>();
+//		userRepository.findAll().forEach(ls::add);
+//		return ls;
+//	}
 
-	@Transactional
-	@Override
-	public List<User> getUsers() {
-		List<User> ls = new ArrayList<>();
-		userRepository.findAll().forEach(ls::add);
-		return ls;
-	}
-
-	@Transactional
-	@Override
-	public User removeUser(String token) {
-		try {
-			int id = (Integer) generate.parseJWT(token);
-			List<User> list = this.getUsers();
-			list.stream().filter(t -> t.getId() == id).forEach(t -> {
-				userRepository.delete(t);
-				System.out.println("delete" + t);
-			});
-		} catch (Exception ae) {
-			throw new UserException("user Not removed");
-		}
-		return null;
-		// for (User ls : list) {
-		// if (ls.getId() == id) {
-		// userRepository.delete(ls);
-		//
-		// }
-		// }
-	}
+//	@Transactional
+//	@Override
+//	public User removeUser(String token) {
+//		try {
+//			int id = (Integer) generate.parseJWT(token);
+//			List<User> list = this.getUsers();
+//			list.stream().filter(t -> t.getId() == id).forEach(t -> {
+//				userRepository.delete(t);
+//				System.out.println("delete" + t);
+//			});
+//		} catch (Exception ae) {
+//			// throw new UserException(404,"user Not removed");
+//		}
+//		return null;
+//	}
 
 	public JavaMailSenderImpl mailservice() {
 		senderimp.setUsername(System.getenv("email"));
@@ -196,12 +163,11 @@ public class UserImplementation implements UserService {
 		senderimp.setPort(587);
 		Properties prop = new Properties();
 		prop.put("mail.smtp.auth", "true");
-		prop.put("mail.smtp.starttls.enable","true");
+		prop.put("mail.smtp.starttls.enable", "true");
 		prop.put("mail.smtp.host", "smtp.gmail.com");
 		prop.put("mail.smtp.port", "587");
 		senderimp.setJavaMailProperties(prop);
 		return senderimp;
-	}
+	}	
 
-	
 }

@@ -10,7 +10,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 public class JwtGenerator {
 	private static final String SECRET = "2129152050365";
 
-	public String jwtToken(int l) {
+	public String jwtToken(long l) {
 		String token = null;
 		try {
 			token = JWT.create().withClaim("id", l).sign(Algorithm.HMAC512(SECRET));
@@ -21,10 +21,10 @@ public class JwtGenerator {
 		return token;
 	}
 
-	public Integer parseJWT(String jwt) {
-		Integer userId = (Integer) 0;
+	public Long parseJWT(String jwt) {
+		Long userId = null;
 		if (jwt != null) {
-			userId = JWT.require(Algorithm.HMAC512(SECRET)).build().verify(jwt).getClaim("id").asInt();
+			userId = JWT.require(Algorithm.HMAC512(SECRET)).build().verify(jwt).getClaim("id").asLong();
 		}
 		return userId;
 	}
