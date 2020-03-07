@@ -13,19 +13,29 @@ public interface LabelService {
 
 	Label createLable(LableDto notes, String token);
 
-	List<Label> removeLabel(String token, String id);
+	List<Label> removeLabel(String token, long id);
 
-	List<Label> getLableByUserId(String id);
+	List<Label> getLableByUserId(String token);
+	
+	Label getLableById(long id);
 
-	Label getLableById(String id);
-
-	Label updateLabel(String id, String token, UpdateLabel LabelDto);
+	//Label updateLabel(String token, long lId, UpdateLabel LabelDto);
 
 	ArrayList<String> sortByName();
 
 	List<String> ascsortByName();
 
-	Label addNotesToLabel(NoteDto notes, String token, String labelId);
+	Label addNotesToLabel(NoteDto notes, String token, long lid);
+
+	boolean addExistingNotesToLabel(long noteId, String token, long labelId);
+
+	Label updateLabel(String token, long lId, UpdateLabel LabelDto);
+
+	
+
+	
+
+	
 
 
 }

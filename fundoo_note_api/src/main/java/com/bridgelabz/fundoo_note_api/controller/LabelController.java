@@ -17,6 +17,7 @@ import com.bridgelabz.fundoo_note_api.dto.UpdateLabel;
 import com.bridgelabz.fundoo_note_api.entity.Label;
 import com.bridgelabz.fundoo_note_api.response.LabelResponse;
 import com.bridgelabz.fundoo_note_api.response.NoteResponse;
+import com.bridgelabz.fundoo_note_api.response.Response;
 import com.bridgelabz.fundoo_note_api.service.LabelService;
 
 @RestController
@@ -28,7 +29,7 @@ public class LabelController {
 	/*
 	 * API to add the Label Details
 	 */
-	@PostMapping(value = "/label/{token}/notes")
+	@PostMapping(value = "/labels/{token}/notes")
 	public ResponseEntity<LabelResponse> createLabel(@RequestBody LableDto label, @PathVariable String token) {
 
 		Label note = labelService.createLable(label, token);
@@ -41,8 +42,11 @@ public class LabelController {
 		}
 	}
 
-	@PostMapping(value = "/label/{lid}/{token}")
-	public ResponseEntity<LabelResponse> addNotesToLabel(@RequestBody NoteDto label, @PathVariable String token,@PathVariable String lid) {
+	/*
+	 * API to add the  Notes To Label 
+	 */
+	@PostMapping(value = "/labels/{lid}/{token}")
+	public ResponseEntity<LabelResponse> addNotesToLabel(@RequestBody NoteDto label, @PathVariable String token,@PathVariable long lid) {
 
 		Label lnote = labelService.addNotesToLabel(label, token,lid);
 		if (lnote != null) {
@@ -54,11 +58,26 @@ public class LabelController {
 		}
 	}
 	
+
+	/*
+	 * API to add the Existing notes to Label Details
+	 */
+	@PostMapping(value = "/labels/{lid}/{token}/{noteId}")
+	public ResponseEntity<Response> addExistingNotesToLabel(long noteId, String token, long labelId) {
+		boolean label = labelService.addExistingNotesToLabel(noteId, token, labelId);
+		if(label)
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(new Response("Note added to the label"+labelId));
+		else
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(new Response("Note not added to the label"+labelId));
+	}
+	
 	/*
 	 * API to add the update Label Details
 	 */
 	@PutMapping(value = "/labels/{id}/users/{token}")
-	public ResponseEntity<NoteResponse> updateLabel(@PathVariable String token,@PathVariable String id, @RequestBody UpdateLabel dto) {
+	public ResponseEntity<NoteResponse> updateLabel(@PathVariable String token,@PathVariable long id, @RequestBody UpdateLabel dto) {
 		Label label = labelService.updateLabel(token,id, dto);
 		if (label != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Updated successfully", dto));
@@ -70,7 +89,7 @@ public class LabelController {
 	 * API to add the delete Label Details
 	 */
 	@DeleteMapping(value = "/labels/{id}/{token}")
-	public ResponseEntity<LabelResponse> deleteLabel(@PathVariable String id,@PathVariable String token) {
+	public ResponseEntity<LabelResponse> deleteLabel(@PathVariable long id,@PathVariable String token) {
 		List<Label> result = labelService.removeLabel(token,id);
 		if (result != null) {
 			// return result;
@@ -86,10 +105,9 @@ public class LabelController {
 	 */
 
 	@GetMapping(value = "/label/notes/{id}")
-	public ResponseEntity<LabelResponse> getLabel(@PathVariable String id) {
+	public ResponseEntity<LabelResponse> getLabel(@PathVariable long id) {
 		Label result = labelService.getLableById(id);
 		if (result != null) {
-			// String token = generator.jwtToken(result.getId());
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", result.getLableName())
 					.body(new LabelResponse("200-OK", result));
 		}
@@ -101,7 +119,7 @@ public class LabelController {
 	 * API to get The All label Details
 	 */
 
-	@GetMapping("/label/notes")
+	@GetMapping("/labels/notes")
 	public List<Label> getAllLables() {
 		return labelService.getAllLables();
 	}
@@ -111,7 +129,7 @@ public class LabelController {
 	 * API to getting the Label Details By User_Id
 	 */
 
-	@GetMapping(value = "/label/user/{token}")
+	@GetMapping(value = "/labels/user/{token}")
 	public ResponseEntity<LabelResponse> getLabelByUserId(@PathVariable String token) {
 		List<Label> result = labelService.getLableByUserId(token);
 		if (result != null) {

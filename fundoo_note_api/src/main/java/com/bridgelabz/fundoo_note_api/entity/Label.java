@@ -27,7 +27,7 @@ public class Label {
 	@Column
 	private String lableName;
 	@Column
-	private int userId;
+	private long userId;
 	@Column
 	private LocalDateTime UpdateDateAndTime;
 

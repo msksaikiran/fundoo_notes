@@ -1,8 +1,11 @@
 package com.bridgelabz.fundoo_note_api.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,19 +28,24 @@ public class UserController {
 	@Autowired
 	private JwtGenerator generator;
 
-	/* API for user login */
+	/*
+	 * API for user login
+	 */
 
 	
 	@PostMapping(value = "/user/login")
-	public ResponseEntity<Response> loginUser(@RequestBody UserLogin user) {
-		User result = userService.login(user);
-		if (result != null) {
-			   generator.jwtToken(result.getUid());
+	public ResponseEntity<Response> loginUser(@Valid @RequestBody UserLogin user,BindingResult result) {
+		if(result.hasErrors())
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new Response(result.getAllErrors().get(0).getDefaultMessage(),200,user));
+		User results = userService.login(user);
+		if (results != null) {
+			   generator.jwtToken(results.getUid());
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-			              .body(new Response("You have Loggined in Successfully"));
+			              .body(new Response("You have Loggined in Successfully",200,user));
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(new Response("Loggined in Failed"));
+//		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//				.body(new Response("Loggined in Failed"));
+		return null;
 
 	}
 	
@@ -48,11 +56,9 @@ public class UserController {
 		User user = userService.register(userRecord);
 		if (user != null) {
 			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new Response("Registration Successfully"));
-		} else {
-			return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-					.body(new Response("Already existing user"));
+					.body(new Response("Registration Successfully",200,userRecord));
 		}
+		return null; 
 	}
 
 	@PostMapping(value = "/user/{emailId}")
@@ -61,7 +67,7 @@ public class UserController {
 		String result = userService.emailVerify(emailId);
 		if (result != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-					.body(new Response("email sent Successfully"));
+					.body(new Response("email sent Successfully",200,result));
 		}
 		return null; 
 	}
@@ -74,7 +80,7 @@ public class UserController {
 		User result = userService.forgotPassword(newPassword,token);
 		if (result != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-					.body(new Response("Password Updated Successfully"));
+					.body(new Response("Password Updated Successfully",200,result));
 		}
 		return null; 
 	}
@@ -85,9 +91,10 @@ public class UserController {
 	public ResponseEntity<Response> verify(@PathVariable("token") String token) throws Exception {
 		boolean verification = userService.verify(token);
 		if (verification) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("verified"));
+			//return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("verified"),200,);
 		}
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("not verified"));
+		//return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("not verified"));
+		return null;
 	}
 	
 	@GetMapping(value="/user/{token}") 

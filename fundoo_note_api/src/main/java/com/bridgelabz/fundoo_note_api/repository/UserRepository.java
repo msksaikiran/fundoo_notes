@@ -33,6 +33,9 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	@Query(value = "select * from user_collablare  where user_id=?" , nativeQuery = true)
 	List<User>  getCollobaraterById(long user_id);
 
+	@Query(value = "select * from user  where user_id=?" , nativeQuery = true)
+	List<Noteinfo> findNotesByuserId(long userId);
+
 
 //	@Query(value = "select * from noteinfo where user_id=?", nativeQuery = true)
 //	List<Noteinfo> findNoteByUserId(int id);

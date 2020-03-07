@@ -59,7 +59,7 @@ public class NoteImplementation implements NoteService {
 				note.setTitle(notes.getTitle());
 				note.setDescription(notes.getDescription());
 				user.getNote().add(note);
-				//note.setUser(user);
+				
 				return noteRepository.save(note);
 	
 		} catch (Exception ae) {

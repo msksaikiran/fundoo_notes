@@ -8,8 +8,12 @@ import java.time.LocalDateTime;
  */
 import java.util.Optional;
 import java.util.Properties;
+
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +29,7 @@ import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 import com.bridgelabz.fundoo_note_api.utility.MailService;
 
 @Service
+@PropertySource("classpath:message.property")
 public class UserImplementation implements UserService {
 
 	@Autowired
@@ -36,12 +41,15 @@ public class UserImplementation implements UserService {
 	@Autowired
 	private JavaMailSenderImpl senderimp;
 
-	User userDetails = new User();
-
+	@Autowired
+	private Environment env;
+	
 	@Transactional
 	@Override
 	public User login(UserLogin userdto) {
 
+		User userDetails = new User();
+		
 		User user = userRepository.findUserByEmail(userdto.getEmail())
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user note register1"));
 
@@ -55,13 +63,15 @@ public class UserImplementation implements UserService {
 			return user;
 		}
 
-		throw new UserException(HttpStatus.BAD_GATEWAY, "password Incorrect");
+		throw new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("200"));
 	}
 
 	@Transactional
 	@Override
 	public User register(Register userDto) {
 
+		User userDetails = new User();
+		
 		Optional<User> useremail = userRepository.findUserByEmail(userDto.getEmail());
 		if (useremail.isPresent())
 			throw new UserException(HttpStatus.ALREADY_REPORTED, "user already Exist");

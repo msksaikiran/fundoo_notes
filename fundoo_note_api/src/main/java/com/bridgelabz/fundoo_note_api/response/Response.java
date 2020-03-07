@@ -1,6 +1,10 @@
 package com.bridgelabz.fundoo_note_api.response;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
+
+import com.bridgelabz.fundoo_note_api.dto.UserLogin;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +18,7 @@ import lombok.ToString;
 public class Response {
 
 	private String Message;
-	//private HttpStatus StatusCode;
-	//private Object user;
+	private int StatusCode;
+	private Object user;
+	
 }
