@@ -28,7 +28,7 @@ import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 import com.bridgelabz.fundoo_note_api.utility.MailService;
 
 @Service
-// @PropertySource("classpath:message.property")
+@PropertySource("classpath:message.properties")
 public class UserImplementation implements UserService {
 
 	@Autowired
@@ -40,8 +40,8 @@ public class UserImplementation implements UserService {
 	@Autowired
 	private JavaMailSenderImpl senderimp;
 
-	// @Autowired
-	// private Environment env;
+	 @Autowired
+	 private Environment env;
 
 	@Transactional
 	@Override
@@ -50,7 +50,7 @@ public class UserImplementation implements UserService {
 		User userDetails = new User();
 
 		User user = userRepository.findUserByEmail(userdto.getEmail())
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "User Not Exist"));
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("103")));
 
 		try {
 			BeanUtils.copyProperties(userdto, userDetails);
@@ -61,11 +61,13 @@ public class UserImplementation implements UserService {
 				this.mailservice();
 				MailService.senMail(userDetails, senderimp, generate.jwtToken(user.getUid()));
 				return user;
+			}else {
+				throw new UserException(HttpStatus.BAD_REQUEST,env.getProperty("105"));
 			}
+			
 		} catch (Exception ex) {
-			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, "user not login due to internal problem");
+			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("500"));
 		}
-		return null;
 	}
 
 	@Transactional
@@ -73,12 +75,13 @@ public class UserImplementation implements UserService {
 	public User register(Register userDto) {
 
 		User userDetails = new User();
-		try {
+		
 			Optional<User> useremail = userRepository.findUserByEmail(userDto.getEmail());
 			
 			if (useremail.isPresent())
-				throw new UserException(HttpStatus.ALREADY_REPORTED, "user already Exist");
+				throw new UserException(HttpStatus.ALREADY_REPORTED,env.getProperty("102"));
 
+			try {
 		BeanUtils.copyProperties(userDto, userDetails);
 
 		/*
@@ -98,7 +101,8 @@ public class UserImplementation implements UserService {
 		return result;
 
 		} catch (Exception ae) {
-			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, "Field not Exist");
+			ae.printStackTrace();
+			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
 		}
 	}
 
@@ -108,7 +112,7 @@ public class UserImplementation implements UserService {
 
 		long id = (Long) generate.parseJWT(token);
 		User user = userRepository.getUserById(id)
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY,env.getProperty("104")));
 
 		user.setVerified(true);
 		boolean users = userRepository.save(user) != null ? true : false;
@@ -120,7 +124,7 @@ public class UserImplementation implements UserService {
 	@Override
 	public String emailVerify(String email) {
 		User user = userRepository.findUserByEmail(email)
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user note register"));
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY,env.getProperty("104")));
 		/*
 		 * send the email verification to the register user
 		 */
@@ -135,7 +139,7 @@ public class UserImplementation implements UserService {
 
 		long id = (Long) generate.parseJWT(token);
 		User user = userRepository.getUserById(id)
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 		user.setPassword(passEncryption.encode(newpassword));
 		return userRepository.save(user);
 
@@ -145,11 +149,24 @@ public class UserImplementation implements UserService {
 	public User getUser(String token) {
 		long id = (Long) generate.parseJWT(token);
 		User user = userRepository.getUserById(id)
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 
 		return user;
 	}
 
+	public JavaMailSenderImpl mailservice() {
+		senderimp.setUsername(System.getenv("email"));
+		senderimp.setPassword(System.getenv("password"));
+		senderimp.setPort(587);
+		Properties prop = new Properties();
+		prop.put("mail.smtp.auth", "true");
+		prop.put("mail.smtp.starttls.enable", "true");
+		prop.put("mail.smtp.host", "smtp.gmail.com");
+		prop.put("mail.smtp.port", "587");
+		senderimp.setJavaMailProperties(prop);
+		return senderimp;
+	}
+	
 	// @Transactional
 	// @Override
 	// public List<User> getUsers() {
@@ -174,17 +191,6 @@ public class UserImplementation implements UserService {
 	// return null;
 	// }
 
-	public JavaMailSenderImpl mailservice() {
-		senderimp.setUsername(System.getenv("email"));
-		senderimp.setPassword(System.getenv("password"));
-		senderimp.setPort(587);
-		Properties prop = new Properties();
-		prop.put("mail.smtp.auth", "true");
-		prop.put("mail.smtp.starttls.enable", "true");
-		prop.put("mail.smtp.host", "smtp.gmail.com");
-		prop.put("mail.smtp.port", "587");
-		senderimp.setJavaMailProperties(prop);
-		return senderimp;
-	}
+	
 
 }

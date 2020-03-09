@@ -7,11 +7,16 @@ package com.bridgelabz.fundoo_note_api.serviceimplementation;
  */
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo_note_api.dto.LableDto;
@@ -30,6 +35,7 @@ import com.bridgelabz.fundoo_note_api.service.NoteService;
 import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 
 @Service
+@PropertySource("classpath:message.properties")
 public class LabelImplementation implements LabelService {
 
 	@Autowired
@@ -50,6 +56,9 @@ public class LabelImplementation implements LabelService {
 	@Autowired
 	private NoteService noteService;
 
+	@Autowired
+	private Environment env;
+	
 	@Transactional
 	@Override
 	public Label createLable(LableDto labelDto, String token) {
@@ -57,11 +66,11 @@ public class LabelImplementation implements LabelService {
 		//System.out.println(userId);
 		
 		User user = userRepository.getUserById(userId)
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 		
 
 		Label label = (Label) modelMapper.map(labelDto, Label.class);
-		label.setUserId(userId);
+		user.getLabel().add(label);
 		return labelRepository.save(label);
 
 	}
@@ -70,21 +79,67 @@ public class LabelImplementation implements LabelService {
 	@Override
 	public Label addNotesToLabel(NoteDto notes, String token, long lId) {
 
+		//User user=new User();
 		Noteinfo note = noteService.addNotes(notes, token);
 
 		List<Label> lables = this.getLableByUserId(token);
+		
 
 		try {
 			Label labelInfo = lables.stream().filter(t -> t.getlId() == lId).findFirst()
 					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
 
-			labelInfo.getNote().add(note);
+		    labelInfo.getNote().add(note);
+			//note.getLabel().add(labelInfo);
 
 		} catch (Exception ae) {
+			ae.printStackTrace();
 			throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,
 					"Notes not added to Label due to Internel server problem");
 		}
 		return lables.get(0);
+		
+		//User user=new User();
+//		Noteinfo note = noteService.addNotes(notes, token);
+//
+//		List<Label> lables = this.getLableByUserId(token);
+//
+//		try {
+//			
+//			for(Label lb:lables) {
+//				if(lb.getlId()==lId) {
+//					note.getLabel().add(lb);
+//				}else {
+//					LableDto lbs=new LableDto();
+//					lb.setLableName(notes.getTitle());
+//					this.createLable(lbs, token);
+//					note.getLabel().add(lb);
+//				}
+//			}
+//			Label labelInfo = lables.stream().filter(t -> t.getlId() == lId).findFirst()
+//					//.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
+//					.orElse(()-> {
+//					
+//					});
+
+			
+			//user.getLabel().add(labelInfo);
+			//labelInfo.getNote().add(note);
+//			if(labelInfo==null) {
+				//LableDto lb=new LableDto();
+				//lb.setLName(notes.getTitle());
+				//this.createLable(lb, token);
+				//note.getLabel().add(labelInfo);
+			//}
+				
+			//note.getLabel().add(labelInfo);
+
+//		} catch (Exception ae) {
+//			ae.printStackTrace();
+//			throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,
+//					"Notes not added to Label due to Internel server problem");
+//		}
+//		return lables.get(0);
 
 	}
 
@@ -99,9 +154,9 @@ public class LabelImplementation implements LabelService {
 
 		try {
 			Noteinfo noteInfo = notes.stream().filter(t -> t.getNid() == noteId).findFirst()
-					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
+					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
 
-			return label.getNote().add(noteInfo);
+			return noteInfo.getLabel().add(label);
 
 		} catch (Exception ae) {
 			throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -125,7 +180,7 @@ public class LabelImplementation implements LabelService {
 		try {
 
 			Label labelData = list.stream().filter(t -> t.getlId() == lId).findFirst().orElseThrow(
-					() -> new LabelException(HttpStatus.BAD_REQUEST, "Label id doesn't Exist to the user"));
+					() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
 
 			labelData.setLableName(LabelDto.getlName());
 			labelData.setUpdateDateAndTime(LocalDateTime.now());
@@ -152,7 +207,7 @@ public class LabelImplementation implements LabelService {
 		try {
 			if (list != null) {
 				data = list.stream().filter(t -> t.getlId() == lId).findFirst().orElseThrow(
-						() -> new LabelException(HttpStatus.BAD_REQUEST, "Label id doesn't Exist to the user"));
+						() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
 
 				labelRepository.delete(data);
 
@@ -212,7 +267,7 @@ public class LabelImplementation implements LabelService {
 		long id = (long) generate.parseJWT(token);
 		List<Label> label = labelRepository.findLableByUserId(id);
 		if (label != null) {
-			System.out.println(label + "userlbbb");
+			//System.out.println(label + "userlbbb");
 			return label;
 
 		}

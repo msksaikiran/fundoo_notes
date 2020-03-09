@@ -13,7 +13,7 @@ public class MailService {
 		SimpleMailMessage message=new SimpleMailMessage();
 		message.setTo(user.getEmail());
 		message.setSubject("Registration conformation.");
-		message.setText("Hello "+ user.getName()+" link to verify the User:\n"+"http://localhost:8083/verify/"+token);
+		message.setText("Hello "+ user.getName()+" link to verify the User:\n"+"http://localhost:8083/users/verify/"+token);
 	    mailSender.send(message);
 	}
 }

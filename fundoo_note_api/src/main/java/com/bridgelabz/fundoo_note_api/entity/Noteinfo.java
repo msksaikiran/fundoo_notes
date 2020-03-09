@@ -43,6 +43,11 @@ public class Noteinfo {
 	@Column
 	private LocalDateTime reminder;
 	
+	
+	@ManyToMany(targetEntity = Label.class)
+	public List<Label> label;
+	
+	
 	public long getNid() {
 		return nid;
 	}

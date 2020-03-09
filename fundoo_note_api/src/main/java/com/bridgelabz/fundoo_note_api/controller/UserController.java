@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo_note_api.dto.Register;
 import com.bridgelabz.fundoo_note_api.dto.UserLogin;
@@ -22,6 +23,7 @@ import com.bridgelabz.fundoo_note_api.service.UserService;
 import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 
 @RestController
+@RequestMapping("/users")
 //@PropertySource("classpath:message.property")
 public class UserController {
 
@@ -38,13 +40,13 @@ public class UserController {
 	 * API for user login
 	 */
 
-	@PostMapping(value = "/user/login")
+	@PostMapping(value = "/login")
 	public ResponseEntity<Response> loginUser(@Valid @RequestBody UserLogin user,BindingResult result) {
 		if(result.hasErrors())
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new Response(result.getAllErrors().get(0).getDefaultMessage(),200));
 		User results = userService.login(user);
 		if (results != null) {
-			   generator.jwtToken(results.getUid());
+			  // generator.jwtToken(results.getUid());
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
 			              .body(new Response("user login succesfully..",200));
 		}
@@ -56,8 +58,10 @@ public class UserController {
 	
 	/* API for user register */
 
-	@PostMapping(value = "/user/add-user")
-	public ResponseEntity<Response> register(@RequestBody Register userRecord) {
+	@PostMapping(value = "/add-user")
+	public ResponseEntity<Response> register(@Valid @RequestBody Register userRecord,BindingResult result) {
+		if(result.hasErrors())
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new Response(result.getAllErrors().get(0).getDefaultMessage(),200));
 		User user = userService.register(userRecord);
 		if (user != null) {
 			return ResponseEntity.status(HttpStatus.CREATED)
@@ -66,7 +70,7 @@ public class UserController {
 		return null; 
 	}
 
-	@PostMapping(value = "/user/{emailId}")
+	@PostMapping(value = "/{emailId}")
 	public ResponseEntity<Response> emailVerify(@PathVariable String emailId) {
 
 		String result = userService.emailVerify(emailId);
@@ -79,7 +83,7 @@ public class UserController {
 
 	/* API for user Forgot Passsword */
 
-	@PutMapping(value = "/user/{newPassword}/{token}")
+	@PutMapping(value = "/{newPassword}/{token}")
 	public ResponseEntity<Response> forgetPassword(@PathVariable String newPassword,@PathVariable String token) {
 
 		User result = userService.forgotPassword(newPassword,token);
@@ -96,13 +100,13 @@ public class UserController {
 	public ResponseEntity<Response> verify(@PathVariable("token") String token) throws Exception {
 		boolean verification = userService.verify(token);
 		if (verification) {
-			//return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("verified"),200,);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("verified",200));
 		}
 		//return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("not verified"));
 		return null;
 	}
 	
-	@GetMapping(value="/user/{token}") 
+	@GetMapping(value="/{token}") 
 	public User getUser(@PathVariable String token) 
 	{
 		return userService.getUser(token); 

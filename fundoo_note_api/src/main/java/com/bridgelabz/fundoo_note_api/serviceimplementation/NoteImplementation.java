@@ -14,6 +14,8 @@ import java.util.Collections;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo_note_api.dto.NoteDto;
@@ -29,6 +31,7 @@ import com.bridgelabz.fundoo_note_api.service.NoteService;
 import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 
 @Service
+@PropertySource("classpath:message.properties")
 public class NoteImplementation implements NoteService {
 	@Autowired
 	private NoteRepository noteRepository;
@@ -39,6 +42,9 @@ public class NoteImplementation implements NoteService {
 	@Autowired
 	private JwtGenerator generate;
 
+	@Autowired
+	 private Environment env;
+	
 	@Transactional
 	@Override
 	public Noteinfo addNotes(NoteDto notes, String token) {
@@ -46,7 +52,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			Long id = (Long) generate.parseJWT(token);
 			User user = userRepository.getUserById(id)
-					.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));
+					.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY,env.getProperty("104")));
 		
 
 				BeanUtils.copyProperties(notes, note);
@@ -63,7 +69,7 @@ public class NoteImplementation implements NoteService {
 				return noteRepository.save(note);
 	
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Adding the Notes Failed due to Incorrect Fields");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("104"));
 		}
 	}
 
@@ -82,7 +88,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			
 				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-						.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,"Note not exist on the user"));
+						.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));
 				//data.ifPresent(da -> {
 					data.setTitle(updateDto.getTitle());
 					data.setUpDateAndTime(LocalDateTime.now());
@@ -93,7 +99,7 @@ public class NoteImplementation implements NoteService {
 //				}
 			
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Note Record Not Updated due to Internal Error");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("209"));
 		}
 		return notes;
 	}
@@ -113,7 +119,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			
 				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-						.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,"Note not exist on the user"));;
+						.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));;
 				//data.ifPresent(da -> {
 					noteRepository.delete(data);
 				//});
@@ -122,7 +128,7 @@ public class NoteImplementation implements NoteService {
 //				}
 			
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Note Record Not Removed due to Internal Error");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("210"));
 		}
 		return notes.get(0);
 	}
@@ -178,7 +184,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			//if (notes != null) {
 				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-						.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,"Note not exist on the user"));
+						.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));
 				//data.ifPresent(da -> {
 					data.setIsPinned(0);
 					data.setIsArchieved(1);
@@ -190,7 +196,7 @@ public class NoteImplementation implements NoteService {
 				//}
 			//}
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Note Record Not archieved due to Internal Error");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("206"));
 		}
 		return token;
 	}
@@ -206,7 +212,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			if (notes != null) {
 				Noteinfo data = notes.stream().filter(t ->t.getNid() == nId).findFirst()
-				               .orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,"Note not exist on the user"));
+				               .orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));
 				//data.ifPresent(da -> {
 					data.setIsPinned(1);
 					data.setIsArchieved(0);
@@ -218,7 +224,7 @@ public class NoteImplementation implements NoteService {
 				//}
 			}
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Note Record Not Pinned due to Internal Error");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("205"));
 		}
 		return null;
 
@@ -231,7 +237,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			long userid = (Long) generate.parseJWT(token);
 			User userData = userRepository.getUserById(userid)
-					.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));;
+					.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));;
 			//if (userData != null) {
 				return  noteRepository.restoreNote(userid);
 			//}
@@ -246,7 +252,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			long userid = (long) generate.parseJWT(token);
 			User userData = userRepository.getUserById(userid)
-					.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));;
+					.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));;
 			//if (userData != null) {
 				return  noteRepository.getArchievedNotes(userid);
 				
@@ -269,7 +275,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			if (notes != null) {
 				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-				.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,"Note not exist on the user"));
+				.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));
 			//	data.ifPresent(da -> {
 					data.setColour(colour);
 					noteRepository.save(data);
@@ -290,7 +296,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			long userid = (long) generate.parseJWT(token);
 			User userData = userRepository.getUserById(userid)
-					.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, "user not exist"));
+					.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
 			//if (userData != null) {
 				List<Noteinfo> list = noteRepository.getPinnededNotes(userid);
 				return list;
@@ -312,7 +318,7 @@ public class NoteImplementation implements NoteService {
 		try {
 			if (notes != null) {
 				Noteinfo noteData = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-						.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, "user not exist"));
+						.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
 				//data.ifPresent(noteData -> {
 					noteData.setReminder(reminder.getRemainder());
 					noteRepository.save(noteData);
@@ -339,14 +345,14 @@ public class NoteImplementation implements NoteService {
 		try {
 			if (notes != null) {
 				Noteinfo noteData = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, "Notes not exist to the specified User"));
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
 				//data.ifPresent(noteData -> {
 					noteData.setReminder(null);
 					noteRepository.save(noteData);
 				//});
-				if (noteData.equals(Optional.empty())) {
-					return "notes not pinned";
-				}
+//				if (noteData.equals(Optional.empty())) {
+//					return "notes not pinned";
+//				}
 			}
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Cant able to Remove Reminder");
@@ -367,7 +373,7 @@ public class NoteImplementation implements NoteService {
 			if (user != null) {
 				return user;
 			}else {
-				new NoteException(HttpStatus.BAD_REQUEST,"user not Exist");
+				new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("104"));
 			}
 		} catch (Exception ae) {
 			
@@ -381,7 +387,7 @@ public class NoteImplementation implements NoteService {
 	public Noteinfo getNote(String id) {
 		
 		Noteinfo notes = noteRepository.findNoteById(Integer.parseInt(id))
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, "Notes does not exist "));
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
 		
 			return notes;
 		

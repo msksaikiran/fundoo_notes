@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo_note_api.dto.NoteDto;
 import com.bridgelabz.fundoo_note_api.dto.UpdateNote;
@@ -20,6 +21,7 @@ import com.bridgelabz.fundoo_note_api.service.NoteService;
 import com.bridgelabz.fundoo_note_api.dto.ReminderDto;
 
 @RestController
+@RequestMapping("/notes")
 public class NotesController {
 	@Autowired
 	private NoteService noteService;
@@ -27,7 +29,7 @@ public class NotesController {
 	/*
 	 * API to add the Note Details
 	 */
-	@PostMapping(value = "/notes/users/{token}")
+	@PostMapping(value = "/users/{token}")
 	public ResponseEntity<NoteResponse> createNotes(@RequestBody NoteDto notes, @PathVariable String token) {
 
 		// notes.setUser(new User(Integer.parseInt(id)));
@@ -44,7 +46,7 @@ public class NotesController {
 	/*
 	 * API to Update the Note Details By Id
 	 */
-	@PutMapping(value = "/notes/{id}/users/{token}")
+	@PutMapping(value = "/{id}/users/{token}")
 	public ResponseEntity<NoteResponse> updateNote(@PathVariable String token, @PathVariable String id,
 			@RequestBody UpdateNote dto) {
 		List<Noteinfo> note = noteService.updateNotes(token, id, dto);
@@ -58,7 +60,7 @@ public class NotesController {
 	 * API to getting the Note Details By Id
 	 */
 
-	@GetMapping(value = "/notes/{id}")
+	@GetMapping(value = "/{id}")
 	public ResponseEntity<NoteResponse> getNote(@PathVariable String id) {
 		Noteinfo result = noteService.getNote(id);
 		if (result != null) {
@@ -71,7 +73,7 @@ public class NotesController {
 	 * API to getting the Note Details By User_Id
 	 */
 
-	@GetMapping(value = "/notes/users/{token}")
+	@GetMapping(value = "/users/{token}")
 	public ResponseEntity<NoteResponse> getNotesByUserId(@PathVariable String token) {
 		List<Noteinfo> result = noteService.getNoteByUserId(token);
 		if (result != null) {
@@ -86,7 +88,7 @@ public class NotesController {
 	/*
 	 * API to deleting the Note Details By _Id
 	 */
-	@DeleteMapping(value = "/notes/{noteId}/users/{token}")
+	@DeleteMapping(value = "/{noteId}/users/{token}")
 	public ResponseEntity<NoteResponse> deleteNote(@PathVariable String noteId, @PathVariable String token) {
 		Noteinfo result = noteService.removeNotes(token, noteId);
 		if (result != null) {
@@ -100,14 +102,14 @@ public class NotesController {
 	/*
 	 * API for pin a Note
 	 */
-	@PutMapping("/notes/pin/{noteId}/users/{token}")
+	@PutMapping("/pin/{noteId}/users/{token}")
 	public ResponseEntity<NoteResponse> pin(@PathVariable String noteId, @PathVariable String token) {
 		   noteService.pinNote(noteId, token);
 		return ResponseEntity.status(HttpStatus.OK).body(new NoteResponse("note pinned"));
 	}
 
 	/* API for archieve a Note */
-	@PutMapping("/note/archieve/{noteId}/users/{token}")
+	@PutMapping("/archieve/{noteId}/users/{token}")
 	public ResponseEntity<NoteResponse> archieve(@PathVariable String noteId, @PathVariable String token) {
 		    noteService.archieveNote(noteId, token);
 		return ResponseEntity.status(HttpStatus.OK).body(new NoteResponse("note archieved"));
@@ -116,7 +118,7 @@ public class NotesController {
 	/*
 	 * API for updating color to a Note
 	 */
-	@PutMapping("/notes/{colour}/{noteId}/users/{token}")
+	@PutMapping("/{colour}/{noteId}/users/{token}")
 	public ResponseEntity<NoteResponse> addColour(@PathVariable String noteId, @PathVariable String colour,
 			@PathVariable String token) {
 		   noteService.addColour(noteId, token, colour);
@@ -134,7 +136,7 @@ public class NotesController {
 	/*
 	 * API for getting all trashed Notes
 	 */
-	@GetMapping("/notes/getAlltrashed/users/{token}")
+	@GetMapping("/getAlltrashed/users/{token}")
 	public ResponseEntity<NoteResponse> getTrashed(@PathVariable String token) {
 	        List<Noteinfo> note = noteService.getAlltrashednotes(token);
 		return ResponseEntity.status(HttpStatus.OK).body(new NoteResponse(" trashed notes"));
@@ -143,7 +145,7 @@ public class NotesController {
 	/*
 	 * API for getting all Pinned Notes
 	 */
-	@GetMapping("/notes/getAllPinned/users/{token}")
+	@GetMapping("/getAllPinned/users/{token}")
 	public ResponseEntity<NoteResponse> getPinned(@PathVariable String token) {
 	        List<Noteinfo> note = noteService.getAllPinneded(token);
 		return ResponseEntity.status(HttpStatus.OK).body(new NoteResponse(" pinned notes"));
@@ -152,7 +154,7 @@ public class NotesController {
 	/*
 	 * API for adding remainder to Notes
 	 */
-	@PostMapping("/notes/addremainder/{noteId}/users/{token}")
+	@PostMapping("/addremainder/{noteId}/users/{token}")
 	public ResponseEntity<NoteResponse> addRemainder(@PathVariable String token, @PathVariable String noteId,
 			@RequestBody ReminderDto remainder) {
 		     String notes = noteService.addReminder(noteId, token, remainder);
@@ -162,7 +164,7 @@ public class NotesController {
 	/*
 	 * API for removing remainder Notes
 	 */
-	@DeleteMapping("/notes/removeRemainder/{noteId}/users/{token}")
+	@DeleteMapping("/removeRemainder/{noteId}/users/{token}")
 	public ResponseEntity<NoteResponse> removeRemainder(@PathVariable String token, @PathVariable String noteId) {
 		      noteService.removeReminder(noteId, token);
 		return ResponseEntity.status(HttpStatus.OK).body(new NoteResponse("Reminder notes Removed"));
@@ -171,7 +173,7 @@ public class NotesController {
 	 * API to get The All Note Details
 	 */
 
-	@GetMapping("/notes/user/notes")
+	@GetMapping("/user/notes")
 	public List<Noteinfo> getAllNotes() {
 
 		return noteService.getAllNotes();

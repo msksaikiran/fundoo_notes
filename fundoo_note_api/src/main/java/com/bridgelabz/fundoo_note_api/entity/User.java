@@ -39,7 +39,7 @@ public class User {
 	@Column
 	private long number;
 	
-	 @OneToMany(cascade = CascadeType.REMOVE,targetEntity = Noteinfo.class,fetch = FetchType.LAZY)
+	 @OneToMany(cascade = CascadeType.ALL,targetEntity = Noteinfo.class,fetch = FetchType.LAZY)
 	 @JoinColumn(name = "userId")
 	 private List<Noteinfo> note;
 
@@ -47,6 +47,10 @@ public class User {
 	//@JoinTable(name= "Collabarate",joinColumns = {@JoinColumn (name="note_id")},inverseJoinColumns = {@JoinColumn (name="user_id")})
 	private List<Noteinfo> collablare;
 
+	 @OneToMany(cascade = CascadeType.ALL,targetEntity = Label.class,fetch = FetchType.LAZY)
+	 @JoinColumn(name = "userId")
+	 private List<Label> label;
+	
 	public long getUid() {
 		return uid;
 	}

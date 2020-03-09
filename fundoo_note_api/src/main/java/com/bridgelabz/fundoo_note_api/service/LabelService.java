@@ -11,7 +11,7 @@ public interface LabelService {
 
 	List<Label> getAllLables();
 
-	Label createLable(LableDto notes, String token);
+	Label createLable(LableDto labelDto, String token);
 
 	List<Label> removeLabel(String token, long id);
 
@@ -30,10 +30,6 @@ public interface LabelService {
 	boolean addExistingNotesToLabel(long noteId, String token, long labelId);
 
 	Label updateLabel(String token, long lId, UpdateLabel LabelDto);
-
-	
-
-	
 
 	
 
