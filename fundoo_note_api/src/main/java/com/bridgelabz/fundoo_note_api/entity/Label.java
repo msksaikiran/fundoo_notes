@@ -33,5 +33,45 @@ public class Label {
 
     	@ManyToMany(targetEntity = Noteinfo.class)
 	    private List<Noteinfo> note ;
-	
+
+		public long getlId() {
+			return lId;
+		}
+
+		public void setlId(long lId) {
+			this.lId = lId;
+		}
+
+		public String getLableName() {
+			return lableName;
+		}
+
+		public void setLableName(String lableName) {
+			this.lableName = lableName;
+		}
+
+		public long getUserId() {
+			return userId;
+		}
+
+		public void setUserId(long userId) {
+			this.userId = userId;
+		}
+
+		public LocalDateTime getUpdateDateAndTime() {
+			return UpdateDateAndTime;
+		}
+
+		public void setUpdateDateAndTime(LocalDateTime updateDateAndTime) {
+			UpdateDateAndTime = updateDateAndTime;
+		}
+
+		public List<Noteinfo> getNote() {
+			return note;
+		}
+
+		public void setNote(List<Noteinfo> note) {
+			this.note = note;
+		}
+    	
 }

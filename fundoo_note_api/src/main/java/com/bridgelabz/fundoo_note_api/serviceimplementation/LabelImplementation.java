@@ -54,7 +54,8 @@ public class LabelImplementation implements LabelService {
 	@Override
 	public Label createLable(LableDto labelDto, String token) {
 		long userId = (long) generate.parseJWT(token);
-		System.out.println(userId);
+		//System.out.println(userId);
+		
 		User user = userRepository.getUserById(userId)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));
 		
@@ -74,7 +75,7 @@ public class LabelImplementation implements LabelService {
 		List<Label> lables = this.getLableByUserId(token);
 
 		try {
-			Label labelInfo = lables.stream().filter(t -> t.getLId() == lId).findFirst()
+			Label labelInfo = lables.stream().filter(t -> t.getlId() == lId).findFirst()
 					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
 
 			labelInfo.getNote().add(note);
@@ -113,7 +114,6 @@ public class LabelImplementation implements LabelService {
 	@Override
 	public Label updateLabel(String token, long lId, UpdateLabel LabelDto) {
 
-		// int lId = Integer.parseInt(id);
 		long userId = (long) generate.parseJWT(token);
 		List<Label> list = labelRepository.findLableByUserId(userId);
 		if (list.isEmpty())
@@ -124,7 +124,7 @@ public class LabelImplementation implements LabelService {
 		 */
 		try {
 
-			Label labelData = list.stream().filter(t -> t.getLId() == lId).findFirst().orElseThrow(
+			Label labelData = list.stream().filter(t -> t.getlId() == lId).findFirst().orElseThrow(
 					() -> new LabelException(HttpStatus.BAD_REQUEST, "Label id doesn't Exist to the user"));
 
 			labelData.setLableName(LabelDto.getlName());
@@ -151,7 +151,7 @@ public class LabelImplementation implements LabelService {
 		Label data = null;
 		try {
 			if (list != null) {
-				data = list.stream().filter(t -> t.getLId() == lId).findFirst().orElseThrow(
+				data = list.stream().filter(t -> t.getlId() == lId).findFirst().orElseThrow(
 						() -> new LabelException(HttpStatus.BAD_REQUEST, "Label id doesn't Exist to the user"));
 
 				labelRepository.delete(data);

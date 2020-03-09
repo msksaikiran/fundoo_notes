@@ -23,5 +23,22 @@ public class LabelException extends RuntimeException {
 		this.statusCode=statusCode;
 		this.statusMessage=message;
 	}
-		
+
+	public HttpStatus getStatusCode() {
+		return statusCode;
+	}
+
+	public void setStatusCode(HttpStatus statusCode) {
+		this.statusCode = statusCode;
+	}
+
+	public String getStatusMessage() {
+		return statusMessage;
+	}
+
+	public void setStatusMessage(String statusMessage) {
+		this.statusMessage = statusMessage;
+	}
+
+	
 }

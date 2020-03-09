@@ -1,7 +1,5 @@
 package com.bridgelabz.fundoo_note_api.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
-import com.bridgelabz.fundoo_note_api.entity.User;
 import com.bridgelabz.fundoo_note_api.response.Response;
 import com.bridgelabz.fundoo_note_api.service.CollabratorService;
 
@@ -23,23 +18,23 @@ public class CollabratorController {
 	private CollabratorService service;
 
 	@PostMapping("/collabrate/add")
-	public ResponseEntity<Response> addCollabrator(@RequestParam("NoteId") String NoteId,
+	public ResponseEntity<Response> addCollabrator(@RequestParam("NoteId") long NoteId,
 			@RequestParam("email") String email, @RequestHeader("token") String token) {
-		List<Noteinfo> note = service.addCollabrator(NoteId, token, email);
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("Collabrator added"));
+		      service.addCollabrator(NoteId, token, email);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("Collabrator added",200));
 	}
 
 	@GetMapping("/collabrate/getAllCollabrator")
 	public ResponseEntity<Response> getAllCollabrator(@RequestHeader("token") String token) {
-		User user = service.getAllCollabrator(token);
+		      service.getAllCollabrator(token);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
-				.body(new Response("Listed all collabrator information"));
+				.body(new Response("Listed all collabrator information",200));
 	}
 
-//	@DeleteMapping("/collabrate/deleteCollabrator")
-//	public ResponseEntity<Response> deleteCollabrator(@RequestParam("NoteId") String NoteId,
-//			@RequestParam("email") String email, @RequestHeader("token") String token) {
-//		Noteinfo note = service.deleteCollabrator(NoteId, token, email);
-//		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("Collabrator removed", 200));
-//	}
+	@DeleteMapping("/collabrate/deleteCollabrator")
+	public ResponseEntity<Response> deleteCollabrator(@RequestParam("NoteId") long NoteId,
+			@RequestParam("email") String email, @RequestHeader("token") String token) {
+		     service.deleteCollabrator(NoteId, token, email);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("Collabrator removed", 200));
+	}
 }

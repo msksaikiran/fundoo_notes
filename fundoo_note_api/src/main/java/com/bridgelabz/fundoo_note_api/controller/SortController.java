@@ -30,9 +30,9 @@ public class SortController {
 	public ResponseEntity<NoteResponse> ascSortByNoteTitle() {
 		List<String> result = noteService.ascSortByName();
 		if (result != null) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Sorted sucessfully", result));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Sorted sucessfully"));
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist", result));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist"));
 	}
 	
 	/*
@@ -43,9 +43,9 @@ public class SortController {
 	public ResponseEntity<NoteResponse> descSortByNoteTitle() {
 		List<String> result = noteService.sortByName();
 		if (result != null) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Sorted sucessfully", result));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Sorted sucessfully"));
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist", result));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist"));
 	}
 	
 	/*
@@ -56,9 +56,9 @@ public class SortController {
 	public ResponseEntity<LabelResponse> ascSortByLabelName() {
 		List<String> result = labelService.ascsortByName();
 		if (result != null) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new LabelResponse("sorted sucessfully", result));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new LabelResponse("sorted sucessfully"));
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LabelResponse("Note Not Exist", result));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LabelResponse("Note Not Exist"));
 	}
 
 	
@@ -71,9 +71,9 @@ public class SortController {
 	public ResponseEntity<LabelResponse> descSortByLabelName() {
 		List<String> result = labelService.sortByName();
 		if (result != null) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new LabelResponse("sorted sucessfully", result));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new LabelResponse("sorted sucessfully"));
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LabelResponse("Note Not Exist", result));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LabelResponse("Note Not Exist"));
 	}
 
 }

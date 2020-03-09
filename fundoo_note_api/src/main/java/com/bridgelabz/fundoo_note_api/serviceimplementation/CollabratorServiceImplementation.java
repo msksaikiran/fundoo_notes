@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.bridgelabz.fundoo_note_api.entity.Noteinfo;
 import com.bridgelabz.fundoo_note_api.entity.User;
+import com.bridgelabz.fundoo_note_api.exception.LabelException;
 import com.bridgelabz.fundoo_note_api.exception.UserException;
 import com.bridgelabz.fundoo_note_api.repository.NoteRepository;
 import com.bridgelabz.fundoo_note_api.repository.UserRepository;
@@ -21,100 +22,83 @@ import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 public class CollabratorServiceImplementation implements CollabratorService {
 	@Autowired
 	private JwtGenerator generate;
-	
+
 	@Autowired
 	private UserRepository repository;
-	
+
 	@Autowired
 	private NoteRepository noteRepo;
 
-//	@Transactional
-//	@Override
-//	public List<Noteinfo> addCollabrator(String NoteId, String token, String email) {
-//
-//		Optional<User> collabrator = repository.findUserByEmail(email);
-//		int noteId = Integer.parseInt(NoteId);
-//		System.out.println("NoteId:" + noteId);
-//		User user;
-//		if (collabrator != null) {
-//			try {
-//				int uid = (int) generate.parseJWT(token);
-//				System.out.println("UserId:" + uid);
-//
-//				List<Noteinfo> note = noteRepo.findNoteByUserId(uid);
-//				if (note != null) {
-//					Optional<Noteinfo> data = note.stream().filter(t -> t.getNoteId() == noteId).findFirst();
-//					System.out.println(data);
-//					data.ifPresent(da -> {
-//						da.getUser();
-//						//collabrator.getCollablare().add(da);
-//						
-//						System.out.println("da::"+da);
-//					});
-//
-//					// collabrator.setCollablare(note);
-//					return note;
-//				} else {
-//					throw new UserException("user doesnot exist to collabrate");
-//				}
-//			} catch (Exception e) {
-//				throw new UserException("User doesnot exist with this id");
-//			}
-//
-//		} else {
-//			throw new UserException("user not present");
-//		}
-//
-//	}
+	@Transactional
+	@Override
+	public List<Noteinfo> addCollabrator(long noteId, String token, String email) {
+
+		Optional<User> collabrator = repository.findUserByEmail(email);
+
+		if (collabrator.isPresent()) {
+			try {
+				long uid = (long) generate.parseJWT(token);
+				System.out.println("UserId:" + uid);
+
+				List<Noteinfo> note = noteRepo.findNoteByUserId(uid);
+				if (note != null) {
+					Noteinfo data = note.stream().filter(t -> t.getNid() == noteId).findFirst()
+							.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "NoteId not Exist"));
+
+					collabrator.ifPresent(t -> t.getCollablare().add(data));
+
+					System.out.println("da::" + data);
+
+					return note;
+				}
+			} catch (Exception e) {
+				// throw new UserException("User doesnot exist with this id");
+			}
+
+		}
+		return null;
+
+	}
 
 	@Transactional
 	@Override
-	public User getAllCollabrator(String token) {
+	public List<User> getAllCollabrator(String token) {
 		long id = (long) generate.parseJWT(token);
-		User user = repository.getUserById(id)
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));;
-		// Object note = user.getCollablare();
+		List<User> user = repository.getCollobaraterById(id);
+
+		if (user == null) {
+			throw new UserException(HttpStatus.BAD_GATEWAY, "user not exist");
+		}
 		return user;
 	}
 
-@Override
-public List<Noteinfo> addCollabrator(String noteId, String token, String email) {
-	// TODO Auto-generated method stub
-	return null;
-}
+	@Transactional
+	@Override
+	public Noteinfo deleteCollabrator(long noteId, String token, String email) {
+		Optional<User> collabrator = repository.findUserByEmail(email);
+		// User user=null;
+		if (collabrator.isPresent()) {
+			try {
+				long uid = (long) generate.parseJWT(token);
+				System.out.println("UserId:" + uid);
 
-@Override
-public Noteinfo deleteCollabrator(String NoteId, String token, String email) {
-	// TODO Auto-generated method stub
-	return null;
-}
+				List<Noteinfo> note = noteRepo.findNoteByUserId(uid);
+				if (note != null) {
+					Noteinfo data = note.stream().filter(t -> t.getNid() == noteId).findFirst()
+							.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "NoteId not Exist"));
 
-//	@Transactional
-//	@Override
-//	public Noteinfo deleteCollabrator(String NoteId, String token, String email) {
-//		Optional<User> collabrator = repository.findUserByEmail(email);
-//		int noteId = Integer.parseInt(NoteId);
-//		User user;
-//		try {
-//			int id = (int) generate.parseJWT(token);
-//			user = repository.getUserById(id);
-//		} catch (Exception e) {
-//			//throw new UserException("User doesnot exist with this id");
-//		}
-//		if (user != null) {
-//			if (collabrator != null) {
-//				Noteinfo note = noteRepo.findNoteById(noteId);
-//				//collabrator.getCollablare().remove(note);
-//				return note;
-//			}
-//
-//			else {
-//				//throw new UserException("user doesnot exist to collabrate");
-//			}
-//		} else {
-//			//throw new UserException("user not present");
-//		}
-//
-//	}
+					collabrator.ifPresent(t -> t.getCollablare().remove(note));
+
+					System.out.println("da::" + data);
+
+					return data;
+				}
+			} catch (Exception e) {
+				// throw new UserException("User doesnot exist with this id");
+			}
+
+		}
+		return null;
+	}
 
 }

@@ -2,13 +2,12 @@ package com.bridgelabz.fundoo_note_api.dto;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-
+import javax.validation.constraints.Email;
 import org.springframework.stereotype.Component;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.ToString;
 
 @Data
@@ -19,9 +18,23 @@ import lombok.ToString;
 public class UserLogin {
 
 	@NotNull(message = "Field Should not be Empty")
-	@Pattern(message = "dsdfadf", regexp = "[]")
+	@Email(message="Email Field should be proper")
 	private String Email;
+	//@Pattern(message = "password must be 8 characters", regexp = "(?=.{8,})")
 	private String password;
+	
+	public String getEmail() {
+		return Email;
+	}
+	public void setEmail(String email) {
+		Email = email;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
 	
 	
 }

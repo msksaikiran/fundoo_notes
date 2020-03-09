@@ -63,7 +63,7 @@ public class NoteImplementation implements NoteService {
 				return noteRepository.save(note);
 	
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Adding the Notes Failed due to server problem");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Adding the Notes Failed due to Incorrect Fields");
 		}
 	}
 
@@ -71,7 +71,6 @@ public class NoteImplementation implements NoteService {
 	@Override
 	public List<Noteinfo> updateNotes(String token, String id, UpdateNote updateDto) {
 
-		// List<Noteinfo> notes = this.getNoteByUserId(token);
 		List<Noteinfo> notes = this.getNoteByUserId(token);
 
 		if(notes.isEmpty())

@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Properties;
 
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -29,7 +28,7 @@ import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 import com.bridgelabz.fundoo_note_api.utility.MailService;
 
 @Service
-@PropertySource("classpath:message.property")
+// @PropertySource("classpath:message.property")
 public class UserImplementation implements UserService {
 
 	@Autowired
@@ -41,29 +40,32 @@ public class UserImplementation implements UserService {
 	@Autowired
 	private JavaMailSenderImpl senderimp;
 
-	@Autowired
-	private Environment env;
-	
+	// @Autowired
+	// private Environment env;
+
 	@Transactional
 	@Override
 	public User login(UserLogin userdto) {
 
 		User userDetails = new User();
-		
+
 		User user = userRepository.findUserByEmail(userdto.getEmail())
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user note register1"));
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "User Not Exist"));
 
-		BeanUtils.copyProperties(userdto, userDetails);
-		if ((user.isVerified() == true) && passEncryption.matches(userdto.getPassword(), user.getPassword())) {
-			/*
-			 * send the email verification to the register user
-			 */
-			this.mailservice();
-			MailService.senMail(userDetails, senderimp, generate.jwtToken(user.getUid()));
-			return user;
+		try {
+			BeanUtils.copyProperties(userdto, userDetails);
+			if ((user.isVerified() == true) && passEncryption.matches(userdto.getPassword(), user.getPassword())) {
+				/*
+				 * send the email verification to the register user
+				 */
+				this.mailservice();
+				MailService.senMail(userDetails, senderimp, generate.jwtToken(user.getUid()));
+				return user;
+			}
+		} catch (Exception ex) {
+			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, "user not login due to internal problem");
 		}
-
-		throw new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("200"));
+		return null;
 	}
 
 	@Transactional
@@ -71,28 +73,32 @@ public class UserImplementation implements UserService {
 	public User register(Register userDto) {
 
 		User userDetails = new User();
-		
-		Optional<User> useremail = userRepository.findUserByEmail(userDto.getEmail());
-		if (useremail.isPresent())
-			throw new UserException(HttpStatus.ALREADY_REPORTED, "user already Exist");
 		try {
+			Optional<User> useremail = userRepository.findUserByEmail(userDto.getEmail());
+			
+			if (useremail.isPresent())
+				throw new UserException(HttpStatus.ALREADY_REPORTED, "user already Exist");
 
-			BeanUtils.copyProperties(userDto, userDetails);
+		BeanUtils.copyProperties(userDto, userDetails);
 
-			/* setting the password as encrypted */
-			userDetails.setPassword(passEncryption.encode(userDto.getPassword()));
-			userDetails.setDate(LocalDateTime.now());
-			User result = userRepository.save(userDetails);
+		/*
+		 * setting the password as encrypted
+		 */
+		userDetails.setPassword(passEncryption.encode(userDto.getPassword()));
+		userDetails.setDate(LocalDateTime.now());
+		User result = userRepository.save(userDetails);
 
-			/* send the email verification to the register user */
+		/*
+		 * send the email verification to the register user
+		 */
 
-			this.mailservice();
-			MailService.senMail(userDetails, senderimp, generate.jwtToken(userDetails.getUid()));
+		this.mailservice();
+		MailService.senMail(userDetails, senderimp, generate.jwtToken(userDetails.getUid()));
 
-			return result;
+		return result;
 
 		} catch (Exception ae) {
-			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, "user Not registered");
+			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, "Field not Exist");
 		}
 	}
 
@@ -102,7 +108,8 @@ public class UserImplementation implements UserService {
 
 		long id = (Long) generate.parseJWT(token);
 		User user = userRepository.getUserById(id)
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));;
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));
+
 		user.setVerified(true);
 		boolean users = userRepository.save(user) != null ? true : false;
 
@@ -113,8 +120,10 @@ public class UserImplementation implements UserService {
 	@Override
 	public String emailVerify(String email) {
 		User user = userRepository.findUserByEmail(email)
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user note register1"));
-		/* send the email verification to the register user */
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user note register"));
+		/*
+		 * send the email verification to the register user
+		 */
 		this.mailservice();
 		MailService.senMail(user, senderimp, generate.jwtToken(user.getUid()));
 		return "email sent";
@@ -137,35 +146,33 @@ public class UserImplementation implements UserService {
 		long id = (Long) generate.parseJWT(token);
 		User user = userRepository.getUserById(id)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user not exist"));
-		
+
 		return user;
 	}
-	
-	
-	
-//	@Transactional
-//	@Override
-//	public List<User> getUsers() {
-//		List<User> ls = new ArrayList<>();
-//		userRepository.findAll().forEach(ls::add);
-//		return ls;
-//	}
 
-//	@Transactional
-//	@Override
-//	public User removeUser(String token) {
-//		try {
-//			int id = (Integer) generate.parseJWT(token);
-//			List<User> list = this.getUsers();
-//			list.stream().filter(t -> t.getId() == id).forEach(t -> {
-//				userRepository.delete(t);
-//				System.out.println("delete" + t);
-//			});
-//		} catch (Exception ae) {
-//			// throw new UserException(404,"user Not removed");
-//		}
-//		return null;
-//	}
+	// @Transactional
+	// @Override
+	// public List<User> getUsers() {
+	// List<User> ls = new ArrayList<>();
+	// userRepository.findAll().forEach(ls::add);
+	// return ls;
+	// }
+
+	// @Transactional
+	// @Override
+	// public User removeUser(String token) {
+	// try {
+	// int id = (Integer) generate.parseJWT(token);
+	// List<User> list = this.getUsers();
+	// list.stream().filter(t -> t.getId() == id).forEach(t -> {
+	// userRepository.delete(t);
+	// System.out.println("delete" + t);
+	// });
+	// } catch (Exception ae) {
+	// // throw new UserException(404,"user Not removed");
+	// }
+	// return null;
+	// }
 
 	public JavaMailSenderImpl mailservice() {
 		senderimp.setUsername(System.getenv("email"));
@@ -178,6 +185,6 @@ public class UserImplementation implements UserService {
 		prop.put("mail.smtp.port", "587");
 		senderimp.setJavaMailProperties(prop);
 		return senderimp;
-	}	
+	}
 
 }

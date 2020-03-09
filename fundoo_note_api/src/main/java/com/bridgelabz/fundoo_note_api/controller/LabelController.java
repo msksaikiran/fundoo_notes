@@ -35,10 +35,10 @@ public class LabelController {
 		Label note = labelService.createLable(label, token);
 		if (note != null) {
 			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new LabelResponse("Note Details Saved Successfully", label));
+					.body(new LabelResponse("Note Details Saved Successfully"));
 		} else {
 			return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-					.body(new LabelResponse("Already existing user", label));
+					.body(new LabelResponse("Already existing user"));
 		}
 	}
 
@@ -51,10 +51,10 @@ public class LabelController {
 		Label lnote = labelService.addNotesToLabel(label, token,lid);
 		if (lnote != null) {
 			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new LabelResponse("Note Details Saved Successfully To Label", label));
+					.body(new LabelResponse("Note Details Saved Successfully To Label"));
 		} else {
 			return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-					.body(new LabelResponse("Already existing user", label));
+					.body(new LabelResponse("Already existing user"));
 		}
 	}
 	
@@ -63,26 +63,26 @@ public class LabelController {
 	 * API to add the Existing notes to Label Details
 	 */
 	@PostMapping(value = "/labels/{lid}/{token}/{noteId}")
-	public ResponseEntity<Response> addExistingNotesToLabel(long noteId, String token, long labelId) {
+	public ResponseEntity<LabelResponse> addExistingNotesToLabel(long noteId, String token, long labelId) {
 		boolean label = labelService.addExistingNotesToLabel(noteId, token, labelId);
 		if(label)
 			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new Response("Note added to the label"+labelId));
+					.body(new LabelResponse("Note added to the label"));
 		else
 			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new Response("Note not added to the label"+labelId));
+					.body(new LabelResponse("Note not added to the label"));
 	}
 	
 	/*
 	 * API to add the update Label Details
 	 */
 	@PutMapping(value = "/labels/{id}/users/{token}")
-	public ResponseEntity<NoteResponse> updateLabel(@PathVariable String token,@PathVariable long id, @RequestBody UpdateLabel dto) {
+	public ResponseEntity<LabelResponse> updateLabel(@PathVariable String token,@PathVariable long id, @RequestBody UpdateLabel dto) {
 		Label label = labelService.updateLabel(token,id, dto);
 		if (label != null) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new NoteResponse("Updated successfully", dto));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new LabelResponse("Updated successfully"));
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new NoteResponse("Note Not Exist", label));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LabelResponse("Note Not Exist"));
 	}
 	
 	/*
@@ -94,10 +94,10 @@ public class LabelController {
 		if (result != null) {
 			// return result;
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-					.body(new LabelResponse("Record Deleted succesfully", result));
+					.body(new LabelResponse("Record Deleted succesfully"));
 		}
 		return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
-				.body(new LabelResponse("Already Deleted user", result));
+				.body(new LabelResponse("Already Deleted user"));
 	}
 	
 	/*
@@ -109,9 +109,9 @@ public class LabelController {
 		Label result = labelService.getLableById(id);
 		if (result != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", result.getLableName())
-					.body(new LabelResponse("200-OK", result));
+					.body(new LabelResponse("200-OK"));
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LabelResponse("Label not existing", result));
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new LabelResponse("Label not existing"));
 	}
 	
 	
@@ -135,9 +135,9 @@ public class LabelController {
 		if (result != null) {
 			// return result;
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Note Title", "sucess")
-					.body(new LabelResponse("200-OK", result));
+					.body(new LabelResponse("200-OK"));
 		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LabelResponse("user not Exist", result));
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new LabelResponse("user not Exist"));
 	}
 	/*
 	 * API to deleting the Note Details By _Id

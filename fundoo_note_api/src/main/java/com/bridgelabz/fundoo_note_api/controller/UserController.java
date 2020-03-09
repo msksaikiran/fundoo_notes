@@ -3,6 +3,8 @@ package com.bridgelabz.fundoo_note_api.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -20,6 +22,7 @@ import com.bridgelabz.fundoo_note_api.service.UserService;
 import com.bridgelabz.fundoo_note_api.utility.JwtGenerator;
 
 @RestController
+//@PropertySource("classpath:message.property")
 public class UserController {
 
 	@Autowired
@@ -27,21 +30,23 @@ public class UserController {
 
 	@Autowired
 	private JwtGenerator generator;
+	
+//	@Autowired
+//	private Environment env;
 
 	/*
 	 * API for user login
 	 */
 
-	
 	@PostMapping(value = "/user/login")
 	public ResponseEntity<Response> loginUser(@Valid @RequestBody UserLogin user,BindingResult result) {
 		if(result.hasErrors())
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new Response(result.getAllErrors().get(0).getDefaultMessage(),200,user));
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new Response(result.getAllErrors().get(0).getDefaultMessage(),200));
 		User results = userService.login(user);
 		if (results != null) {
 			   generator.jwtToken(results.getUid());
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-			              .body(new Response("You have Loggined in Successfully",200,user));
+			              .body(new Response("user login succesfully..",200));
 		}
 //		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 //				.body(new Response("Loggined in Failed"));
@@ -56,7 +61,7 @@ public class UserController {
 		User user = userService.register(userRecord);
 		if (user != null) {
 			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new Response("Registration Successfully",200,userRecord));
+					.body(new Response("user register successfully..",200));
 		}
 		return null; 
 	}
@@ -67,7 +72,7 @@ public class UserController {
 		String result = userService.emailVerify(emailId);
 		if (result != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-					.body(new Response("email sent Successfully",200,result));
+					.body(new Response("email sent Successfully",200));
 		}
 		return null; 
 	}
@@ -80,7 +85,7 @@ public class UserController {
 		User result = userService.forgotPassword(newPassword,token);
 		if (result != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-					.body(new Response("Password Updated Successfully",200,result));
+					.body(new Response("Password Updated Successfully",200));
 		}
 		return null; 
 	}
