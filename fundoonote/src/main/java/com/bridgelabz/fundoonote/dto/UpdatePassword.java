@@ -1,6 +1,6 @@
 package com.bridgelabz.fundoonote.dto;
 
-public class Update {
+public class UpdatePassword {
 
 	private String newPassword;
 

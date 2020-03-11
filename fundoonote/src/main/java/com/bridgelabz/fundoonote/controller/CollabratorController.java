@@ -1,5 +1,7 @@
 package com.bridgelabz.fundoonote.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bridgelabz.fundoonote.entity.Noteinfo;
+import com.bridgelabz.fundoonote.response.NoteResponse;
 import com.bridgelabz.fundoonote.response.Response;
 import com.bridgelabz.fundoonote.service.CollabratorService;
 
@@ -28,16 +32,16 @@ public class CollabratorController {
 	}
 
 	@GetMapping("/getAll/Collabrator")
-	public ResponseEntity<Response> getAllCollabrator(@RequestHeader("token") String token) {
-		      service.getAllCollabrator(token);
+	public ResponseEntity<NoteResponse> getAllCollabrator(@RequestHeader("token") String token) {
+		      List<Noteinfo> collabare = service.getAllCollabrator(token);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
-				.body(new Response("Listed all collabrator information",200));
+				.body(new NoteResponse("Listed all collabrator information",collabare,200));
 	}
 
 	@DeleteMapping("/delete/Collabrator")
 	public ResponseEntity<Response> deleteCollabrator(@RequestParam("NoteId") long NoteId,
-			@RequestParam("email") String email, @RequestHeader("token") String token) {
-		     service.deleteCollabrator(NoteId, token, email);
+			@RequestParam("email") String email) {
+		     service.deleteCollabrator(NoteId, email);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("Collabrator removed", 200));
 	}
 }

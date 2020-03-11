@@ -62,24 +62,24 @@ public class CollabratorServiceImplementation implements CollabratorService {
 
 	@Transactional
 	@Override
-	public List<User> getAllCollabrator(String token) {
+	public List<Noteinfo> getAllCollabrator(String token) {
 		long id = (long) generate.parseJWT(token);
-		List<User> user = repository.getCollobaraterById(id);
+		//List<User> user = repository.getCollobaraterById(id);
+		User user = repository.getUserById(id)
+				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "NoteId not Exist"));
 
-		if (user == null) {
-			throw new UserException(HttpStatus.BAD_GATEWAY, "user not exist");
-		}
-		return user;
+		return user.getCollablare();
+		
 	}
 
 	@Transactional
 	@Override
-	public Noteinfo deleteCollabrator(long noteId, String token, String email) {
-		Optional<User> collabrator = repository.findUserByEmail(email);
-		// User user=null;
+	public Noteinfo deleteCollabrator(long noteId, String token) {
+		long uid = (long) generate.parseJWT(token);
+		Optional<User> collabrator = repository.findById(uid);
 		if (collabrator.isPresent()) {
 			try {
-				long uid = (long) generate.parseJWT(token);
+				
 				System.out.println("UserId:" + uid);
 
 				List<Noteinfo> note = noteRepo.findNoteByUserId(uid);
@@ -87,7 +87,7 @@ public class CollabratorServiceImplementation implements CollabratorService {
 					Noteinfo data = note.stream().filter(t -> t.getNid() == noteId).findFirst()
 							.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "NoteId not Exist"));
 
-					collabrator.ifPresent(t -> t.getCollablare().remove(note));
+					collabrator.ifPresent(t -> t.getCollablare().remove(data));
 
 					System.out.println("da::" + data);
 

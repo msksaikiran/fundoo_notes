@@ -2,6 +2,7 @@ package com.bridgelabz.fundoonote.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.bridgelabz.fundoonote.dto.LableDto;
 import com.bridgelabz.fundoonote.dto.NoteDto;
@@ -14,9 +15,9 @@ public interface LabelService {
 
 	Label createLable(LableDto labelDto, String token);
 
-	List<Label> removeLabel(String token, long id);
+	Label removeLabel(String token, long id);
 
-	List<Label> getLableByUserId(String token);
+	Set<Label> getLableByUserId(String token);
 	
 	Label getLableById(long id);
 
@@ -28,9 +29,15 @@ public interface LabelService {
 
 	Label addNotesToLabel(NoteDto notes, String token, long lid);
 
-	boolean addExistingNotesToLabel(long noteId, String token, long labelId);
+	boolean addExistingNotesToLabel(String noteTitle, String token, String labelName);
 
 	Label updateLabel(String token, long lId, UpdateLabel LabelDto);
+
+	boolean addExistingNotesToLabel(long noteId, String token, long labelId);
+
+	
+
+	
 
 	
 

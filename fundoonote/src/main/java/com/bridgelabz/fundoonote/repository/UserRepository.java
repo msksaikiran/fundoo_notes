@@ -30,8 +30,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	@Query(value = "update user set is_verified=true where uid=?", nativeQuery = true)
 	boolean verify(long id);
 
-	@Query(value = "select * from user_collablare  where user_id=?" , nativeQuery = true)
-	List<User>  getCollobaraterById(long user_id);
+	@Query(value = "select * from user_collablare  where user_uid=?" , nativeQuery = true)
+	List<User>  getCollobaraterById(long user_uid);
 
 	@Query(value = "select * from user  where user_uid=?" , nativeQuery = true)
 	List<Noteinfo> findNotesByuserId(long userId);

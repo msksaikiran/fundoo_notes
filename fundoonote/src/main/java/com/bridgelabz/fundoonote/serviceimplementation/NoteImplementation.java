@@ -173,7 +173,7 @@ public class NoteImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	public String archieveNote(String id, String token) {
+	public Noteinfo archieveNote(String id, String token) {
 		List<Noteinfo> notes = this.getNoteByUserId(token);
 		
 		if(notes.isEmpty())
@@ -181,10 +181,11 @@ public class NoteImplementation implements NoteService {
 		/*
 		 * java 8 streams feature
 		 */
+		Noteinfo data;
 		int nId = Integer.parseInt(id);
 		try {
 			//if (notes != null) {
-				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
+				 data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
 						.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));
 				//data.ifPresent(da -> {
 					data.setIsPinned(0);
@@ -199,7 +200,8 @@ public class NoteImplementation implements NoteService {
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("206"));
 		}
-		return token;
+		
+		return data;
 	}
 
 	@Transactional

@@ -1,6 +1,7 @@
 package com.bridgelabz.fundoonote.repository;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,6 +16,9 @@ public interface LabelRepository extends CrudRepository<Label, Integer> {
 	Label findLableById(long id);
 
 	@Query(value = "select * from label where user_id=?", nativeQuery = true)
-	List<Label> findLableByUserId(long user_id);
+	Set<Label> findLableByUserId(long user_id);
+
+	@Query(value = "select * from label where lable_name=?", nativeQuery = true)
+	Label findLableByName(String labelName);
 
 }

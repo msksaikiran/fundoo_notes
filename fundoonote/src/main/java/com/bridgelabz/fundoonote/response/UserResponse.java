@@ -9,11 +9,17 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-
-public class NoteResponse {
+public class UserResponse {
+	private String token;
 	private String Message;
-	private Object notes;
-	private int statusCode;
+	private Object obj;
+	
+	public UserResponse(String token, String message) {
+		super();
+		this.token = token;
+		Message = message;
+	}
+
 	
 	
 

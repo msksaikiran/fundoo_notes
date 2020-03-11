@@ -20,97 +20,106 @@ import com.bridgelabz.fundoonote.dto.Register;
 import com.bridgelabz.fundoonote.dto.UserLogin;
 import com.bridgelabz.fundoonote.entity.User;
 import com.bridgelabz.fundoonote.response.Response;
+import com.bridgelabz.fundoonote.response.UserResponse;
 import com.bridgelabz.fundoonote.service.UserService;
 import com.bridgelabz.fundoonote.utility.JwtGenerator;
 
 @RestController
 @RequestMapping("/users")
-//@PropertySource("classpath:message.property")
+@PropertySource("classpath:message.properties")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 
 	@Autowired
-	private JwtGenerator generator;
-	
-//	@Autowired
-//	private Environment env;
+	private Environment env;
 
 	/*
 	 * API for user login
 	 */
 
 	@PostMapping(value = "/login")
-	public ResponseEntity<Response> loginUser(@Valid @RequestBody UserLogin user,BindingResult result) {
-		if(result.hasErrors())
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new Response(result.getAllErrors().get(0).getDefaultMessage(),200));
-		User results = userService.login(user);
-		if (results != null) {
-			  // generator.jwtToken(results.getUid());
+	public ResponseEntity<UserResponse> loginUser(@Valid @RequestBody UserLogin user, BindingResult result) {
+		if (result.hasErrors())
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+					.body(new UserResponse(result.getAllErrors().get(0).getDefaultMessage(), "200"));
+		String token = userService.login(user);
+		if (token != null) {
+
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-			              .body(new Response("user login succesfully..",200));
+					.body(new UserResponse(token, env.getProperty("100"), user));
 		}
-//		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//				.body(new Response("Loggined in Failed"));
-		return null;
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new UserResponse(env.getProperty("106"), "", user));
 
 	}
-	
-	/* API for user register */
+
+	/*
+	 * API for user register
+	 */
 
 	@PostMapping(value = "/add-user")
-	public ResponseEntity<Response> register(@Valid @RequestBody Register userRecord,BindingResult result) {
-		if(result.hasErrors())
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new Response(result.getAllErrors().get(0).getDefaultMessage(),200));
+	public ResponseEntity<UserResponse> register(@Valid @RequestBody Register userRecord, BindingResult result) {
+		if (result.hasErrors())
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+					.body(new UserResponse(result.getAllErrors().get(0).getDefaultMessage(), "200"));
 		User user = userService.register(userRecord);
 		if (user != null) {
 			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new Response("user register successfully..",200));
+					.body(new UserResponse(env.getProperty("101"), "200-ok", userRecord));
 		}
-		return null; 
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(new UserResponse(env.getProperty("106"), "", userRecord));
 	}
 
+	/*
+	 * API for verify the user when he password want to update
+	 */
 	@PostMapping(value = "/{emailId}")
-	public ResponseEntity<Response> emailVerify(@PathVariable String emailId) {
+	public ResponseEntity<UserResponse> emailVerify(@PathVariable String emailId) {
 
 		String result = userService.emailVerify(emailId);
 		if (result != null) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED)
-					.body(new Response("email sent Successfully",200));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new UserResponse(result,env.getProperty("107"),200));
 		}
-		return null; 
+		return null;
 	}
 
-	/* API for user Forgot Passsword */
-
+	/*
+	 * API for user Forgot Passsword
+	 * 
+	 */
 	@PutMapping(value = "/{newPassword}/{token}")
-	public ResponseEntity<Response> forgetPassword(@PathVariable String newPassword,@PathVariable String token) {
+	public ResponseEntity<UserResponse> forgetPassword(@PathVariable String newPassword, @PathVariable String token) {
 
-		User result = userService.forgotPassword(newPassword,token);
+		User result = userService.forgotPassword(newPassword, token);
 		if (result != null) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED)
-					.body(new Response("Password Updated Successfully",200));
+					.body(new UserResponse(env.getProperty("108"), "200-ok", result));
 		}
-		return null; 
+		return null;
 	}
 
-	/* API for verifying the token generated for the email */
+	/*
+	 * API for verifying the token generated for the email
+	 */
 
-	@GetMapping(value="/verify/{token}")
+	@GetMapping(value = "/verify/{token}")
 	public ResponseEntity<Response> verify(@PathVariable("token") String token) throws Exception {
 		boolean verification = userService.verify(token);
 		if (verification) {
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("verified",200));
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response(env.getProperty("109"), 200));
 		}
-		//return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("not verified"));
-		return null;
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("no.." + env.getProperty("109"), 401));
+
 	}
-	
-	@GetMapping(value="/{token}") 
-	public User getUser(@PathVariable String token) 
-	{
-		return userService.getUser(token); 
+
+	/*
+	 * API for getting the user details based on the token
+	 */
+	@GetMapping(value = "/{token}")
+	public User getUser(@PathVariable String token) {
+		return userService.getUser(token);
 	}
 
 	/* API for Getting the all users */

@@ -3,13 +3,13 @@ package com.bridgelabz.fundoonote.service;
 import java.util.List;
 
 import com.bridgelabz.fundoonote.dto.Register;
-import com.bridgelabz.fundoonote.dto.Update;
+import com.bridgelabz.fundoonote.dto.UpdatePassword;
 import com.bridgelabz.fundoonote.dto.UserLogin;
 import com.bridgelabz.fundoonote.entity.User;
 
 public interface UserService {
 
-	User login(UserLogin user);
+	String login(UserLogin user);
 
 	User register(Register userRecord);
 

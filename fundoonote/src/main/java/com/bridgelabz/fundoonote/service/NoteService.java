@@ -28,7 +28,7 @@ public interface NoteService {
 
 	List<String> ascSortByName();
 
-	String archieveNote(String id, String token);
+	Noteinfo archieveNote(String id, String token);
 
 	Noteinfo pinNote(String id, String token);
 

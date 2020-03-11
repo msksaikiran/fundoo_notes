@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -31,39 +33,8 @@ public class Label {
 	@Column
 	private LocalDateTime UpdateDateAndTime;
 	
-	@ManyToMany(targetEntity = Noteinfo.class)
-    private List<Noteinfo> note ;
+	 @ManyToMany(mappedBy = "label")
+	 @JsonIgnore
+     private List<Noteinfo> note;
 	
-		public long getlId() {
-			return lId;
-		}
-
-		public void setlId(long lId) {
-			this.lId = lId;
-		}
-
-		public String getLableName() {
-			return lableName;
-		}
-
-		public void setLableName(String lableName) {
-			this.lableName = lableName;
-		}
-
-		public LocalDateTime getUpdateDateAndTime() {
-			return UpdateDateAndTime;
-		}
-
-		public void setUpdateDateAndTime(LocalDateTime updateDateAndTime) {
-			UpdateDateAndTime = updateDateAndTime;
-		}
-
-		public List<Noteinfo> getNote() {
-			return note;
-		}
-
-		public void setNote(List<Noteinfo> note) {
-			this.note = note;
-		}
-    	
 }

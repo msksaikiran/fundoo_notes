@@ -10,8 +10,8 @@ public interface CollabratorService {
 	
 	List<Noteinfo> addCollabrator(long noteId, String token, String email);
 
-	List<User> getAllCollabrator(String token);
+	List<Noteinfo> getAllCollabrator(String token);
 
-	Noteinfo deleteCollabrator(long noteId, String token, String email);
+	Noteinfo deleteCollabrator(long noteId, String token);
 
 }

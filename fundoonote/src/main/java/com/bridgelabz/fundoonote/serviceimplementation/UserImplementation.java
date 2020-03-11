@@ -46,10 +46,11 @@ public class UserImplementation implements UserService {
 
 	@Transactional
 	@Override
-	public User login(UserLogin userdto) {
+	public String login(UserLogin userdto) {
 
 		User userDetails = new User();
 
+		
 		User user = userRepository.findUserByEmail(userdto.getEmail())
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("103")));
 
@@ -59,9 +60,10 @@ public class UserImplementation implements UserService {
 				/*
 				 * send the email verification to the register user
 				 */
+				String token = generate.jwtToken(user.getUid());
 				this.mailservice();
-				MailService.senMail(userDetails, senderimp, generate.jwtToken(user.getUid()));
-				return user;
+				MailService.senMail(userDetails, senderimp, token);
+				return token;
 			}else {
 				throw new UserException(HttpStatus.BAD_REQUEST,env.getProperty("105"));
 			}
@@ -129,9 +131,10 @@ public class UserImplementation implements UserService {
 		/*
 		 * send the email verification to the register user
 		 */
+		String token = generate.jwtToken(user.getUid());
 		this.mailservice();
-		MailService.senMail(user, senderimp, generate.jwtToken(user.getUid()));
-		return "email sent";
+		MailService.senMail(user, senderimp,token);
+		return token;
 	}
 
 	@Transactional
