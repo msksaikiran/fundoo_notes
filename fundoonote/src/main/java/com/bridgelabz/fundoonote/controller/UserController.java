@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoonote.dto.Register;
@@ -118,8 +119,8 @@ public class UserController {
 	 * API for getting the user details based on the token
 	 */
 	@GetMapping(value = "/{token}")
-	public User getUser(@PathVariable String token) {
-		return userService.getUser(token);
+	public User getUser(@PathVariable String token,@RequestParam(name = "isCacheable") boolean isCacheable) {
+		return userService.getUser(token,isCacheable);
 	}
 
 	/* API for Getting the all users */

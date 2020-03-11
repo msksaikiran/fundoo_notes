@@ -14,7 +14,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.transaction.Transactional;
-import org.modelmapper.ModelMapper;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -50,9 +51,6 @@ public class LabelImplementation implements LabelService {
 	private NoteRepository noteRepository;
 
 	@Autowired
-	private ModelMapper modelMapper;
-
-	@Autowired
 	private JwtGenerator generate;
 
 	@Autowired
@@ -67,10 +65,11 @@ public class LabelImplementation implements LabelService {
 		
 		long userId = (long) generate.parseJWT(token);
 
+		Label label=new Label();
 		User user = userRepository.getUserById(userId)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 
-		Label label = (Label) modelMapper.map(labelDto, Label.class);
+		BeanUtils.copyProperties(labelDto, label);
 		 user.getLabel().add(label);
 		//note.getLabel().add(label);
 		return labelRepository.save(label);

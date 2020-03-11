@@ -11,6 +11,7 @@ import java.util.Properties;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -149,8 +150,11 @@ public class UserImplementation implements UserService {
 
 	}
 
+	@Transactional
 	@Override
-	public User getUser(String token) {
+	@Cacheable(value="twenty-second-cache", key = "'StudentInCache'+#studentId", 
+	                               condition = "#isCacheable != null && #isCacheable")
+	public User getUser(String token,boolean isCacheable) {
 		long id = (Long) generate.parseJWT(token);
 		User user = userRepository.getUserById(id)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));

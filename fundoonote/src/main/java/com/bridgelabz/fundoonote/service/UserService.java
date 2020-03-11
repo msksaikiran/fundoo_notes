@@ -23,7 +23,9 @@ public interface UserService {
 
     String emailVerify(String email);
 
-    User getUser(String token);	
+    User getUser(String token, boolean isCacheable);
+    
+    	
 
 
 }
