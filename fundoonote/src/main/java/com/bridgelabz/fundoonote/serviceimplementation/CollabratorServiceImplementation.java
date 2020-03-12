@@ -47,7 +47,7 @@ public class CollabratorServiceImplementation implements CollabratorService {
 
 					collabrator.ifPresent(t -> t.getCollablare().add(data));
 
-					System.out.println("da::" + data);
+					//System.out.println("da::" + data);
 
 					return note;
 				}

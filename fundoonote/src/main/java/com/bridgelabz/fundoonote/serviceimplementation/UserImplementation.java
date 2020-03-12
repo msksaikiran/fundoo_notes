@@ -45,6 +45,7 @@ public class UserImplementation implements UserService {
 	 @Autowired
 	 private Environment env;
 
+	 
 	@Transactional
 	@Override
 	public String login(UserLogin userdto) {
@@ -152,7 +153,7 @@ public class UserImplementation implements UserService {
 
 	@Transactional
 	@Override
-	@Cacheable(value="twenty-second-cache", key = "'StudentInCache'+#studentId", 
+	@Cacheable(value="twenty-second-cache", key = "'tokenInCache'+#token", 
 	                               condition = "#isCacheable != null && #isCacheable")
 	public User getUser(String token,boolean isCacheable) {
 		long id = (Long) generate.parseJWT(token);
@@ -172,6 +173,7 @@ public class UserImplementation implements UserService {
 		prop.put("mail.smtp.host", "smtp.gmail.com");
 		prop.put("mail.smtp.port", "587");
 		senderimp.setJavaMailProperties(prop);
+	
 		return senderimp;
 	}
 	

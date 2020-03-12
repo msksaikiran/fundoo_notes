@@ -48,9 +48,9 @@ public class LabelController {
 	 * API to add the  Notes To Label 
 	 */
 	@PostMapping(value = "/{lid}/{token}")
-	public ResponseEntity<LabelResponse> addNotesToLabel(@RequestBody NoteDto label, @PathVariable String token,@PathVariable long lid) {
+	public ResponseEntity<LabelResponse> addLabelToNotes(@RequestBody NoteDto label, @PathVariable String token,@PathVariable long lid) {
 
-		Label lnote = labelService.addNotesToLabel(label, token,lid);
+		Label lnote = labelService.addLabelToNotes(label, token,lid);
 		
 		 return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new LabelResponse(env.getProperty("301"),200,lnote));

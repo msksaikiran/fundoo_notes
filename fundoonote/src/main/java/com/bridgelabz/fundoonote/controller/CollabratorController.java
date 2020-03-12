@@ -21,24 +21,25 @@ import com.bridgelabz.fundoonote.service.CollabratorService;
 @RestController
 @RequestMapping("/collabrate")
 public class CollabratorController {
+	
 	@Autowired
 	private CollabratorService service;
 
-	@PostMapping("/add")
+	@PostMapping("/add-coll")
 	public ResponseEntity<Response> addCollabrator(@RequestParam("NoteId") long NoteId,
 			@RequestParam("email") String email, @RequestHeader("token") String token) {
 		      service.addCollabrator(NoteId, token, email);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("Collabrator added",200));
 	}
 
-	@GetMapping("/getAll/Collabrator")
+	@GetMapping("/getAll")
 	public ResponseEntity<NoteResponse> getAllCollabrator(@RequestHeader("token") String token) {
 		      List<Noteinfo> collabare = service.getAllCollabrator(token);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 				.body(new NoteResponse("Listed all collabrator information",collabare,200));
 	}
 
-	@DeleteMapping("/delete/Collabrator")
+	@DeleteMapping("/delete-coll")
 	public ResponseEntity<Response> deleteCollabrator(@RequestParam("NoteId") long NoteId,
 			@RequestParam("email") String email) {
 		     service.deleteCollabrator(NoteId, email);

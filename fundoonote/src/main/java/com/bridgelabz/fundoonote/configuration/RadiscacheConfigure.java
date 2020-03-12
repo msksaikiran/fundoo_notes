@@ -13,13 +13,14 @@ import net.sf.ehcache.config.CacheConfiguration;
 @EnableCaching
 public class RadiscacheConfigure extends CachingConfigurerSupport{
 
-	@Bean
-	public APIFilter aPIFilter() {
-		return new APIFilter();
-	}
+//	@Bean
+//	public APIFilter aPIFilter() {
+//		return new APIFilter();
+//	}
 
 	@Bean
 	public net.sf.ehcache.CacheManager ehCacheManager() {
+		
 //		CacheConfiguration tenSecondCache = new CacheConfiguration();
 //		tenSecondCache.setName("ten-second-cache");
 //		tenSecondCache.setMemoryStoreEvictionPolicy("LRU");

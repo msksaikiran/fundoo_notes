@@ -69,8 +69,8 @@ public class LabelImplementation implements LabelService {
 		User user = userRepository.getUserById(userId)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 
-		BeanUtils.copyProperties(labelDto, label);
-		 user.getLabel().add(label);
+		BeanUtils.copyProperties(labelDto,label);
+		user.getLabel().add(label);
 		//note.getLabel().add(label);
 		return labelRepository.save(label);
 
@@ -78,7 +78,7 @@ public class LabelImplementation implements LabelService {
 
 	@Transactional
 	@Override
-	public Label addNotesToLabel(NoteDto notes, String token, long lId) {
+	public Label addLabelToNotes(NoteDto notes, String token, long lId) {
 
 		Noteinfo note = noteService.addNotes(notes, token);
 
@@ -89,7 +89,8 @@ public class LabelImplementation implements LabelService {
 					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
 
 			this.addExistingNotesToLabel(note.getNid(), token, lId);
-			//labelInfo.getNote().add(note);
+			labelInfo.getNote().add(note);
+			labelRepository.save(labelInfo);
 			// note.getLabel().add(labelInfo);
 
 		} catch (Exception ae) {

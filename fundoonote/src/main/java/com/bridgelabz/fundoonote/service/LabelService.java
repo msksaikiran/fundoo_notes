@@ -27,13 +27,15 @@ public interface LabelService {
 
 	List<String> ascsortByName();
 
-	Label addNotesToLabel(NoteDto notes, String token, long lid);
+	Label addLabelToNotes(NoteDto notes, String token, long lId);
 
 	boolean addExistingNotesToLabel(String noteTitle, String token, String labelName);
 
 	Label updateLabel(String token, long lId, UpdateLabel LabelDto);
 
 	boolean addExistingNotesToLabel(long noteId, String token, long labelId);
+
+	
 
 	
 

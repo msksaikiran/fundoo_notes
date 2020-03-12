@@ -1,18 +1,11 @@
 package com.bridgelabz.fundoonote.dto;
 
-import lombok.NonNull;
+import lombok.Data;
 
+@Data
 public class LableDto {
 
-	@NonNull
-	private String LName;
-
-	public String getLName() {
-		return LName;
-	}
-
-	public void setLName(String lName) {
-		LName = lName;
-	}
+	//@NonNull
+	private String lableName;
 
 }
