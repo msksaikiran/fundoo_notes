@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.bridgelabz.fundoonote.utility.MailService;
+
 @Configuration
 public class ApplicationConfiguration {
 	
@@ -19,5 +21,4 @@ public class ApplicationConfiguration {
 		return new JavaMailSenderImpl();
 
 	}
-
 }

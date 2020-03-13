@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -45,6 +46,11 @@ public class UserImplementation implements UserService {
 	 @Autowired
 	 private Environment env;
 
+	 @Autowired
+	 private  MailService mail;
+	 
+//	 @Autowired
+//		RabbitMQSender rabbitMQSender;
 	 
 	@Transactional
 	@Override
@@ -64,13 +70,14 @@ public class UserImplementation implements UserService {
 				 */
 				String token = generate.jwtToken(user.getUid());
 				this.mailservice();
-				MailService.senMail(userDetails, senderimp, token);
+				mail.senMail(userDetails, senderimp, token);
 				return token;
 			}else {
 				throw new UserException(HttpStatus.BAD_REQUEST,env.getProperty("105"));
 			}
 			
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("500"));
 		}
 	}
@@ -101,7 +108,7 @@ public class UserImplementation implements UserService {
 		 */
 
 		this.mailservice();
-		MailService.senMail(userDetails, senderimp, generate.jwtToken(userDetails.getUid()));
+		mail.senMail(userDetails, senderimp, generate.jwtToken(userDetails.getUid()));
 
 		return result;
 
@@ -135,7 +142,7 @@ public class UserImplementation implements UserService {
 		 */
 		String token = generate.jwtToken(user.getUid());
 		this.mailservice();
-		MailService.senMail(user, senderimp,token);
+		mail.senMail(user, senderimp,token);
 		return token;
 	}
 

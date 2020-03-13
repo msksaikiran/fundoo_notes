@@ -37,6 +37,8 @@ public class User {
 	private boolean isVerified;
 	@Column
 	private long number;
+	@Column
+	private String profile;
 
 	@OneToMany(cascade = CascadeType.ALL, targetEntity = Noteinfo.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "userId")
@@ -51,5 +53,4 @@ public class User {
 	// (name="note_id")},inverseJoinColumns = {@JoinColumn (name="user_id")})
 	private List<Noteinfo> collablare;
 
-	
 }

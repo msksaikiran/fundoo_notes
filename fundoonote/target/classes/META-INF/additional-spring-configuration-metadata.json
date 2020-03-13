@@ -33,5 +33,20 @@
     "name": "aws.s3.audio.bucket",
     "type": "java.lang.String",
     "description": "A description for 'aws.s3.audio.bucket'"
+  },
+  {
+    "name": "javainuse.rabbitmq.exchange",
+    "type": "java.lang.String",
+    "description": "A description for 'javainuse.rabbitmq.exchange'"
+  },
+  {
+    "name": "javainuse.rabbitmq.queue",
+    "type": "java.lang.String",
+    "description": "A description for 'javainuse.rabbitmq.queue'"
+  },
+  {
+    "name": "javainuse.rabbitmq.routingkey",
+    "type": "java.lang.String",
+    "description": "A description for 'javainuse.rabbitmq.routingkey'"
   }
 ]}

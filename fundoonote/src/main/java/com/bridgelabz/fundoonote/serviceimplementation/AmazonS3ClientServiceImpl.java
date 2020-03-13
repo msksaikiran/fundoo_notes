@@ -2,10 +2,17 @@ package com.bridgelabz.fundoonote.serviceimplementation;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.bridgelabz.fundoonote.entity.User;
+import com.bridgelabz.fundoonote.exception.UserException;
+import com.bridgelabz.fundoonote.repository.UserRepository;
 import com.bridgelabz.fundoonote.service.AmazonS3ClientService;
+import com.bridgelabz.fundoonote.utility.JwtGenerator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +25,22 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
     private String awsS3AudioBucket;
     private AmazonS3 amazonS3;
+
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private JwtGenerator generate;
+	
+	@Autowired
+	 private Environment env;
+	
     private static final Logger logger = LoggerFactory.getLogger(AmazonS3ClientServiceImpl.class);
 
     @Autowired
@@ -35,10 +53,17 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
     }
 
     @Async
-    public void uploadFileToS3Bucket(MultipartFile multipartFile, boolean enablePublicReadAccess) 
+    public void uploadFileToS3Bucket(MultipartFile multipartFile, boolean enablePublicReadAccess,String token) 
     {
+    	long id = (Long) generate.parseJWT(token);
+    	
+    		User user = userRepository.getUserById(id)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY,env.getProperty("104")));
+
+    	
         String fileName = multipartFile.getOriginalFilename();
 
+        user.setProfile(fileName+" uploaded");
         try {
             //creating the file in the server (temporarily)
             File file = new File(fileName);
@@ -54,6 +79,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
             this.amazonS3.putObject(putObjectRequest);
             //removing the file created in the server
             file.delete();
+            userRepository.save(user);
         } catch (IOException | AmazonServiceException ex) {
             logger.error("error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ");
         }

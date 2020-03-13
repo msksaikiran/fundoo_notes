@@ -1,5 +1,8 @@
 package com.bridgelabz.fundoonote.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,13 +19,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bridgelabz.fundoonote.dto.Register;
 import com.bridgelabz.fundoonote.dto.UserLogin;
 import com.bridgelabz.fundoonote.entity.User;
 import com.bridgelabz.fundoonote.response.Response;
 import com.bridgelabz.fundoonote.response.UserResponse;
+import com.bridgelabz.fundoonote.service.AmazonS3ClientService;
 import com.bridgelabz.fundoonote.service.UserService;
 import com.bridgelabz.fundoonote.utility.JwtGenerator;
 
@@ -36,6 +43,9 @@ public class UserController {
 	@Autowired
 	private Environment env;
 
+	@Autowired
+    private AmazonS3ClientService amazonS3ClientService;
+	
 	/*
 	 * API for user login
 	 */
@@ -123,12 +133,36 @@ public class UserController {
 		return userService.getUser(token,isCacheable);
 	}
 
+	
+	@PostMapping(value="/uploadProfile")
+    public Map<String, String> uploadProfile(@RequestPart(value = "file") MultipartFile file,@RequestPart("token") String token)
+    {
+        this.amazonS3ClientService.uploadFileToS3Bucket(file, true,token);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "file [" + file.getOriginalFilename() + "] uploading request submitted successfully.");
+
+        return response;
+    }
+
+    @DeleteMapping(value="/deleteProfile")
+    public Map<String, String> deleteProfile(@RequestParam("file_name") String fileName)
+    {
+        this.amazonS3ClientService.deleteFileFromS3Bucket(fileName);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "file [" + fileName + "] removing request submitted successfully.");
+
+        return response;
+    }
+    
+    
 	/* API for Getting the all users */
 
 	/*
 	 * @GetMapping(value="/user") public List<User> getAllUsers() { return
 	 * userService.getUsers(); }
-	 * 
+	 
 	 * /* API for Deleting the user
 	 * 
 	 * @DeleteMapping(value = "/user/delete/{id}") public void
