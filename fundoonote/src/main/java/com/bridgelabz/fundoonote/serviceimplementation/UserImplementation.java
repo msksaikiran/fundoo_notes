@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Properties;
 
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,6 +25,7 @@ import com.bridgelabz.fundoonote.dto.UserLogin;
 import com.bridgelabz.fundoonote.entity.User;
 import com.bridgelabz.fundoonote.exception.UserException;
 import com.bridgelabz.fundoonote.repository.UserRepository;
+import com.bridgelabz.fundoonote.service.RabbitMQSender;
 import com.bridgelabz.fundoonote.service.UserService;
 import com.bridgelabz.fundoonote.utility.JwtGenerator;
 import com.bridgelabz.fundoonote.utility.MailService;
@@ -49,8 +49,8 @@ public class UserImplementation implements UserService {
 	 @Autowired
 	 private  MailService mail;
 	 
-//	 @Autowired
-//		RabbitMQSender rabbitMQSender;
+	 @Autowired
+	 RabbitMQSender rabbitMQSender;
 	 
 	@Transactional
 	@Override
@@ -71,6 +71,7 @@ public class UserImplementation implements UserService {
 				String token = generate.jwtToken(user.getUid());
 				this.mailservice();
 				mail.senMail(userDetails, senderimp, token);
+				rabbitMQSender.send(token);
 				return token;
 			}else {
 				throw new UserException(HttpStatus.BAD_REQUEST,env.getProperty("105"));
@@ -106,10 +107,11 @@ public class UserImplementation implements UserService {
 		/*
 		 * send the email verification to the register user
 		 */
-
+        String token=generate.jwtToken(userDetails.getUid());
 		this.mailservice();
-		mail.senMail(userDetails, senderimp, generate.jwtToken(userDetails.getUid()));
+		mail.senMail(userDetails, senderimp,token);
 
+		rabbitMQSender.send(token);
 		return result;
 
 		} catch (Exception ae) {

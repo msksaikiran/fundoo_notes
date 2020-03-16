@@ -103,6 +103,10 @@
 
 		</dependency>
 		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/net.sf.ehcache/ehcache -->
 <dependency>
@@ -111,13 +115,21 @@
     <version>2.10.4</version>
 </dependency>
 		
-		<!-- https://mvnrepository.com/artifact/org.springframework.amqp/spring-rabbit -->
+		
+		<!-- <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+		</dependency>
+		
+		https://mvnrepository.com/artifact/org.elasticsearch/elasticsearch
 <dependency>
-    <groupId>org.springframework.amqp</groupId>
-    <artifactId>spring-rabbit</artifactId>
-    <version>2.2.2.RELEASE</version>
-</dependency>
-
+    <groupId>org.elasticsearch</groupId>
+    <artifactId>elasticsearch</artifactId>
+    <version>2.1.0</version>
+</dependency> -->
+		
+		
+	
 		<dependency>
    <groupId>com.amazonaws</groupId>
    <artifactId>aws-java-sdk</artifactId>

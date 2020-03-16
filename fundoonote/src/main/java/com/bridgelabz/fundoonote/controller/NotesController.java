@@ -18,6 +18,7 @@ import com.bridgelabz.fundoonote.dto.NoteDto;
 import com.bridgelabz.fundoonote.dto.ReminderDto;
 import com.bridgelabz.fundoonote.dto.UpdateNote;
 import com.bridgelabz.fundoonote.entity.Noteinfo;
+//import com.bridgelabz.fundoonote.repository.SearchResult;
 import com.bridgelabz.fundoonote.response.NoteResponse;
 import com.bridgelabz.fundoonote.service.LabelService;
 import com.bridgelabz.fundoonote.service.NoteService;
@@ -34,6 +35,10 @@ public class NotesController {
 	
 	@Autowired
 	private Environment env;
+//	
+//	@Autowired
+//	SearchResult result;
+//	
 	
 	/*
 	 * API to add the Note Details
@@ -244,4 +249,9 @@ public class NotesController {
 		return noteService.getAllNotes();
 	}
 
+//	 @GetMapping(value = "/title/{text}")
+//	    public List<Noteinfo> searchName(@PathVariable final String text) {
+//	        return result.findByName(text);
+//	    }
+	 
 }

@@ -30,6 +30,7 @@ import java.util.Optional;
 @Service
 public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
     private String awsS3AudioBucket;
+    
     private AmazonS3 amazonS3;
 
 	@Autowired
@@ -86,12 +87,19 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
     }
 
     @Async
-    public void deleteFileFromS3Bucket(String fileName) 
+    public void deleteFileFromS3Bucket(String fileName,String token) 
     {
+    	long id = (Long) generate.parseJWT(token);
+    	
+		User user = userRepository.getUserById(id)
+			.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY,env.getProperty("104")));
+
+		 user.setProfile("null");
         try {
             amazonS3.deleteObject(new DeleteObjectRequest(awsS3AudioBucket, fileName));
         } catch (AmazonServiceException ex) {
             logger.error("error [" + ex.getMessage() + "] occurred while removing [" + fileName + "] ");
         }
+        userRepository.save(user);
     }
 }

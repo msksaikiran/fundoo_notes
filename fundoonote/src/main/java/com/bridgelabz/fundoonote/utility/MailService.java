@@ -1,24 +1,23 @@
 package com.bridgelabz.fundoonote.utility;
 
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
 
 import com.bridgelabz.fundoonote.entity.User;
-
-
+//
+//
 @Component
-public class MailService implements IEmailService{
+public class MailService {
 	
-	@Autowired 
-	private static  RabbitMQSender rabbitSender;
+//	@Autowired 
+//	private static  RabbitMQSender rabbitSender;
 
 	@Autowired
 	private JwtGenerator generate;
 		
-	@RabbitListener(queues = "note.queue")
+	//@RabbitListener(queues = "note.queue")
 	public void senMail(User user,JavaMailSenderImpl mailSender,String token) {
 		SimpleMailMessage message=new SimpleMailMessage();
 		message.setTo(user.getEmail());
@@ -27,14 +26,15 @@ public class MailService implements IEmailService{
 	    mailSender.send(message);
 		//rabbitSender.send(user);
 	}
-
-
-	
-
-	@Override
-	public String getlink(String link, String id) {
-		return link + generate.jwtToken(Long.parseLong(id));
-	}
-
-
 }
+//
+//
+//	
+//
+//	@Override
+//	public String getlink(String link, String id) {
+//		return link + generate.jwtToken(Long.parseLong(id));
+//	}
+
+
+//}

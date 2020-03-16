@@ -146,9 +146,9 @@ public class UserController {
     }
 
     @DeleteMapping(value="/deleteProfile")
-    public Map<String, String> deleteProfile(@RequestParam("file_name") String fileName)
+    public Map<String, String> deleteProfile(@RequestParam("file_name") String fileName,@RequestPart("token") String token)
     {
-        this.amazonS3ClientService.deleteFileFromS3Bucket(fileName);
+        this.amazonS3ClientService.deleteFileFromS3Bucket(fileName,token);
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "file [" + fileName + "] removing request submitted successfully.");

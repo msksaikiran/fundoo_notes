@@ -23,6 +23,7 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/data/spring-data-jpa/2.2.4.RELEASE/spring-data-jpa-2.2.4.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/data/spring-data-commons/2.2.4.RELEASE/spring-data-commons-2.2.4.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-orm/5.2.3.RELEASE/spring-orm-5.2.3.RELEASE.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-tx/5.2.3.RELEASE/spring-tx-5.2.3.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-aspects/5.2.3.RELEASE/spring-aspects-5.2.3.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot-starter-mail/2.2.4.RELEASE/spring-boot-starter-mail-2.2.4.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot-starter/2.2.4.RELEASE/spring-boot-starter-2.2.4.RELEASE.jar" enabled="true" runInBatchMode="false"/>
@@ -86,7 +87,6 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/io/springfox/springfox-swagger-ui/2.9.2/springfox-swagger-ui-2.9.2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/auth0/java-jwt/3.4.0/java-jwt-3.4.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-databind/2.10.2/jackson-databind-2.10.2.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.10.2/jackson-core-2.10.2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/commons-codec/commons-codec/1.13/commons-codec-1.13.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/security/spring-security-web/5.2.1.RELEASE/spring-security-web-5.2.1.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/security/spring-security-core/5.2.1.RELEASE/spring-security-core-5.2.1.RELEASE.jar" enabled="true" runInBatchMode="false"/>
@@ -100,11 +100,166 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/com/microsoft/sqlserver/mssql-jdbc/7.4.1.jre8/mssql-jdbc-7.4.1.jre8.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/projectlombok/lombok/1.18.10/lombok-1.18.10.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/net/sf/ehcache/ehcache/2.10.4/ehcache-2.10.4.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/amqp/spring-rabbit/2.2.2.RELEASE/spring-rabbit-2.2.2.RELEASE.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot-starter-amqp/2.2.4.RELEASE/spring-boot-starter-amqp-2.2.4.RELEASE.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-messaging/5.2.3.RELEASE/spring-messaging-5.2.3.RELEASE.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/amqp/spring-rabbit/2.2.3.RELEASE/spring-rabbit-2.2.3.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/rabbitmq/amqp-client/5.7.3/amqp-client-5.7.3.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/amqp/spring-amqp/2.2.3.RELEASE/spring-amqp-2.2.3.RELEASE.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/retry/spring-retry/1.2.5.RELEASE/spring-retry-1.2.5.RELEASE.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-messaging/5.2.3.RELEASE/spring-messaging-5.2.3.RELEASE.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/spring-tx/5.2.3.RELEASE/spring-tx-5.2.3.RELEASE.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/boot/spring-boot-starter-data-elasticsearch/2.2.4.RELEASE/spring-boot-starter-data-elasticsearch-2.2.4.RELEASE.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/springframework/data/spring-data-elasticsearch/3.2.4.RELEASE/spring-data-elasticsearch-3.2.4.RELEASE.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/client/transport/6.8.6/transport-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/plugin/reindex-client/6.8.6/reindex-client-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/elasticsearch-ssl-config/6.8.6/elasticsearch-ssl-config-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/elasticsearch-core/6.8.6/elasticsearch-core-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/plugin/lang-mustache-client/6.8.6/lang-mustache-client-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/github/spullara/mustache/java/compiler/0.9.3/compiler-0.9.3.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/plugin/percolator-client/6.8.6/percolator-client-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/plugin/parent-join-client/6.8.6/parent-join-client-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/plugin/rank-eval-client/6.8.6/rank-eval-client-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/plugin/transport-netty4-client/6.8.6/transport-netty4-client-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-buffer/4.1.45.Final/netty-buffer-4.1.45.Final.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-codec/4.1.45.Final/netty-codec-4.1.45.Final.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-codec-http/4.1.45.Final/netty-codec-http-4.1.45.Final.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-common/4.1.45.Final/netty-common-4.1.45.Final.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-handler/4.1.45.Final/netty-handler-4.1.45.Final.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-resolver/4.1.45.Final/netty-resolver-4.1.45.Final.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-transport/4.1.45.Final/netty-transport-4.1.45.Final.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/client/elasticsearch-rest-high-level-client/6.8.6/elasticsearch-rest-high-level-client-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/client/elasticsearch-rest-client/6.8.6/elasticsearch-rest-client-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/httpcomponents/httpasyncclient/4.1.4/httpasyncclient-4.1.4.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/httpcomponents/httpcore-nio/4.4.13/httpcore-nio-4.4.13.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/plugin/aggs-matrix-stats-client/6.8.6/aggs-matrix-stats-client-6.8.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/elasticsearch/elasticsearch/2.1.0/elasticsearch-2.1.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-core/5.3.1/lucene-core-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-backward-codecs/5.3.1/lucene-backward-codecs-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-analyzers-common/5.3.1/lucene-analyzers-common-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-queries/5.3.1/lucene-queries-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-memory/5.3.1/lucene-memory-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-highlighter/5.3.1/lucene-highlighter-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-queryparser/5.3.1/lucene-queryparser-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-sandbox/5.3.1/lucene-sandbox-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-suggest/5.3.1/lucene-suggest-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-misc/5.3.1/lucene-misc-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-join/5.3.1/lucene-join-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-grouping/5.3.1/lucene-grouping-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-spatial/5.3.1/lucene-spatial-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/lucene/lucene-spatial3d/5.3.1/lucene-spatial3d-5.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/spatial4j/spatial4j/0.4.1/spatial4j-0.4.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/carrotsearch/hppc/0.7.1/hppc-0.7.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/joda-time/joda-time/2.10.5/joda-time-2.10.5.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/joda/joda-convert/1.2/joda-convert-1.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/core/jackson-core/2.10.2/jackson-core-2.10.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/dataformat/jackson-dataformat-smile/2.10.2/jackson-dataformat-smile-2.10.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.10.2/jackson-dataformat-yaml-2.10.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/2.10.2/jackson-dataformat-cbor-2.10.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty/3.10.5.Final/netty-3.10.5.Final.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/ning/compress-lzf/1.0.2/compress-lzf-1.0.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/tdunning/t-digest/3.0/t-digest-3.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/hdrhistogram/HdrHistogram/2.1.6/HdrHistogram-2.1.6.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/twitter/jsr166e/1.1.0/jsr166e-1.1.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk/1.11.133/aws-java-sdk-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-athena/1.11.133/aws-java-sdk-athena-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/jmespath-java/1.11.133/jmespath-java-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-marketplaceentitlement/1.11.133/aws-java-sdk-marketplaceentitlement-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-codestar/1.11.133/aws-java-sdk-codestar-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-lexmodelbuilding/1.11.133/aws-java-sdk-lexmodelbuilding-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-resourcegroupstaggingapi/1.11.133/aws-java-sdk-resourcegroupstaggingapi-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-pinpoint/1.11.133/aws-java-sdk-pinpoint-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-xray/1.11.133/aws-java-sdk-xray-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-opsworkscm/1.11.133/aws-java-sdk-opsworkscm-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-support/1.11.133/aws-java-sdk-support-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-simpledb/1.11.133/aws-java-sdk-simpledb-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-servicecatalog/1.11.133/aws-java-sdk-servicecatalog-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-servermigration/1.11.133/aws-java-sdk-servermigration-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-simpleworkflow/1.11.133/aws-java-sdk-simpleworkflow-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-storagegateway/1.11.133/aws-java-sdk-storagegateway-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-route53/1.11.133/aws-java-sdk-route53-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-s3/1.11.133/aws-java-sdk-s3-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-importexport/1.11.133/aws-java-sdk-importexport-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-sts/1.11.133/aws-java-sdk-sts-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-sqs/1.11.133/aws-java-sdk-sqs-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-rds/1.11.133/aws-java-sdk-rds-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-redshift/1.11.133/aws-java-sdk-redshift-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-elasticbeanstalk/1.11.133/aws-java-sdk-elasticbeanstalk-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-glacier/1.11.133/aws-java-sdk-glacier-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-iam/1.11.133/aws-java-sdk-iam-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-datapipeline/1.11.133/aws-java-sdk-datapipeline-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-elasticloadbalancing/1.11.133/aws-java-sdk-elasticloadbalancing-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-elasticloadbalancingv2/1.11.133/aws-java-sdk-elasticloadbalancingv2-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-emr/1.11.133/aws-java-sdk-emr-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-elasticache/1.11.133/aws-java-sdk-elasticache-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-elastictranscoder/1.11.133/aws-java-sdk-elastictranscoder-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-ec2/1.11.133/aws-java-sdk-ec2-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-dynamodb/1.11.133/aws-java-sdk-dynamodb-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-sns/1.11.133/aws-java-sdk-sns-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-budgets/1.11.133/aws-java-sdk-budgets-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-cloudtrail/1.11.133/aws-java-sdk-cloudtrail-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-cloudwatch/1.11.133/aws-java-sdk-cloudwatch-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-logs/1.11.133/aws-java-sdk-logs-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-events/1.11.133/aws-java-sdk-events-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-cognitoidentity/1.11.133/aws-java-sdk-cognitoidentity-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-cognitosync/1.11.133/aws-java-sdk-cognitosync-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-directconnect/1.11.133/aws-java-sdk-directconnect-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-cloudformation/1.11.133/aws-java-sdk-cloudformation-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-cloudfront/1.11.133/aws-java-sdk-cloudfront-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-clouddirectory/1.11.133/aws-java-sdk-clouddirectory-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-kinesis/1.11.133/aws-java-sdk-kinesis-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-opsworks/1.11.133/aws-java-sdk-opsworks-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-ses/1.11.133/aws-java-sdk-ses-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-autoscaling/1.11.133/aws-java-sdk-autoscaling-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-cloudsearch/1.11.133/aws-java-sdk-cloudsearch-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-cloudwatchmetrics/1.11.133/aws-java-sdk-cloudwatchmetrics-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-codedeploy/1.11.133/aws-java-sdk-codedeploy-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-codepipeline/1.11.133/aws-java-sdk-codepipeline-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-kms/1.11.133/aws-java-sdk-kms-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-config/1.11.133/aws-java-sdk-config-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-lambda/1.11.133/aws-java-sdk-lambda-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-ecs/1.11.133/aws-java-sdk-ecs-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-ecr/1.11.133/aws-java-sdk-ecr-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-cloudhsm/1.11.133/aws-java-sdk-cloudhsm-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-ssm/1.11.133/aws-java-sdk-ssm-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-workspaces/1.11.133/aws-java-sdk-workspaces-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-machinelearning/1.11.133/aws-java-sdk-machinelearning-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-directory/1.11.133/aws-java-sdk-directory-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-efs/1.11.133/aws-java-sdk-efs-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-codecommit/1.11.133/aws-java-sdk-codecommit-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-devicefarm/1.11.133/aws-java-sdk-devicefarm-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-elasticsearch/1.11.133/aws-java-sdk-elasticsearch-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-waf/1.11.133/aws-java-sdk-waf-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-marketplacecommerceanalytics/1.11.133/aws-java-sdk-marketplacecommerceanalytics-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-inspector/1.11.133/aws-java-sdk-inspector-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-iot/1.11.133/aws-java-sdk-iot-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-api-gateway/1.11.133/aws-java-sdk-api-gateway-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-acm/1.11.133/aws-java-sdk-acm-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-gamelift/1.11.133/aws-java-sdk-gamelift-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-dms/1.11.133/aws-java-sdk-dms-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-marketplacemeteringservice/1.11.133/aws-java-sdk-marketplacemeteringservice-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-cognitoidp/1.11.133/aws-java-sdk-cognitoidp-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-discovery/1.11.133/aws-java-sdk-discovery-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-applicationautoscaling/1.11.133/aws-java-sdk-applicationautoscaling-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-snowball/1.11.133/aws-java-sdk-snowball-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-rekognition/1.11.133/aws-java-sdk-rekognition-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-polly/1.11.133/aws-java-sdk-polly-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-lightsail/1.11.133/aws-java-sdk-lightsail-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-stepfunctions/1.11.133/aws-java-sdk-stepfunctions-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-health/1.11.133/aws-java-sdk-health-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-costandusagereport/1.11.133/aws-java-sdk-costandusagereport-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-codebuild/1.11.133/aws-java-sdk-codebuild-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-appstream/1.11.133/aws-java-sdk-appstream-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-shield/1.11.133/aws-java-sdk-shield-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-batch/1.11.133/aws-java-sdk-batch-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-lex/1.11.133/aws-java-sdk-lex-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-mechanicalturkrequester/1.11.133/aws-java-sdk-mechanicalturkrequester-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-organizations/1.11.133/aws-java-sdk-organizations-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-workdocs/1.11.133/aws-java-sdk-workdocs-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-core/1.11.133/aws-java-sdk-core-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/httpcomponents/httpclient/4.5.10/httpclient-4.5.10.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/software/amazon/ion/ion-java/1.0.2/ion-java-1.0.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-models/1.11.133/aws-java-sdk-models-1.11.133.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/amazonaws/aws-java-sdk-swf-libraries/1.11.22/aws-java-sdk-swf-libraries-1.11.22.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/jakarta/xml/bind/jakarta.xml.bind-api/2.3.2/jakarta.xml.bind-api-2.3.2.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>
