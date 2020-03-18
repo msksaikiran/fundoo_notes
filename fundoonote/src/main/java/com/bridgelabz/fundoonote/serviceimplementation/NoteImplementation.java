@@ -45,44 +45,44 @@ public class NoteImplementation implements NoteService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private JwtGenerator generate;
 
 	@Autowired
-	 private Environment env;
-	
-//	@Autowired
-//    ElasticsearchOperations operations;
-	
-//	@Autowired
-//	SearchResult result;
-	
+	private Environment env;
+
+	// @Autowired
+	// ElasticsearchOperations operations;
+
+	// @Autowired
+	// SearchResult result;
+
 	@Transactional
 	@Override
 	public Noteinfo addNotes(NoteDto notes, String token) {
-		Noteinfo note=new Noteinfo();
-		
-			Long id = (Long) generate.parseJWT(token);
-			User user = userRepository.getUserById(id)
-					.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY,env.getProperty("104")));
-		
-			try {
-				BeanUtils.copyProperties(notes, note);
-				note.setColour("ash");
-				note.setIsArchieved(0);
-				note.setCreatedDateAndTime(LocalDateTime.now());
-				note.setIsPinned(0);
-				note.setIsTrashed(0);
-				note.setReminder(null);
-				note.setTitle(notes.getTitle());
-				note.setDescription(notes.getDescription());
-				user.getNote().add(note);
-				
-				return noteRepository.save(note);
-	
+		Noteinfo note = new Noteinfo();
+
+		Long id = (Long) generate.parseJWT(token);
+		User user = userRepository.getUserById(id)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
+
+		try {
+			BeanUtils.copyProperties(notes, note);
+			note.setColour("ash");
+			note.setIsArchieved(0);
+			note.setCreatedDateAndTime(LocalDateTime.now());
+			note.setIsPinned(0);
+			note.setIsTrashed(0);
+			note.setReminder(null);
+			note.setTitle(notes.getTitle());
+			note.setDescription(notes.getDescription());
+			user.getNote().add(note);
+
+			return noteRepository.save(note);
+
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("104"));
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("104"));
 		}
 	}
 
@@ -92,24 +92,22 @@ public class NoteImplementation implements NoteService {
 
 		List<Noteinfo> notes = this.getNoteByUserId(token);
 
-		if(notes.isEmpty())
+		if (notes.isEmpty())
 			return null;
 		/*
 		 * java 8 streams feature
 		 */
 		int nId = Integer.parseInt(id);
-		
-			
-				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-						.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));
-				try {
-					data.setTitle(updateDto.getTitle());
-					data.setUpDateAndTime(LocalDateTime.now());
-					noteRepository.save(data);
-				
-			
+
+		Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
+				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+		try {
+			data.setTitle(updateDto.getTitle());
+			data.setUpDateAndTime(LocalDateTime.now());
+			noteRepository.save(data);
+
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("209"));
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("209"));
 		}
 		return notes;
 	}
@@ -122,21 +120,18 @@ public class NoteImplementation implements NoteService {
 		/*
 		 * java 8 streams feature
 		 */
-		if(notes.isEmpty())
+		if (notes.isEmpty())
 			return null;
-		
+
 		int nId = Integer.parseInt(id);
-		
-			
-				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-						.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));;
-				
-						try {
-					noteRepository.delete(data);
-				
-			
+
+		Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
+				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+		try {
+			noteRepository.delete(data);
+
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("210"));
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("210"));
 		}
 		return notes.get(0);
 	}
@@ -171,47 +166,46 @@ public class NoteImplementation implements NoteService {
 		/*
 		 * java8 parallel sort
 		 */
-		List<Noteinfo> notelist = Notelist.parallelStream().sorted(Comparator.comparing(Noteinfo::getTitle)).collect(Collectors.toList());
+		List<Noteinfo> notelist = Notelist.parallelStream().sorted(Comparator.comparing(Noteinfo::getTitle))
+				.collect(Collectors.toList());
 		return notelist;
-		
+
 		/*
 		 * java 8 lambda feature for sorting
 		 */
-//		Notelist.forEach(t -> {
-//			noteTitles.add(t.getTitle());
-//		});
-//		Collections.sort(noteTitles, Collections.reverseOrder());
-		
-		
-		//return noteTitles;
+		// Notelist.forEach(t -> {
+		// noteTitles.add(t.getTitle());
+		// });
+		// Collections.sort(noteTitles, Collections.reverseOrder());
+
+		// return noteTitles;
 	}
 
 	@Transactional
 	@Override
 	public Noteinfo archieveNote(String id, String token) {
 		List<Noteinfo> notes = this.getNoteByUserId(token);
-		
-		if(notes.isEmpty())
+
+		if (notes.isEmpty())
 			return null;
 		/*
 		 * java 8 streams feature
 		 */
 		Noteinfo data;
 		int nId = Integer.parseInt(id);
-		
-			
-				 data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-						.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));
+
+		data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
+				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
 		try {
-					data.setIsPinned(0);
-					data.setIsArchieved(1);
-					data.setUpDateAndTime(LocalDateTime.now());
-					noteRepository.save(data);
-				
+			data.setIsPinned(0);
+			data.setIsArchieved(1);
+			data.setUpDateAndTime(LocalDateTime.now());
+			noteRepository.save(data);
+
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("206"));
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("206"));
 		}
-		
+
 		return data;
 	}
 
@@ -225,15 +219,15 @@ public class NoteImplementation implements NoteService {
 		int nId = Integer.parseInt(id);
 		try {
 			if (notes != null) {
-				Noteinfo data = notes.stream().filter(t ->t.getNid() == nId).findFirst()
-				               .orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));
-					data.setIsPinned(1);
-					data.setIsArchieved(0);
-					data.setUpDateAndTime(LocalDateTime.now());
-					return noteRepository.save(data);
+				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
+						.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+				data.setIsPinned(1);
+				data.setIsArchieved(0);
+				data.setUpDateAndTime(LocalDateTime.now());
+				return noteRepository.save(data);
 			}
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("205"));
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("205"));
 		}
 		return null;
 
@@ -243,31 +237,30 @@ public class NoteImplementation implements NoteService {
 	@Override
 	public List<Noteinfo> getAlltrashednotes(String token) {
 
-		
-			long userid = (Long) generate.parseJWT(token);
-			User userData = userRepository.getUserById(userid)
-			           .orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
-			try {
-			return  noteRepository.restoreNote(userid);
-			
+		long userid = (Long) generate.parseJWT(token);
+		User userData = userRepository.getUserById(userid)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
+		try {
+			return noteRepository.restoreNote(userid);
+
 		} catch (Exception e) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Note Record Not Trashed due to Internal Error");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, "Note Record Not Trashed due to Internal Error");
 		}
 	}
 
 	@Transactional
 	@Override
 	public List<Noteinfo> getarchieved(String token) {
-		
-			long userid = (long) generate.parseJWT(token);
-			User userData = userRepository.getUserById(userid)
-					.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));;
+
+		long userid = (long) generate.parseJWT(token);
+		User userData = userRepository.getUserById(userid)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 		try {
-				return  noteRepository.getArchievedNotes(userid);
-				
-			
+			return noteRepository.getArchievedNotes(userid);
+
 		} catch (Exception e) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Not able to get ArchiveNotes  due to Internal Error");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,
+					"Not able to get ArchiveNotes  due to Internal Error");
 		}
 
 	}
@@ -284,14 +277,14 @@ public class NoteImplementation implements NoteService {
 		try {
 			if (notes != null) {
 				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-				.orElseThrow(()->new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));
-			
-					data.setColour(colour);
-					noteRepository.save(data);
-				
+						.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+
+				data.setColour(colour);
+				noteRepository.save(data);
+
 			}
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Note Record Not Coloured due to Internal Error");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, "Note Record Not Coloured due to Internal Error");
 		}
 		return colour;
 	}
@@ -299,18 +292,18 @@ public class NoteImplementation implements NoteService {
 	@Transactional
 	@Override
 	public List<Noteinfo> getAllPinneded(String token) {
-		
-			long userid = (long) generate.parseJWT(token);
-			User userData = userRepository.getUserById(userid)
-					.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
-			try {
-				List<Noteinfo> list = noteRepository.getPinnededNotes(userid);
-				return list;
-			
+
+		long userid = (long) generate.parseJWT(token);
+		User userData = userRepository.getUserById(userid)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
+		try {
+			List<Noteinfo> list = noteRepository.getPinnededNotes(userid);
+			return list;
+
 		} catch (Exception e) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Note Record Not Pinned due to Internal Error");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, "Note Record Not Pinned due to Internal Error");
 		}
-		
+
 	}
 
 	@Transactional
@@ -325,16 +318,17 @@ public class NoteImplementation implements NoteService {
 			if (notes != null) {
 				Noteinfo noteData = notes.stream().filter(t -> t.getNid() == nId).findFirst()
 						.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
-				//data.ifPresent(noteData -> {
-					noteData.setReminder(reminder.getRemainder());
-					noteRepository.save(noteData);
-				//});
+				// data.ifPresent(noteData -> {
+				noteData.setReminder(reminder.getRemainder());
+				noteRepository.save(noteData);
+				// });
 				if (noteData.equals(Optional.empty())) {
 					return "notes not pinned";
 				}
 			}
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Note Record Not added Reminder due to Internal Error");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,
+					"Note Record Not added Reminder due to Internal Error");
 		}
 		return token;
 
@@ -351,14 +345,14 @@ public class NoteImplementation implements NoteService {
 		try {
 			if (notes != null) {
 				Noteinfo noteData = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
-				
-					noteData.setReminder(null);
-					noteRepository.save(noteData);
-				
+						.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+
+				noteData.setReminder(null);
+				noteRepository.save(noteData);
+
 			}
 		} catch (Exception ae) {
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Cant able to Remove Reminder");
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, "Cant able to Remove Reminder");
 		}
 		return token;
 
@@ -375,12 +369,12 @@ public class NoteImplementation implements NoteService {
 
 			if (user != null) {
 				return user;
-			}else {
-				new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("104"));
+			} else {
+				new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("104"));
 			}
 		} catch (Exception ae) {
-			
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,"Cant able to get the user");
+
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, "Cant able to get the user");
 		}
 		return null;
 	}
@@ -388,23 +382,23 @@ public class NoteImplementation implements NoteService {
 	@Transactional
 	@Override
 	public Noteinfo getNote(String id) {
-		
+
 		Noteinfo notes = noteRepository.findNoteById(Integer.parseInt(id))
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
-		
-			return notes;
-		
+
+		return notes;
+
 	}
-	
-//	@PostConstruct
-//    @Transactional
-//    public void loadAll(){
-//
-//        operations.putMapping(Noteinfo.class);
-//        System.out.println("Loading Data");
-//       // result.saveAll(this.getAllNotes());
-//        System.out.printf("Loading Completed");
-//
-//    }
+
+	// @PostConstruct
+	// @Transactional
+	// public void loadAll(){
+	//
+	// operations.putMapping(Noteinfo.class);
+	// System.out.println("Loading Data");
+	// // result.saveAll(this.getAllNotes());
+	// System.out.printf("Loading Completed");
+	//
+	// }
 
 }
