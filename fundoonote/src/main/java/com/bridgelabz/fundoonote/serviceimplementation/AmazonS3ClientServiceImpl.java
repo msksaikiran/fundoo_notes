@@ -41,8 +41,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
 	
 	@Autowired
 	 private Environment env;
-	
-    private static final Logger logger = LoggerFactory.getLogger(AmazonS3ClientServiceImpl.class);
+
 
     @Autowired
     public AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider, String awsS3AudioBucket) 
@@ -82,7 +81,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
             file.delete();
             userRepository.save(user);
         } catch (IOException | AmazonServiceException ex) {
-            logger.error("error [" + ex.getMessage() + "] occurred while uploading [" + fileName + "] ");
+        	throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
         }
     }
 
@@ -98,7 +97,7 @@ public class AmazonS3ClientServiceImpl implements AmazonS3ClientService{
         try {
             amazonS3.deleteObject(new DeleteObjectRequest(awsS3AudioBucket, fileName));
         } catch (AmazonServiceException ex) {
-            logger.error("error [" + ex.getMessage() + "] occurred while removing [" + fileName + "] ");
+        	throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
         }
         userRepository.save(user);
     }
