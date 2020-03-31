@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.bridgelabz.fundoonote.dto.LableDto;
 import com.bridgelabz.fundoonote.dto.NoteDto;
 import com.bridgelabz.fundoonote.dto.UpdateLabel;
+import com.bridgelabz.fundoonote.dto.label;
 import com.bridgelabz.fundoonote.entity.Label;
 import com.bridgelabz.fundoonote.response.LabelResponse;
 import com.bridgelabz.fundoonote.response.Response;
@@ -35,7 +38,7 @@ public class LabelController {
 	/*
 	 * API to add the Label Details
 	 */
-	@PostMapping(value = "/{token}/notes")
+	@PostMapping(value = "/create/{token}")
 	public ResponseEntity<LabelResponse> createLabel(@RequestBody LableDto label, @PathVariable String token) {
 
 		Label labels = labelService.createLable(label, token);
@@ -47,28 +50,16 @@ public class LabelController {
 	/*
 	 * API to add the  Notes To Label 
 	 */
-	@PostMapping(value = "/{lid}/{token}")
-	public ResponseEntity<LabelResponse> addLabelToNotes(@RequestBody NoteDto label, @PathVariable String token,@PathVariable long lid) {
+	@PostMapping(value = "/addlabels/{token}")
+	public ResponseEntity<LabelResponse> addLabelToNotes(@RequestBody label label, @PathVariable String token) {
 
-		Label lnote = labelService.addLabelToNotes(label, token,lid);
+		Label lnote = labelService.addLabelToNotes(label.getnId(),label.getlId(),token);
 		
 		 return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new LabelResponse(env.getProperty("301"),200,lnote));
 	}
 	
 
-	/*
-	 * API to add the Existing notes to Label Details
-	 */
-	@PostMapping(value = "/{lid}/{token}/{noteId}")
-	public ResponseEntity<Response> addExistingNotesToLabel(long noteId, String token, long labelId) {
-		boolean label = labelService.addExistingNotesToLabel(noteId, token, labelId);
-		if(label)
-			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new Response(env.getProperty("301"),200));
-		return null;
-
-	}
 	
 	/*
 	 * API to add the update Label Details
@@ -83,9 +74,9 @@ public class LabelController {
 	/*
 	 * API to add the delete Label Details
 	 */
-	@DeleteMapping(value = "/{id}/{token}")
-	public ResponseEntity<LabelResponse> deleteLabel(@PathVariable long id,@PathVariable String token) {
-	     Label label = labelService.removeLabel(token,id);
+	@PostMapping(value = "/delete/{token}")
+	public ResponseEntity<LabelResponse> deleteLabel(@RequestBody label labelid,@PathVariable String token) {
+	     Label label = labelService.removeLabel(token,labelid.getlId());
 	     if(label!=null)
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new LabelResponse(env.getProperty("304"),200,label));
@@ -98,7 +89,7 @@ public class LabelController {
 	 * API to getting the Label Details By Id
 	 */
 
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "/users/{id}")
 	public ResponseEntity<LabelResponse> getLabel(@PathVariable long id) {
 		Label label = labelService.getLableById(id);
 		return ResponseEntity.status(HttpStatus.CREATED)

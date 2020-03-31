@@ -88,7 +88,7 @@ public class NoteImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	public List<Noteinfo> updateNotes(String token, String id, UpdateNote updateDto) {
+	public List<Noteinfo> updateNotes(String token, long nId, UpdateNote updateDto) {
 
 		List<Noteinfo> notes = this.getNoteByUserId(token);
 
@@ -97,7 +97,7 @@ public class NoteImplementation implements NoteService {
 		/*
 		 * java 8 streams feature
 		 */
-		int nId = Integer.parseInt(id);
+		//int nId = Integer.parseInt(id);
 
 		Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
 				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
@@ -114,7 +114,7 @@ public class NoteImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	public Noteinfo removeNotes(String token, String id) {
+	public Noteinfo removeNotes(String token, long nId) {
 
 		List<Noteinfo> notes = this.getNoteByUserId(token);
 		/*
@@ -123,12 +123,14 @@ public class NoteImplementation implements NoteService {
 		if (notes.isEmpty())
 			return null;
 
-		int nId = Integer.parseInt(id);
+		//int nId = Integer.parseInt(id);
 
 		Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
 				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
 		try {
-			noteRepository.delete(data);
+		    data.setIsTrashed(1);
+		    data.setIsArchieved(0);
+			noteRepository.save(data);
 
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("210"));
@@ -183,7 +185,7 @@ public class NoteImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	public Noteinfo archieveNote(String id, String token) {
+	public Noteinfo archieveNote(long nId, String token) {
 		List<Noteinfo> notes = this.getNoteByUserId(token);
 
 		if (notes.isEmpty())
@@ -192,7 +194,6 @@ public class NoteImplementation implements NoteService {
 		 * java 8 streams feature
 		 */
 		Noteinfo data;
-		int nId = Integer.parseInt(id);
 
 		data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
 				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
@@ -211,12 +212,12 @@ public class NoteImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	public Noteinfo pinNote(String id, String token) {
+	public Noteinfo pinNote(long nId, String token) {
 		List<Noteinfo> notes = this.getNoteByUserId(token);
 		/*
 		 * java 8 streams feature
 		 */
-		int nId = Integer.parseInt(id);
+		//int nId = Integer.parseInt(id);
 		try {
 			if (notes != null) {
 				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
@@ -227,12 +228,38 @@ public class NoteImplementation implements NoteService {
 				return noteRepository.save(data);
 			}
 		} catch (Exception ae) {
+			ae.printStackTrace();
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("205"));
 		}
 		return null;
 
 	}
 
+	@Transactional
+	@Override
+	public Noteinfo unpinNote(long nId, String token) {
+		List<Noteinfo> notes = this.getNoteByUserId(token);
+		/*
+		 * java 8 streams feature
+		 */
+		//int nId = Integer.parseInt(id);
+		try {
+			if (notes != null) {
+				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
+						.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+				data.setIsPinned(0);
+				data.setIsArchieved(0);
+				data.setUpDateAndTime(LocalDateTime.now());
+				return noteRepository.save(data);
+			}
+		} catch (Exception ae) {
+			ae.printStackTrace();
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("205"));
+		}
+		return null;
+
+	}
+	
 	@Transactional
 	@Override
 	public List<Noteinfo> getAlltrashednotes(String token) {

@@ -8,4 +8,13 @@ public class LableDto {
 	//@NonNull
 	private String lableName;
 
+	public String getLableName() {
+		return lableName;
+	}
+
+	public void setLableName(String lableName) {
+		this.lableName = lableName;
+	}
+
+	
 }

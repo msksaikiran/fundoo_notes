@@ -2,7 +2,25 @@ package com.bridgelabz.fundoonote.dto;
 
 public class UpdateNote {
 
-	public String title;
+	private String title;
+    private long nid;
+    private String description;
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public long getNid() {
+		return nid;
+	}
+
+	public void setNid(long nid) {
+		this.nid = nid;
+	}
 
 	public String getTitle() {
 		return title;

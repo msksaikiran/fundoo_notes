@@ -16,21 +16,21 @@ public interface NoteService {
 
 	Noteinfo addNotes(NoteDto notes, String token);
 
-	List<Noteinfo> updateNotes(String token, String id, UpdateNote updateDto);
+	List<Noteinfo> updateNotes(String token, long id, UpdateNote updateDto);
 	
 	Noteinfo getNote(String id);
 
 	List<Noteinfo> getNoteByUserId(String id);
 
-	Noteinfo removeNotes(String token, String id);
+	Noteinfo removeNotes(String token, long l);
 
-	ArrayList<String> sortByName();
+	List<Noteinfo> sortByName();
 
 	List<String> ascSortByName();
 
-	Noteinfo archieveNote(String id, String token);
+	Noteinfo archieveNote(long l, String token);
 
-	Noteinfo pinNote(String id, String token);
+	Noteinfo pinNote(long id, String token);
 
 	List<Noteinfo> getAlltrashednotes(String token);
 
@@ -43,6 +43,8 @@ public interface NoteService {
 	String addReminder(String id, String token, ReminderDto reminder);
 
 	String removeReminder(String id, String token);
+
+	Noteinfo unpinNote(long nid, String token);
 	
 
 }

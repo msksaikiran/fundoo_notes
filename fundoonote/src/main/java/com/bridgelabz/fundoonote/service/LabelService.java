@@ -3,7 +3,6 @@ package com.bridgelabz.fundoonote.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import com.bridgelabz.fundoonote.dto.LableDto;
 import com.bridgelabz.fundoonote.dto.NoteDto;
 import com.bridgelabz.fundoonote.dto.UpdateLabel;
@@ -27,21 +26,12 @@ public interface LabelService {
 
 	List<String> ascsortByName();
 
-	Label addLabelToNotes(NoteDto notes, String token, long lId);
+	Label addLabelToNotes(long nId,  long lId,String token);
 
 	boolean addExistingNotesToLabel(String noteTitle, String token, String labelName);
 
 	Label updateLabel(String token, long lId, UpdateLabel LabelDto);
 
-	boolean addExistingNotesToLabel(long noteId, String token, long labelId);
-
 	
-
 	
-
-	
-
-	
-
-
 }

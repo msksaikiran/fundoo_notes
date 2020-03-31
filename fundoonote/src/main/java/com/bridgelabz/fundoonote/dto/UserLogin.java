@@ -17,19 +17,19 @@ import lombok.ToString;
 @ToString
 public class UserLogin {
 
-	@NotNull(message = "Field Should not be Empty")
+	//@NotNull(message = "Field Should not be Empty")
 	
-	@Email(message="Email Field should be proper")
-	private String Email;
+	//@Email(message="Email Field should be proper")
+	private String email;
 	
-	@Pattern(regexp = "^[a-zA-z0-9]{7}",message = "password Must contain 8 character no special characters")
+	//@Pattern(regexp = "^[a-zA-z0-9]{7}",message = "password Must contain 8 character no special characters")
 	private String password;
 	
 	public String getEmail() {
-		return Email;
+		return email;
 	}
 	public void setEmail(String email) {
-		Email = email;
+		this.email = email;	
 	}
 	public String getPassword() {
 		return password;

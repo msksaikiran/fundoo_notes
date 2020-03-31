@@ -78,20 +78,19 @@ public class LabelImplementation implements LabelService {
 
 	@Transactional
 	@Override
-	public Label addLabelToNotes(NoteDto notes, String token, long lId) {
+	public Label addLabelToNotes(long nId,long lId,String token) {
 
-		Noteinfo note = noteService.addNotes(notes, token);
-
-		Set<Label> lables = this.getLableByUserId(token);
-		Label labelInfo;
+		
+         Noteinfo note = noteRepository.findNoteById(nId)
+        		 .orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
+             
+		Label lables = labelRepository.findLableById(lId)
+				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
+		
 		try {
-			labelInfo = lables.stream().filter(t -> t.getLId() == lId).findFirst()
-					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
 
-			this.addExistingNotesToLabel(note.getNid(), token, lId);
-			labelInfo.getNote().add(note);
-			labelRepository.save(labelInfo);
-			// note.getLabel().add(labelInfo);
+			note.getLabel().add(lables);
+			
 
 		} catch (Exception ae) {
 			ae.printStackTrace();
@@ -99,32 +98,10 @@ public class LabelImplementation implements LabelService {
 					"Notes not added to Label due to Internel server problem");
 		}
 
-		return labelInfo;
+		return lables;
 
 	}
 
-	@Transactional
-	@Override
-	public boolean addExistingNotesToLabel(long noteId, String token, long labelId) {
-		long userId = (long) generate.parseJWT(token);
-
-		List<Noteinfo> notes = noteRepository.findNoteByUserId(userId);
-
-		Label label = labelRepository.findLableById(labelId);
-
-		
-			Noteinfo noteInfo = notes.stream().filter(t -> t.getNid() == noteId).findFirst()
-					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
-		try {
-			return noteInfo.getLabel().add(label);
-			//return label.getNote().add(noteInfo);
-
-		} catch (Exception ae) {
-			throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,
-					"Notes not added to Label due to Internel server problem");
-		}
-
-	}
 	
 	@Transactional
 	@Override
@@ -142,7 +119,7 @@ public class LabelImplementation implements LabelService {
 		Label labelData;
 		try {
 
-			labelData = list.stream().filter(t -> t.getLId() == lId).findFirst()
+			labelData = list.stream().filter(t -> t.getlId() == lId).findFirst()
 					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
 
 			labelData.setLableName(LabelDto.getlName());
@@ -168,7 +145,7 @@ public class LabelImplementation implements LabelService {
 		Label data = null;
 		try {
 			if (list != null) {
-				data = list.stream().filter(t -> t.getLId() == lId).findFirst()
+				data = list.stream().filter(t -> t.getlId() == lId).findFirst()
 						.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
 
 				labelRepository.delete(data);
@@ -244,7 +221,8 @@ public class LabelImplementation implements LabelService {
 		/*
 		 * using query
 		 */
-		Label label = labelRepository.findLableById(id);
+		Label label = labelRepository.findLableById(id)
+				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
 		if (label != null) {
 			return label;
 		}

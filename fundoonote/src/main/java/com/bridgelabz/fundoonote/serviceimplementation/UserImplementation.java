@@ -1,5 +1,8 @@
 package com.bridgelabz.fundoonote.serviceimplementation;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 /*#
  * Description: implementation part for user when user register,login,update
@@ -16,10 +19,21 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.bridgelabz.fundoonote.dto.EmailVeify;
 import com.bridgelabz.fundoonote.dto.Register;
 import com.bridgelabz.fundoonote.dto.UserLogin;
 import com.bridgelabz.fundoonote.entity.User;
@@ -43,26 +57,31 @@ public class UserImplementation implements UserService {
 	@Autowired
 	private JavaMailSenderImpl senderimp;
 
-	 @Autowired
-	 private Environment env;
+	@Autowired
+	private Environment env;
 
-	 @Autowired
-	 private  MailService mail;
-	 
-	 @Autowired
-	 RabbitMQSender rabbitMQSender;
-	 
+	@Autowired
+	private MailService mail;
+
+	private String awsS3AudioBucket;
+
+	private AmazonS3 amazonS3;
+
+
+//	 @Autowired
+//	 RabbitMQSender rabbitMQSender;
+
 	@Transactional
 	@Override
 	public String login(UserLogin userdto) {
 
 		User userDetails = new User();
 
-		
 		User user = userRepository.findUserByEmail(userdto.getEmail())
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("103")));
 
 		try {
+
 			BeanUtils.copyProperties(userdto, userDetails);
 			if ((user.isVerified() == true) && passEncryption.matches(userdto.getPassword(), user.getPassword())) {
 				/*
@@ -71,15 +90,15 @@ public class UserImplementation implements UserService {
 				String token = generate.jwtToken(user.getUid());
 				this.mailservice();
 				mail.senMail(userDetails, senderimp, token);
-				rabbitMQSender.send(token);
+				// rabbitMQSender.send(token);
 				return token;
-			}else {
-				throw new UserException(HttpStatus.BAD_REQUEST,env.getProperty("105"));
+			} else {
+				throw new UserException(HttpStatus.BAD_REQUEST, env.getProperty("105"));
 			}
-			
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR,env.getProperty("500"));
+			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
 		}
 	}
 
@@ -88,31 +107,31 @@ public class UserImplementation implements UserService {
 	public User register(Register userDto) {
 
 		User userDetails = new User();
-		
-			Optional<User> useremail = userRepository.findUserByEmail(userDto.getEmail());
-			
-			if (useremail.isPresent())
-				throw new UserException(HttpStatus.ALREADY_REPORTED,env.getProperty("102"));
 
-			try {
-		BeanUtils.copyProperties(userDto, userDetails);
+		Optional<User> useremail = userRepository.findUserByEmail(userDto.getEmail());
 
-		/*
-		 * setting the password as encrypted
-		 */
-		userDetails.setPassword(passEncryption.encode(userDto.getPassword()));
-		userDetails.setDate(LocalDateTime.now());
-		User result = userRepository.save(userDetails);
+		if (useremail.isPresent())
+			throw new UserException(HttpStatus.ALREADY_REPORTED, env.getProperty("102"));
 
-		/*
-		 * send the email verification to the register user
-		 */
-        String token=generate.jwtToken(userDetails.getUid());
-		this.mailservice();
-		mail.senMail(userDetails, senderimp,token);
+		try {
+			BeanUtils.copyProperties(userDto, userDetails);
 
-		rabbitMQSender.send(token);
-		return result;
+			/*
+			 * setting the password as encrypted
+			 */
+			userDetails.setPassword(passEncryption.encode(userDto.getPassword()));
+			userDetails.setDate(LocalDateTime.now());
+			User result = userRepository.save(userDetails);
+
+			/*
+			 * send the email verification to the register user
+			 */
+			String token = generate.jwtToken(userDetails.getUid());
+			this.mailservice();
+			mail.senMail(userDetails, senderimp, token);
+
+			// rabbitMQSender.send(token);
+			return result;
 
 		} catch (Exception ae) {
 			ae.printStackTrace();
@@ -126,7 +145,7 @@ public class UserImplementation implements UserService {
 
 		long id = (Long) generate.parseJWT(token);
 		User user = userRepository.getUserById(id)
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY,env.getProperty("104")));
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 
 		user.setVerified(true);
 		boolean users = userRepository.save(user) != null ? true : false;
@@ -136,15 +155,15 @@ public class UserImplementation implements UserService {
 
 	@Transactional
 	@Override
-	public String emailVerify(String email) {
-		User user = userRepository.findUserByEmail(email)
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY,env.getProperty("104")));
+	public String emailVerify(EmailVeify email) {
+		User user = userRepository.findUserByEmail(email.getEmailId())
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 		/*
 		 * send the email verification to the register user
 		 */
 		String token = generate.jwtToken(user.getUid());
 		this.mailservice();
-		mail.senMail(user, senderimp,token);
+		mail.senEmailMail(user, senderimp, token);
 		return token;
 	}
 
@@ -162,9 +181,8 @@ public class UserImplementation implements UserService {
 
 	@Transactional
 	@Override
-	@Cacheable(value="twenty-second-cache", key = "'tokenInCache'+#token", 
-	                               condition = "#isCacheable != null && #isCacheable")
-	public User getUser(String token,boolean isCacheable) {
+	@Cacheable(value = "twenty-second-cache", key = "'tokenInCache'+#token", condition = "#isCacheable != null && #isCacheable")
+	public User getUser(String token, boolean isCacheable) {
 		long id = (Long) generate.parseJWT(token);
 		User user = userRepository.getUserById(id)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
@@ -182,34 +200,65 @@ public class UserImplementation implements UserService {
 		prop.put("mail.smtp.host", "smtp.gmail.com");
 		prop.put("mail.smtp.port", "587");
 		senderimp.setJavaMailProperties(prop);
-	
+
 		return senderimp;
 	}
-	
-	// @Transactional
-	// @Override
-	// public List<User> getUsers() {
-	// List<User> ls = new ArrayList<>();
-	// userRepository.findAll().forEach(ls::add);
-	// return ls;
-	// }
 
-	// @Transactional
-	// @Override
-	// public User removeUser(String token) {
-	// try {
-	// int id = (Integer) generate.parseJWT(token);
-	// List<User> list = this.getUsers();
-	// list.stream().filter(t -> t.getId() == id).forEach(t -> {
-	// userRepository.delete(t);
-	// System.out.println("delete" + t);
-	// });
-	// } catch (Exception ae) {
-	// // throw new UserException(404,"user Not removed");
-	// }
-	// return null;
-	// }
+	@Autowired
+    public void AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider, String awsS3AudioBucket) 
+    { 
+        this.amazonS3 = AmazonS3ClientBuilder.standard()
+                .withCredentials(awsCredentialsProvider)
+                .withRegion(awsRegion.getName()).build();
+        this.awsS3AudioBucket = awsS3AudioBucket;
+    }
 
-	
+	@Async
+	public void uploadFileToS3Bucket(MultipartFile multipartFile, boolean enablePublicReadAccess, String token) {
+		long id = (Long) generate.parseJWT(token);
+
+		User user = userRepository.getUserById(id)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
+
+		String fileName = multipartFile.getOriginalFilename();
+
+		user.setProfile(fileName + " uploaded");
+		try {
+			// creating the file in the server (temporarily)
+			File file = new File(fileName);
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(multipartFile.getBytes());
+			fos.close();
+
+			PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3AudioBucket, fileName, file);
+
+			if (enablePublicReadAccess) {
+				putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
+			}
+			this.amazonS3.putObject(putObjectRequest);
+			// removing the file created in the server
+			file.delete();
+			userRepository.save(user);
+		} catch (IOException | AmazonServiceException ex) {
+			ex.printStackTrace();
+			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
+		}
+	}
+
+	@Async
+	public void deleteFileFromS3Bucket(String fileName, String token) {
+		long id = (Long) generate.parseJWT(token);
+
+		User user = userRepository.getUserById(id)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
+
+		user.setProfile("null");
+		try {
+			amazonS3.deleteObject(new DeleteObjectRequest(awsS3AudioBucket, fileName));
+		} catch (AmazonServiceException ex) {
+			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
+		}
+		userRepository.save(user);
+	}
 
 }

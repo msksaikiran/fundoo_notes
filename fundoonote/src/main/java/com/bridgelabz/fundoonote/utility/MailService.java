@@ -26,6 +26,14 @@ public class MailService {
 	    mailSender.send(message);
 		//rabbitSender.send(user);
 	}
+	public void senEmailMail(User user,JavaMailSenderImpl mailSender,String token) {
+		SimpleMailMessage message=new SimpleMailMessage();
+		message.setTo(user.getEmail());
+		message.setSubject("Registration conformation.");
+		message.setText("Hello "+ user.getName()+" link to verify the User:\n"+"http://localhost:4200/resetPassword/"+token);
+	    mailSender.send(message);
+		//rabbitSender.send(user);
+	}
 }
 //
 //

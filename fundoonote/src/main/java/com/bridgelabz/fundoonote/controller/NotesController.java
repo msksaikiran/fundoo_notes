@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoonote.dto.NoteDto;
+import com.bridgelabz.fundoonote.dto.PinDto;
 import com.bridgelabz.fundoonote.dto.ReminderDto;
+import com.bridgelabz.fundoonote.dto.TrashNotes;
 import com.bridgelabz.fundoonote.dto.UpdateNote;
 import com.bridgelabz.fundoonote.entity.Noteinfo;
 //import com.bridgelabz.fundoonote.repository.SearchResult;
@@ -60,10 +62,9 @@ public class NotesController {
 	/*
 	 * API to Update the Note Details By Id
 	 */
-	@PutMapping(value = "/{id}/users/{token}")
-	public ResponseEntity<NoteResponse> updateNote(@PathVariable String token, @PathVariable String id,
-			@RequestBody UpdateNote dto) {
-		List<Noteinfo> note = noteService.updateNotes(token, id, dto);
+	@PutMapping(value = "/update/{token}")
+	public ResponseEntity<NoteResponse> updateNote(@PathVariable String token,@RequestBody UpdateNote dto) {
+		List<Noteinfo> note = noteService.updateNotes(token,dto.getNid(), dto);
 		if (note != null) {
 			return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new NoteResponse(env.getProperty("201"),note,200));
@@ -76,7 +77,7 @@ public class NotesController {
 	 * API to getting the Note Details By Id
 	 */
 
-	@GetMapping(value = "/{id}")
+	@GetMapping(value = "/notes/{id}")
 	public ResponseEntity<NoteResponse> getNote(@PathVariable String id) {
 		Noteinfo note = noteService.getNote(id);
 		if (note != null) {
@@ -92,23 +93,25 @@ public class NotesController {
 	 */
 
 	@GetMapping(value = "/users/{token}")
-	public ResponseEntity<NoteResponse> getNotesByUserId(@PathVariable String token) {
+	public List<Noteinfo> getNotesByUserId(@PathVariable String token) {
 		List<Noteinfo> note = noteService.getNoteByUserId(token);
-		if (note != null) {
-			// return result;
-			return ResponseEntity.status(HttpStatus.CREATED)
-					.body(new NoteResponse(env.getProperty("211"),note,200));
-		}
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(new NoteResponse(env.getProperty("102"),note,200));
+	
+		return note;
+//		if (note != null) {
+//			// return result;
+//			return ResponseEntity.status(HttpStatus.CREATED)
+//					.body(new NoteResponse(env.getProperty("211"),note,200));
+//		}
+//		return ResponseEntity.status(HttpStatus.CREATED)
+//				.body(new NoteResponse(env.getProperty("102"),note,200));
 	}
 
 	/*
 	 * API to deleting the Note Details By _Id
 	 */
-	@DeleteMapping(value = "/{noteId}/users/{token}")
-	public ResponseEntity<NoteResponse> deleteNote(@PathVariable String noteId, @PathVariable String token) {
-		Noteinfo note = noteService.removeNotes(token, noteId);
+	@PutMapping(value = "/trash/{token}")
+	public ResponseEntity<NoteResponse> deleteNote(@RequestBody TrashNotes notes, @PathVariable String token) {
+		Noteinfo note = noteService.removeNotes(token, notes.getNid());
 		
 			return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new NoteResponse(env.getProperty("203"),note,200));
@@ -119,17 +122,24 @@ public class NotesController {
 	/*
 	 * API for pin a Note
 	 */
-	@PutMapping("/pin/{noteId}/users/{token}")
-	public ResponseEntity<NoteResponse> pin(@PathVariable String noteId, @PathVariable String token) {
-		  Noteinfo note = noteService.pinNote(noteId, token);
+	@PutMapping("/pin/{token}")
+	public ResponseEntity<NoteResponse> pin(@RequestBody PinDto pin, @PathVariable String token) {
+		  Noteinfo note = noteService.pinNote(pin.getNid(), token);
 		   return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new NoteResponse(env.getProperty("205"),note,200));
 	}
 
+	@PutMapping("/unpin/{token}")
+	public ResponseEntity<NoteResponse> unpin(@RequestBody PinDto pin, @PathVariable String token) {
+		  Noteinfo note = noteService.unpinNote(pin.getNid(), token);
+		   return ResponseEntity.status(HttpStatus.CREATED)
+					.body(new NoteResponse(env.getProperty("205"),note,200));
+	}
+	
 	/* API for archieve a Note */
-	@PutMapping("/archieve/{noteId}/users/{token}")
-	public ResponseEntity<NoteResponse> archieve(@PathVariable String noteId, @PathVariable String token) {
-		    Noteinfo note = noteService.archieveNote(noteId, token);
+	@PutMapping("/archieve/{token}")
+	public ResponseEntity<NoteResponse> archieve(@RequestBody TrashNotes archieve, @PathVariable String token) {
+		    Noteinfo note = noteService.archieveNote(archieve.getNid(), token);
 		    return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new NoteResponse(env.getProperty("206"),note,200));
 	}
@@ -137,17 +147,17 @@ public class NotesController {
 	/*
 	 * API for updating color to a Note
 	 */
-	@PutMapping("/{colour}/{noteId}/users/{token}")
-	public ResponseEntity<NoteResponse> addColour(@PathVariable String noteId, @PathVariable String colour,
+	@PutMapping("/color/{token}")
+	public ResponseEntity<NoteResponse> addColour(@RequestBody com.bridgelabz.fundoonote.dto.color color, @PathVariable String colour,
 			@PathVariable String token) {
-		   String note = noteService.addColour(noteId, token, colour);
+		   String note = noteService.addColour(color.getNid(), token, color.getColour());
 		   return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new NoteResponse(env.getProperty("207"),note,200));
 
 	}
 
 	/* API for getting all archieve notes Notes */
-	@GetMapping("/notes/getAllArchieve/users/{token}")
+	@GetMapping("/getAllArchieve/{token}")			
 	public ResponseEntity<NoteResponse> getArchieve(@PathVariable String token) {
 		  List<Noteinfo> note = noteService.getarchieved(token);
 		  return ResponseEntity.status(HttpStatus.CREATED)
@@ -157,7 +167,7 @@ public class NotesController {
 	/*
 	 * API for getting all trashed Notes
 	 */
-	@GetMapping("/getAlltrashed/users/{token}")
+	@GetMapping("/getAlltrashed/{token}")
 	public ResponseEntity<NoteResponse> getTrashed(@PathVariable String token) {
 	        List<Noteinfo> note = noteService.getAlltrashednotes(token);
 	        return ResponseEntity.status(HttpStatus.CREATED)
@@ -211,7 +221,7 @@ public class NotesController {
 
 	@GetMapping(value = "/notes/descSortByTitle")
 	public ResponseEntity<NoteResponse> descSortByNoteTitle() {
-		List<String> note = noteService.sortByName();
+		List<Noteinfo> note = noteService.sortByName();
 		 return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new NoteResponse(env.getProperty("213"),note,200));
 	}
