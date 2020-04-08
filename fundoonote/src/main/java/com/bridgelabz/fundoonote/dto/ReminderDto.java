@@ -12,15 +12,37 @@ import lombok.ToString;
 @ToString
 public class ReminderDto {
 
-	private LocalDateTime remainder;
+	private String remainder;
+    private long nid;
+    
+    
+	public long getNid() {
+		return nid;
+	}
 
-	public LocalDateTime getRemainder() {
+	public void setNid(long nid) {
+		this.nid = nid;
+	}
+
+	public String getRemainder() {
 		return remainder;
 	}
 
-	public void setRemainder(LocalDateTime remainder) {
+	public void setRemainder(String remainder) {
 		this.remainder = remainder;
 	}
 
 	
+
+//	public LocalDateTime getRemainder() {
+//		return remainder;
+//	}
+//
+//	public void setRemainder(LocalDateTime remainder) {
+//		this.remainder = remainder;
+//	}
+
+	
+
+
 }

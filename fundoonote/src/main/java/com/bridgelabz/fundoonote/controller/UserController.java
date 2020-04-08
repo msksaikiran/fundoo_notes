@@ -52,14 +52,23 @@ public class UserController {
 		if (result.hasErrors())
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
 					.body(new UserResponse(result.getAllErrors().get(0).getDefaultMessage(), "200"));
+		
 		String token = userService.login(user);
 		if (token != null) {
 			UserResponse userr = new UserResponse(token, env.getProperty("100"), user);
 			return new ResponseEntity<>(userr,HttpStatus.OK);
-//			return ResponseEntity.status(HttpStatus.ACCEPTED)
-//					.body(new UserResponse(token, env.getProperty("100"), user));
+
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new UserResponse(env.getProperty("106"), "", user));
+
+	}
+	
+	@PostMapping(value = "/getimageurl/{token}")
+	public ResponseEntity<UserResponse> imageurl(@PathVariable String token) {
+		
+		User url = userService.getImageUrl(token);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new UserResponse(env.getProperty("101"), "200-ok", url));
 
 	}
 
@@ -69,7 +78,6 @@ public class UserController {
 
 	@PostMapping(value = "/add-user")
 	public ResponseEntity<UserResponse> register(@Valid @RequestBody Register userRecord, BindingResult result) {
-		System.out.println("****");
 		if (result.hasErrors())
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
 					.body(new UserResponse(result.getAllErrors().get(0).getDefaultMessage(), "200"));
@@ -133,8 +141,8 @@ public class UserController {
 	}
 
 	
-	@PostMapping(value="/uploadProfile")
-    public Map<String, String> uploadProfile(@RequestPart(value = "file") MultipartFile file,@RequestPart("token") String token)
+	@PostMapping(value="/uploadProfile/{token}")
+    public Map<String, String> uploadProfile(@RequestBody MultipartFile file,@RequestPart("token") String token)
     {
         this.userService.uploadFileToS3Bucket(file, true,token);
 

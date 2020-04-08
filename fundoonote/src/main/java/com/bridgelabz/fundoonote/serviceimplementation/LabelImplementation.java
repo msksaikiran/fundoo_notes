@@ -54,9 +54,6 @@ public class LabelImplementation implements LabelService {
 	private JwtGenerator generate;
 
 	@Autowired
-	private NoteService noteService;
-
-	@Autowired
 	private Environment env;
 
 	@Transactional
@@ -71,7 +68,6 @@ public class LabelImplementation implements LabelService {
 
 		BeanUtils.copyProperties(labelDto,label);
 		user.getLabel().add(label);
-		//note.getLabel().add(label);
 		return labelRepository.save(label);
 
 	}
@@ -89,7 +85,7 @@ public class LabelImplementation implements LabelService {
 		
 		try {
 
-			note.getLabel().add(lables);
+		    note.getLabel().add(lables);
 			
 
 		} catch (Exception ae) {
@@ -102,6 +98,41 @@ public class LabelImplementation implements LabelService {
 
 	}
 
+	@Transactional
+	@Override
+	public Label removeLabelToNotes(long nId,long lId,String token) {
+
+		
+        Noteinfo note = noteRepository.findNoteById(nId)
+       		 .orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
+            
+		Label lables = labelRepository.findLableById(lId)
+				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
+		
+		try {
+
+			note.getLabel().remove(lables);
+			
+
+		} catch (Exception ae) {
+			ae.printStackTrace();
+			throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,
+					"Notes not added to Label due to Internel server problem");
+		}
+
+		return lables;
+
+	}
+	
+	@Override
+	public ArrayList<Noteinfo> LabelNote(long lId) {
+		ArrayList<Noteinfo> list=new ArrayList<>();
+		List<Long> labelNote = labelRepository.findLabelNote(lId);
+		for(long lb:labelNote) {
+			list.add(noteRepository.findNoteById(lb).orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104"))));
+		}
+		return list;
+	}
 	
 	@Transactional
 	@Override
@@ -148,6 +179,7 @@ public class LabelImplementation implements LabelService {
 				data = list.stream().filter(t -> t.getlId() == lId).findFirst()
 						.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
 
+				//labelRepository.findLabelNote(lId);
 				labelRepository.delete(data);
 
 				return data;
@@ -159,6 +191,7 @@ public class LabelImplementation implements LabelService {
 		return null;
 	}
 
+	
 	@Override
 	public List<String> ascsortByName() {
 		ArrayList<String> lis = new ArrayList<>();
@@ -239,33 +272,3 @@ public class LabelImplementation implements LabelService {
 	
 
 }
-
-//public boolean addExistingNotesToLabel(String labelTitle, String token, long labelId) {
-//	long userId = (long) generate.parseJWT(token);
-//
-//	List<Noteinfo> notes = noteRepository.findNoteByUserId(userId);
-//
-//	Label label = labelRepository.findLableById(labelId);
-//	Noteinfo noteInfo=null;
-//	
-//	LableDto labelDto=new LableDto();
-//	labelDto.setLName(labelTitle);
-//	if(label==null) {
-//		this.createLable(labelDto, token);
-//		this.addNotesToLabel(labelDto, token, label.getLId());
-//		
-//	}else {
-//	
-//		 noteInfo = notes.stream().filter(t -> t.getTitle() == noteTitle).findFirst()
-//				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
-//	}
-//	try {
-//		
-//		return noteInfo.getLabel().add(label);
-//		//return label.getNote().add(noteInfo);
-//
-//	} catch (Exception ae) {
-//		throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,
-//				"Notes not added to Label due to Internel server problem");
-//	}
-//}

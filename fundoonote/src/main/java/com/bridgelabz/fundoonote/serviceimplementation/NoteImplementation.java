@@ -6,26 +6,31 @@ package com.bridgelabz.fundoonote.serviceimplementation;
  *     
  */
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 //import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import com.bridgelabz.fundoonote.dto.NoteDto;
 import com.bridgelabz.fundoonote.dto.ReminderDto;
+import com.bridgelabz.fundoonote.dto.TrashNotes;
 import com.bridgelabz.fundoonote.dto.UpdateNote;
 import com.bridgelabz.fundoonote.entity.Noteinfo;
 import com.bridgelabz.fundoonote.entity.User;
@@ -34,8 +39,11 @@ import com.bridgelabz.fundoonote.exception.UserException;
 import com.bridgelabz.fundoonote.repository.NoteRepository;
 //import com.bridgelabz.fundoonote.repository.SearchResult;
 import com.bridgelabz.fundoonote.repository.UserRepository;
+import com.bridgelabz.fundoonote.service.IServiceElasticSearch;
+//import com.bridgelabz.fundoonote.service.IServiceElasticSearch;
 import com.bridgelabz.fundoonote.service.NoteService;
 import com.bridgelabz.fundoonote.utility.JwtGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 @PropertySource("classpath:message.properties")
@@ -52,23 +60,25 @@ public class NoteImplementation implements NoteService {
 	@Autowired
 	private Environment env;
 
-	// @Autowired
-	// ElasticsearchOperations operations;
-
-	// @Autowired
-	// SearchResult result;
+	@Autowired
+	private RestHighLevelClient client;
+	@Autowired
+	private ObjectMapper mapper;
+	@Autowired
+	private IServiceElasticSearch iServiceElasticSearch;
 
 	@Transactional
 	@Override
 	public Noteinfo addNotes(NoteDto notes, String token) {
 		Noteinfo note = new Noteinfo();
-
+        
 		Long id = (Long) generate.parseJWT(token);
 		User user = userRepository.getUserById(id)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 
 		try {
 			BeanUtils.copyProperties(notes, note);
+			
 			note.setColour("ash");
 			note.setIsArchieved(0);
 			note.setCreatedDateAndTime(LocalDateTime.now());
@@ -78,8 +88,15 @@ public class NoteImplementation implements NoteService {
 			note.setTitle(notes.getTitle());
 			note.setDescription(notes.getDescription());
 			user.getNote().add(note);
+			Noteinfo notess = noteRepository.save(note);
+			
+			try {
+				iServiceElasticSearch.createNote(notess);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
-			return noteRepository.save(note);
+			return notess;
 
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("104"));
@@ -97,18 +114,19 @@ public class NoteImplementation implements NoteService {
 		/*
 		 * java 8 streams feature
 		 */
-		//int nId = Integer.parseInt(id);
-
+		
 		Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
 				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
 		try {
 			data.setTitle(updateDto.getTitle());
 			data.setUpDateAndTime(LocalDateTime.now());
-			noteRepository.save(data);
+			Noteinfo notess = noteRepository.save(data);
 
+			iServiceElasticSearch.upDateNote(notess);
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("209"));
 		}
+		
 		return notes;
 	}
 
@@ -123,8 +141,6 @@ public class NoteImplementation implements NoteService {
 		if (notes.isEmpty())
 			return null;
 
-		//int nId = Integer.parseInt(id);
-
 		Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
 				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
 		try {
@@ -132,6 +148,7 @@ public class NoteImplementation implements NoteService {
 		    data.setIsArchieved(0);
 			noteRepository.save(data);
 
+			iServiceElasticSearch.deleteNote(String.valueOf(nId));
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("210"));
 		}
@@ -175,6 +192,7 @@ public class NoteImplementation implements NoteService {
 		/*
 		 * java 8 lambda feature for sorting
 		 */
+		
 		// Notelist.forEach(t -> {
 		// noteTitles.add(t.getTitle());
 		// });
@@ -190,9 +208,6 @@ public class NoteImplementation implements NoteService {
 
 		if (notes.isEmpty())
 			return null;
-		/*
-		 * java 8 streams feature
-		 */
 		Noteinfo data;
 
 		data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
@@ -201,8 +216,9 @@ public class NoteImplementation implements NoteService {
 			data.setIsPinned(0);
 			data.setIsArchieved(1);
 			data.setUpDateAndTime(LocalDateTime.now());
-			noteRepository.save(data);
+			Noteinfo notess = noteRepository.save(data);
 
+			iServiceElasticSearch.upDateNote(notess);
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("206"));
 		}
@@ -214,10 +230,6 @@ public class NoteImplementation implements NoteService {
 	@Override
 	public Noteinfo pinNote(long nId, String token) {
 		List<Noteinfo> notes = this.getNoteByUserId(token);
-		/*
-		 * java 8 streams feature
-		 */
-		//int nId = Integer.parseInt(id);
 		try {
 			if (notes != null) {
 				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
@@ -225,7 +237,10 @@ public class NoteImplementation implements NoteService {
 				data.setIsPinned(1);
 				data.setIsArchieved(0);
 				data.setUpDateAndTime(LocalDateTime.now());
-				return noteRepository.save(data);
+				Noteinfo notess = noteRepository.save(data);
+				
+				iServiceElasticSearch.upDateNote(notess);
+				return notess;
 			}
 		} catch (Exception ae) {
 			ae.printStackTrace();
@@ -239,10 +254,7 @@ public class NoteImplementation implements NoteService {
 	@Override
 	public Noteinfo unpinNote(long nId, String token) {
 		List<Noteinfo> notes = this.getNoteByUserId(token);
-		/*
-		 * java 8 streams feature
-		 */
-		//int nId = Integer.parseInt(id);
+		
 		try {
 			if (notes != null) {
 				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
@@ -250,7 +262,11 @@ public class NoteImplementation implements NoteService {
 				data.setIsPinned(0);
 				data.setIsArchieved(0);
 				data.setUpDateAndTime(LocalDateTime.now());
-				return noteRepository.save(data);
+				
+                Noteinfo notess = noteRepository.save(data);
+				
+				iServiceElasticSearch.upDateNote(notess);
+				return notess;
 			}
 		} catch (Exception ae) {
 			ae.printStackTrace();
@@ -265,9 +281,10 @@ public class NoteImplementation implements NoteService {
 	public List<Noteinfo> getAlltrashednotes(String token) {
 
 		long userid = (Long) generate.parseJWT(token);
-		User userData = userRepository.getUserById(userid)
+		   userRepository.getUserById(userid)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 		try {
+			
 			return noteRepository.restoreNote(userid);
 
 		} catch (Exception e) {
@@ -280,7 +297,7 @@ public class NoteImplementation implements NoteService {
 	public List<Noteinfo> getarchieved(String token) {
 
 		long userid = (long) generate.parseJWT(token);
-		User userData = userRepository.getUserById(userid)
+		  userRepository.getUserById(userid)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 		try {
 			return noteRepository.getArchievedNotes(userid);
@@ -307,7 +324,10 @@ public class NoteImplementation implements NoteService {
 						.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
 
 				data.setColour(colour);
-				noteRepository.save(data);
+                Noteinfo notess = noteRepository.save(data);
+				
+				iServiceElasticSearch.upDateNote(notess);
+				
 
 			}
 		} catch (Exception ae) {
@@ -321,7 +341,7 @@ public class NoteImplementation implements NoteService {
 	public List<Noteinfo> getAllPinneded(String token) {
 
 		long userid = (long) generate.parseJWT(token);
-		User userData = userRepository.getUserById(userid)
+		    userRepository.getUserById(userid)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
 		try {
 			List<Noteinfo> list = noteRepository.getPinnededNotes(userid);
@@ -335,23 +355,24 @@ public class NoteImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	public String addReminder(String id, String token, ReminderDto reminder) {
+	public String addReminder(long nId, String token, ReminderDto reminder) {
 		List<Noteinfo> notes = this.getNoteByUserId(token);
 		/*
 		 * java 8 streams feature
 		 */
-		int nId = Integer.parseInt(id);
+		
 		try {
 			if (notes != null) {
 				Noteinfo noteData = notes.stream().filter(t -> t.getNid() == nId).findFirst()
 						.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
-				// data.ifPresent(noteData -> {
+				
 				noteData.setReminder(reminder.getRemainder());
-				noteRepository.save(noteData);
-				// });
-				if (noteData.equals(Optional.empty())) {
-					return "notes not pinned";
-				}
+				//noteRepository.save(noteData);
+                Noteinfo notess = noteRepository.save(noteData);
+				
+				iServiceElasticSearch.upDateNote(notess);
+				
+				
 			}
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -363,19 +384,21 @@ public class NoteImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	public String removeReminder(String id, String token) {
+	public String removeReminder(TrashNotes noteid, String token) {
 		List<Noteinfo> notes = this.getNoteByUserId(token);
 		/*
 		 * java 8 streams feature
 		 */
-		int nId = Integer.parseInt(id);
+		//int nId = Integer.parseInt(id);
 		try {
 			if (notes != null) {
-				Noteinfo noteData = notes.stream().filter(t -> t.getNid() == nId).findFirst()
+				Noteinfo noteData = notes.stream().filter(t -> t.getNid() == noteid.getNid()).findFirst()
 						.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
 
 				noteData.setReminder(null);
-				noteRepository.save(noteData);
+                Noteinfo notess = noteRepository.save(noteData);
+				
+				iServiceElasticSearch.upDateNote(notess);
 
 			}
 		} catch (Exception ae) {
@@ -387,6 +410,7 @@ public class NoteImplementation implements NoteService {
 
 	@Transactional
 	@Override
+	@Cacheable(value = "twenty-second-cache", key = "'tokenInCache'+#token", condition = "#isCacheable != null && #isCacheable")
 	public List<Noteinfo> getNoteByUserId(String token) {
 
 		long uId = (long) generate.parseJWT(token);
@@ -416,16 +440,5 @@ public class NoteImplementation implements NoteService {
 		return notes;
 
 	}
-
-	// @PostConstruct
-	// @Transactional
-	// public void loadAll(){
-	//
-	// operations.putMapping(Noteinfo.class);
-	// System.out.println("Loading Data");
-	// // result.saveAll(this.getAllNotes());
-	// System.out.printf("Loading Completed");
-	//
-	// }
 
 }

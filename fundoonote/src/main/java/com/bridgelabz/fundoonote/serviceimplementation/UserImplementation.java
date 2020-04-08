@@ -24,7 +24,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.regions.Region;
@@ -33,16 +32,18 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.bridgelabz.fundookeep.constants.Constants;
 import com.bridgelabz.fundoonote.dto.EmailVeify;
 import com.bridgelabz.fundoonote.dto.Register;
 import com.bridgelabz.fundoonote.dto.UserLogin;
 import com.bridgelabz.fundoonote.entity.User;
 import com.bridgelabz.fundoonote.exception.UserException;
 import com.bridgelabz.fundoonote.repository.UserRepository;
-import com.bridgelabz.fundoonote.service.RabbitMQSender;
 import com.bridgelabz.fundoonote.service.UserService;
+import com.bridgelabz.fundoonote.utility.Email;
 import com.bridgelabz.fundoonote.utility.JwtGenerator;
-import com.bridgelabz.fundoonote.utility.MailService;
+import com.bridgelabz.fundoonote.utility.MailService2;
+import com.bridgelabz.fundoonote.utility.RabbitMQSender;
 
 @Service
 @PropertySource("classpath:message.properties")
@@ -61,36 +62,39 @@ public class UserImplementation implements UserService {
 	private Environment env;
 
 	@Autowired
-	private MailService mail;
+	private MailService2 mail;
 
 	private String awsS3AudioBucket;
 
 	private AmazonS3 amazonS3;
 
-
-//	 @Autowired
-//	 RabbitMQSender rabbitMQSender;
+	 @Autowired
+	 RabbitMQSender rabbitMQSender;
 
 	@Transactional
 	@Override
 	public String login(UserLogin userdto) {
-
-		User userDetails = new User();
 
 		User user = userRepository.findUserByEmail(userdto.getEmail())
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("103")));
 
 		try {
 
-			BeanUtils.copyProperties(userdto, userDetails);
+			
 			if ((user.isVerified() == true) && passEncryption.matches(userdto.getPassword(), user.getPassword())) {
 				/*
 				 * send the email verification to the register user
 				 */
 				String token = generate.jwtToken(user.getUid());
+				Email email =new Email();
 				this.mailservice();
-				mail.senMail(userDetails, senderimp, token);
-				// rabbitMQSender.send(token);
+				
+				email.setEmailId(user.getEmail());
+			    email.setToken(token);
+			    
+				rabbitMQSender.send(email);
+		        rabbitMQSender.Reciver(email);		
+		        
 				return token;
 			} else {
 				throw new UserException(HttpStatus.BAD_REQUEST, env.getProperty("105"));
@@ -102,6 +106,14 @@ public class UserImplementation implements UserService {
 		}
 	}
 
+	@Override
+	public User getImageUrl(String token) {
+		long id = (Long) generate.parseJWT(token);
+		User url = userRepository.findUserByProfile(id)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("103")));
+		return url;
+	}
+	
 	@Transactional
 	@Override
 	public User register(Register userDto) {
@@ -126,11 +138,17 @@ public class UserImplementation implements UserService {
 			/*
 			 * send the email verification to the register user
 			 */
+			
 			String token = generate.jwtToken(userDetails.getUid());
+			Email email =new Email();
 			this.mailservice();
-			mail.senMail(userDetails, senderimp, token);
-
-			// rabbitMQSender.send(token);
+			
+			email.setEmailId(result.getEmail());
+		    email.setToken(token);
+		    
+			rabbitMQSender.send(email);
+	        rabbitMQSender.Reciver(email);		
+			 
 			return result;
 
 		} catch (Exception ae) {
@@ -222,7 +240,7 @@ public class UserImplementation implements UserService {
 
 		String fileName = multipartFile.getOriginalFilename();
 
-		user.setProfile(fileName + " uploaded");
+		user.setProfile(fileName);
 		try {
 			// creating the file in the server (temporarily)
 			File file = new File(fileName);
@@ -231,7 +249,7 @@ public class UserImplementation implements UserService {
 			fos.close();
 
 			PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3AudioBucket, fileName, file);
-
+ 
 			if (enablePublicReadAccess) {
 				putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
 			}
@@ -260,5 +278,7 @@ public class UserImplementation implements UserService {
 		}
 		userRepository.save(user);
 	}
+
+	
 
 }

@@ -22,11 +22,8 @@ public interface LabelRepository extends CrudRepository<Label, Integer> {
 	@Query(value = "select * from label where lable_name=?", nativeQuery = true)
 	Label findLableByName(String labelName);
 
+	@Query(value="select note_nid from noteinfo_label where label_l_id=?",nativeQuery = true)
+	List<Long> findLabelNote(long lId);
+
 	
-
 }
-
-
-//SELECT users.email, users.password, data.data_1, data.data_2
-//FROM users,data 
-//WHERE users.email='$user_email' AND users.user_id=data.user_id";

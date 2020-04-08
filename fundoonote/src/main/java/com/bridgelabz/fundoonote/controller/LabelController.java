@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoonote.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import com.bridgelabz.fundoonote.dto.NoteDto;
 import com.bridgelabz.fundoonote.dto.UpdateLabel;
 import com.bridgelabz.fundoonote.dto.label;
 import com.bridgelabz.fundoonote.entity.Label;
+import com.bridgelabz.fundoonote.entity.Noteinfo;
 import com.bridgelabz.fundoonote.response.LabelResponse;
 import com.bridgelabz.fundoonote.response.Response;
 import com.bridgelabz.fundoonote.service.LabelService;
@@ -60,6 +62,22 @@ public class LabelController {
 	}
 	
 
+	@PostMapping(value = "/removelabels/{token}")
+	public ResponseEntity<LabelResponse> removeLabelToNotes(@RequestBody label label, @PathVariable String token) {
+
+		Label lnote = labelService.removeLabelToNotes(label.getnId(),label.getlId(),token);
+		
+		 return ResponseEntity.status(HttpStatus.CREATED)
+					.body(new LabelResponse(env.getProperty("301"),200,lnote));
+	}
+	@GetMapping(value = "/getlabelNotes/{lId}")
+	public ResponseEntity<LabelResponse> getLabelNotes(@PathVariable long lId) {
+
+		ArrayList<Noteinfo> lnote = labelService.LabelNote(lId);
+		
+		 return ResponseEntity.status(HttpStatus.CREATED)
+					.body(new LabelResponse(env.getProperty("301"),200,lnote));
+	}
 	
 	/*
 	 * API to add the update Label Details

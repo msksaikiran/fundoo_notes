@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.bridgelabz.fundoonote.dto.NoteDto;
 import com.bridgelabz.fundoonote.dto.ReminderDto;
+import com.bridgelabz.fundoonote.dto.TrashNotes;
 import com.bridgelabz.fundoonote.dto.UpdateNote;
 import com.bridgelabz.fundoonote.entity.Noteinfo;
 import com.bridgelabz.fundoonote.exception.NoteException;
@@ -40,11 +41,13 @@ public interface NoteService {
 
 	List<Noteinfo> getAllPinneded(String token);
 
-	String addReminder(String id, String token, ReminderDto reminder);
+	String addReminder(long l, String token, ReminderDto reminder);
 
-	String removeReminder(String id, String token);
+	String removeReminder(TrashNotes noteid, String token);
 
 	Noteinfo unpinNote(long nid, String token);
+
+	
 	
 
 }

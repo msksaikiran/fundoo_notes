@@ -6,7 +6,6 @@ import com.bridgelabz.fundoonote.entity.User;
 
 public interface IEmailService {
 	
-	void senMail(User user,JavaMailSenderImpl mailSender,String token);
-	String getlink(String link,String id);
-
+	void send(Email emailid);
+	
 }

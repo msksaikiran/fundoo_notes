@@ -28,5 +28,7 @@ public interface UserService {
 
     User getUser(String token, boolean isCacheable);
 
+	User getImageUrl(String token);
+
 
 }

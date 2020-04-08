@@ -13,10 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+//@Document(indexName = "fundoo",type = "note",shards = 2)
 @Entity
 @Data
 @NoArgsConstructor
@@ -43,9 +46,8 @@ public class Noteinfo {
 	@Column
 	private String colour;
 	@Column
-	private LocalDateTime reminder;
-	
-	
+	private String reminder;
+		
 	@ManyToMany(cascade = CascadeType.ALL)
 	public List<Label> label;
 
@@ -139,19 +141,19 @@ public class Noteinfo {
 		this.colour = colour;
 	}
 
+	
+	public List<Label> getLabel() {
+		return label;
+	}
 
-	public LocalDateTime getReminder() {
+
+	public String getReminder() {
 		return reminder;
 	}
 
 
-	public void setReminder(LocalDateTime reminder) {
+	public void setReminder(String reminder) {
 		this.reminder = reminder;
-	}
-
-
-	public List<Label> getLabel() {
-		return label;
 	}
 
 

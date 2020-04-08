@@ -1,48 +1,41 @@
 package com.bridgelabz.fundoonote.utility;
 
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import com.bridgelabz.fundoonote.entity.User;
-//
-//
 @Component
-public class MailService {
+public class MailService implements IEmailService {
 	
-//	@Autowired 
-//	private static  RabbitMQSender rabbitSender;
+	
+	private JavaMailSender javaMailSender;
 
 	@Autowired
-	private JwtGenerator generate;
-		
+	public MailService(JavaMailSender javaMailSender) {
+		this.javaMailSender = javaMailSender;
+	}
+
+	@Autowired
+	RabbitMQSender rabbitsender;
+
+	@Override
 	//@RabbitListener(queues = "note.queue")
-	public void senMail(User user,JavaMailSenderImpl mailSender,String token) {
+	public void send(Email user) {
+		System.out.println("Sending mail to receiver");
+		
 		SimpleMailMessage message=new SimpleMailMessage();
-		message.setTo(user.getEmail());
+		message.setTo(user.getEmailId());
 		message.setSubject("Registration conformation.");
-		message.setText("Hello "+ user.getName()+" link to verify the User:\n"+"http://localhost:8083/users/verify/"+token);
-	    mailSender.send(message);
-		//rabbitSender.send(user);
+		message.setText("Hello  link to verify the User:\n"+"http://localhost:8083/users/verify/"+user.getToken());
+	    javaMailSender.send(message);
+
+		System.out.println("email sent successfully");
 	}
-	public void senEmailMail(User user,JavaMailSenderImpl mailSender,String token) {
-		SimpleMailMessage message=new SimpleMailMessage();
-		message.setTo(user.getEmail());
-		message.setSubject("Registration conformation.");
-		message.setText("Hello "+ user.getName()+" link to verify the User:\n"+"http://localhost:4200/resetPassword/"+token);
-	    mailSender.send(message);
-		//rabbitSender.send(user);
-	}
+
+	
+
+	
 }
-//
-//
-//	
-//
-//	@Override
-//	public String getlink(String link, String id) {
-//		return link + generate.jwtToken(Long.parseLong(id));
-//	}
-
-
-//}

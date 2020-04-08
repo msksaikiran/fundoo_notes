@@ -7,6 +7,7 @@ import com.bridgelabz.fundoonote.dto.LableDto;
 import com.bridgelabz.fundoonote.dto.NoteDto;
 import com.bridgelabz.fundoonote.dto.UpdateLabel;
 import com.bridgelabz.fundoonote.entity.Label;
+import com.bridgelabz.fundoonote.entity.Noteinfo;
 
 public interface LabelService {
 
@@ -32,6 +33,9 @@ public interface LabelService {
 
 	Label updateLabel(String token, long lId, UpdateLabel LabelDto);
 
+	ArrayList<Noteinfo> LabelNote(long lId);
+
+	Label removeLabelToNotes(long nId, long lId, String token);
 	
 	
 }

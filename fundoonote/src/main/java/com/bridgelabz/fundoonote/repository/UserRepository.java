@@ -38,4 +38,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
 	@Query(value = "select * from noteinfo where user_id=?", nativeQuery = true)
 	List<Noteinfo> findNoteByUserId(int id);
+
+	@Query(value="select * from user where uid=?",nativeQuery=true)
+	Optional<User> findUserByProfile(long id);
 }
