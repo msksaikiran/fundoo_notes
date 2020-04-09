@@ -140,9 +140,9 @@ public class UserController {
 		return userService.getUser(token,isCacheable);
 	}
 
-	
+	//@PostMapping(value = "/getimageurl/{token}")
 	@PostMapping(value="/uploadProfile/{token}")
-    public Map<String, String> uploadProfile(@RequestBody MultipartFile file,@RequestPart("token") String token)
+    public Map<String, String> uploadProfile(@RequestBody MultipartFile file,@PathVariable String token)
     {
         this.userService.uploadFileToS3Bucket(file, true,token);
 

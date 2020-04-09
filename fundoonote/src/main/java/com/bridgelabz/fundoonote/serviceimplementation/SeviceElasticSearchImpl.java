@@ -1,9 +1,12 @@
 package com.bridgelabz.fundoonote.serviceimplementation;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -49,8 +52,9 @@ public class SeviceElasticSearchImpl implements IServiceElasticSearch {
 //		CreateIndexRequest request = new CreateIndexRequest(INDEX);
 //	    request.mapping("_doc", XContentType.JSON);
 //	    CreateIndexResponse response = client.indices().create(request, RequestOptions.DEFAULT);
-	    
-		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, String.valueOf(note.getNid())).source(documentMappper);
+
+		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, String.valueOf(note.getNid()))
+				.source(documentMappper);
 		IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
 		return indexResponse.getResult().name();
 	}
@@ -91,7 +95,7 @@ public class SeviceElasticSearchImpl implements IServiceElasticSearch {
 	}
 
 	private List<Noteinfo> getSearchResult(SearchResponse searchResponse) {
-		System.out.println("*********Response************");
+		
 		SearchHit[] searchHits = searchResponse.getHits().getHits();
 		List<Noteinfo> notesDoc = new ArrayList<Noteinfo>();
 		if (searchHits.length > 0) {
@@ -103,21 +107,34 @@ public class SeviceElasticSearchImpl implements IServiceElasticSearch {
 
 	}
 
-	@Override
-	public List<Noteinfo> searchByTitle(String title, String token) throws IOException {
-		System.out.println("************");
-		Long userId = tokenservice.parseJWT(token);
-		QueryBuilder queryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("*", title));
-				//.filter(QueryBuilders.termsQuery("userId", String.valueOf(userId)));
+	public List<Noteinfo> getNoteByTitleAndDescription(String text) {
+		
+		SearchRequest searchRequest = buildSearchRequest(INDEX, TYPE);
+		
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-		searchSourceBuilder.query(queryBuilder);
-		SearchRequest searchRequest = new SearchRequest();
+		QueryBuilder query = QueryBuilders.boolQuery()
+				.should(QueryBuilders.queryStringQuery(text).lenient(true).field("title").field("description"))
+				.should(QueryBuilders.queryStringQuery("*" + text + "*").lenient(true).field("title")
+						.field("description"));
+		searchSourceBuilder.query(query);
 		searchRequest.source(searchSourceBuilder);
-		SearchResponse response = null;
-
-		response = client.search(searchRequest, RequestOptions.DEFAULT);
-
-		return getSearchResult(response);
+		SearchResponse searchResponse = null;
+		try {
+			searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return getSearchResult(searchResponse);
 	}
 
+
+
+	private SearchRequest buildSearchRequest(String index, String type) {
+		
+		SearchRequest searchRequest = new SearchRequest();
+		searchRequest.indices(index);
+		searchRequest.types(type);
+
+		return searchRequest;
+	}
 }

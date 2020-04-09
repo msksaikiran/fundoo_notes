@@ -213,7 +213,15 @@ public class NotesController {
 	
 	@GetMapping("/searchTitle")
 	public List<Noteinfo> searchTitle(@RequestParam String title, @RequestHeader String token) throws IOException {
-		return esService.searchByTitle(title, token);
+		//return esService.searchByTitle(title, token);
+		List<Noteinfo> data =null;
+		try {
+			data = esService.getNoteByTitleAndDescription(title);
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+		}
+		return data;
 	}
 	
 	/*

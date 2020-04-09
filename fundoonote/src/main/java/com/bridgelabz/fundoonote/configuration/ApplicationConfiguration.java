@@ -14,7 +14,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.bridgelabz.fundookeep.constants.Constants;
 import com.bridgelabz.fundoonote.utility.MailService2;
 
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 @Configuration
+@EnableSwagger2
 public class ApplicationConfiguration {
 	
 	@Bean
@@ -29,24 +36,30 @@ public class ApplicationConfiguration {
 
 	}
 	
-	
 	@Bean
-	public Exchange mailExchange() {
-		return new DirectExchange(Constants.EXCHANGE_NAME);
+	public Docket api() {
+		return new Docket(DocumentationType.SWAGGER_2).select()
+				.apis(RequestHandlerSelectors.basePackage("com.bridgelabz.fundoonote.controller"))
+				.paths(PathSelectors.any()).build();
+
 	}
-	
-	@Bean
-	public Queue mailQueue() {
-		return new Queue(Constants.QUEUE_NAME);
-	}
-	
-	@Bean
-	public Binding declareBinding(Queue mailQueue, DirectExchange mailExchange) {
-		return BindingBuilder.bind(mailQueue).to(mailExchange).with(Constants.ROUTING_KEY);
-	}
-	
-	@Bean
-	public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
-		return new Jackson2JsonMessageConverter();
-	}
+//	@Bean
+//	public Exchange mailExchange() {
+//		return new DirectExchange(Constants.EXCHANGE_NAME);
+//	}
+//	
+//	@Bean
+//	public Queue mailQueue() {
+//		return new Queue(Constants.QUEUE_NAME);
+//	}
+//	
+//	@Bean
+//	public Binding declareBinding(Queue mailQueue, DirectExchange mailExchange) {
+//		return BindingBuilder.bind(mailQueue).to(mailExchange).with(Constants.ROUTING_KEY);
+//	}
+//	
+//	@Bean
+//	public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
+//		return new Jackson2JsonMessageConverter();
+//	}
 }

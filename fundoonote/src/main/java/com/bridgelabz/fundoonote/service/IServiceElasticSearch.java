@@ -17,6 +17,8 @@ public interface IServiceElasticSearch {
 
 	public String deleteNote(String id) throws IOException;
 
-	List<Noteinfo> searchByTitle(String title, String token) throws IOException;
-
+//	List<Noteinfo> searchByTitle(String title, String token) throws IOException;
+//
+//	List<Noteinfo> searchByTechnology(String technology) throws Exception;
+	 List<Noteinfo> getNoteByTitleAndDescription(String text);
 }
