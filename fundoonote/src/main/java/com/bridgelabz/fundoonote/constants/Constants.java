@@ -1,4 +1,4 @@
-package com.bridgelabz.fundookeep.constants;
+package com.bridgelabz.fundoonote.constants;
 
 public class Constants {
 

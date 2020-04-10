@@ -32,7 +32,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.bridgelabz.fundookeep.constants.Constants;
+import com.bridgelabz.fundoonote.constants.Constants;
 import com.bridgelabz.fundoonote.dto.EmailVeify;
 import com.bridgelabz.fundoonote.dto.Register;
 import com.bridgelabz.fundoonote.dto.UserLogin;

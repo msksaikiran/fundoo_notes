@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.bridgelabz.fundookeep.constants.Constants;
+import com.bridgelabz.fundoonote.constants.Constants;
 import com.bridgelabz.fundoonote.utility.MailService2;
 
 import springfox.documentation.builders.PathSelectors;

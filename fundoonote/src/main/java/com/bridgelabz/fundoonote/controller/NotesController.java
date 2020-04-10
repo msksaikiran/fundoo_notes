@@ -46,7 +46,7 @@ public class NotesController {
 	IServiceElasticSearch esService;
 
 	
-	/*
+	/**
 	 * API to add the Note Details
 	 */
 	@PostMapping(value = "/users/{token}")
@@ -63,7 +63,7 @@ public class NotesController {
 		}
 	}
 
-	/*
+	/**
 	 * API to Update the Note Details By Id
 	 */
 	@PutMapping(value = "/update/{token}")
@@ -77,7 +77,7 @@ public class NotesController {
 				.body(new NoteResponse(env.getProperty("204"),note,200));
 	}
 
-	/*
+	/**
 	 * API to getting the Note Details By Id
 	 */
 
@@ -92,7 +92,7 @@ public class NotesController {
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new NoteResponse(env.getProperty("204"),note,200));
 	}
-	/*
+	/**
 	 * API to getting the Note Details By User_Id
 	 */
 
@@ -110,12 +110,32 @@ public class NotesController {
 //				.body(new NoteResponse(env.getProperty("102"),note,200));
 	}
 
-	/*
+	/**
 	 * API to deleting the Note Details By _Id
 	 */
 	@PutMapping(value = "/trash/{token}")
 	public ResponseEntity<NoteResponse> deleteNote(@RequestBody TrashNotes notes, @PathVariable String token) {
 		Noteinfo note = noteService.removeNotes(token, notes.getNid());
+		
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(new NoteResponse(env.getProperty("203"),note,200));
+		
+		
+	}
+	
+	@PutMapping(value = "/restore/{token}")
+	public ResponseEntity<NoteResponse> restoreNote(@RequestBody TrashNotes notes, @PathVariable String token) {
+		Noteinfo note = noteService.restoreNotes(token, notes.getNid());
+		
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(new NoteResponse(env.getProperty("203"),note,200));
+		
+		
+	}
+	
+	@PostMapping(value = "/permenantDelete/{token}")
+	public ResponseEntity<NoteResponse> permenantDeleteNote(@RequestBody TrashNotes notes, @PathVariable String token) {
+		Noteinfo note = noteService.deleteNotes(token, notes.getNid());
 		
 			return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new NoteResponse(env.getProperty("203"),note,200));
@@ -212,7 +232,7 @@ public class NotesController {
 	}
 	
 	@GetMapping("/searchTitle")
-	public List<Noteinfo> searchTitle(@RequestParam String title, @RequestHeader String token) throws IOException {
+	public List<Noteinfo> searchTitle(@RequestParam String title) throws IOException {
 		//return esService.searchByTitle(title, token);
 		List<Noteinfo> data =null;
 		try {

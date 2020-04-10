@@ -47,7 +47,9 @@ public interface NoteService {
 
 	Noteinfo unpinNote(long nid, String token);
 
-	
+	Noteinfo restoreNotes(String token, long nId);
+
+	Noteinfo deleteNotes(String token, long nId);
 	
 
 }

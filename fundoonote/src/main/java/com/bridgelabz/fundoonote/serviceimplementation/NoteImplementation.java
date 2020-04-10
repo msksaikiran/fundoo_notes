@@ -61,10 +61,6 @@ public class NoteImplementation implements NoteService {
 	private Environment env;
 
 	@Autowired
-	private RestHighLevelClient client;
-	@Autowired
-	private ObjectMapper mapper;
-	@Autowired
 	private IServiceElasticSearch iServiceElasticSearch;
 
 	@Transactional
@@ -119,6 +115,7 @@ public class NoteImplementation implements NoteService {
 				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
 		try {
 			data.setTitle(updateDto.getTitle());
+			data.setDescription(updateDto.getDescription());
 			data.setUpDateAndTime(LocalDateTime.now());
 			Noteinfo notess = noteRepository.save(data);
 
@@ -154,7 +151,55 @@ public class NoteImplementation implements NoteService {
 		}
 		return notes.get(0);
 	}
+	@Transactional
+	@Override
+	public Noteinfo restoreNotes(String token, long nId) {
 
+		List<Noteinfo> notes = this.getNoteByUserId(token);
+		/*
+		 * java 8 streams feature
+		 */
+		if (notes.isEmpty())
+			return null;
+
+		Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
+				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+		try {
+		    data.setIsTrashed(0);
+		    //data.setIsArchieved(0);
+			noteRepository.save(data);
+
+			//iServiceElasticSearch.deleteNote(String.valueOf(nId));
+		} catch (Exception ae) {
+			ae.printStackTrace();
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("210"));
+		}
+		return notes.get(0);
+	}
+	@Transactional
+	@Override
+	public Noteinfo deleteNotes(String token, long nId) {
+
+		List<Noteinfo> notes = this.getNoteByUserId(token);
+		/*
+		 * java 8 streams feature
+		 */
+		if (notes.isEmpty())
+			return null;
+
+		Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
+				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+		try {
+		    data.setIsTrashed(0);
+		    //data.setIsArchieved(0);
+			noteRepository.delete(data);
+
+			//iServiceElasticSearch.deleteNote(String.valueOf(nId));
+		} catch (Exception ae) {
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("210"));
+		}
+		return notes.get(0);
+	}
 	@Transactional
 	@Override
 	public List<Noteinfo> getAllNotes() {
