@@ -43,23 +43,5 @@ public class ApplicationConfiguration {
 				.paths(PathSelectors.any()).build();
 
 	}
-//	@Bean
-//	public Exchange mailExchange() {
-//		return new DirectExchange(Constants.EXCHANGE_NAME);
-//	}
-//	
-//	@Bean
-//	public Queue mailQueue() {
-//		return new Queue(Constants.QUEUE_NAME);
-//	}
-//	
-//	@Bean
-//	public Binding declareBinding(Queue mailQueue, DirectExchange mailExchange) {
-//		return BindingBuilder.bind(mailQueue).to(mailExchange).with(Constants.ROUTING_KEY);
-//	}
-//	
-//	@Bean
-//	public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
-//		return new Jackson2JsonMessageConverter();
-//	}
+
 }

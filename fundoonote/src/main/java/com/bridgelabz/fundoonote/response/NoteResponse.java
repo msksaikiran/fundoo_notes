@@ -14,6 +14,7 @@ public class NoteResponse {
 	private String Message;
 	private Object notes;
 	private int statusCode;
+	
 	public String getMessage() {
 		return Message;
 	}

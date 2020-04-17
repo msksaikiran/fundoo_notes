@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import com.bridgelabz.fundoonote.dto.LableDto;
 import com.bridgelabz.fundoonote.dto.NoteDto;
-import com.bridgelabz.fundoonote.dto.UpdateLabel;
 import com.bridgelabz.fundoonote.entity.Label;
 import com.bridgelabz.fundoonote.entity.Noteinfo;
 import com.bridgelabz.fundoonote.entity.User;
@@ -115,7 +114,6 @@ public class LabelImplementation implements LabelService {
 			
 
 		} catch (Exception ae) {
-			ae.printStackTrace();
 			throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,
 					"Notes not added to Label due to Internel server problem");
 		}
@@ -136,7 +134,7 @@ public class LabelImplementation implements LabelService {
 	
 	@Transactional
 	@Override
-	public Label updateLabel(String token, long lId, UpdateLabel LabelDto) {
+	public Label updateLabel(String token, long lId, LableDto LabelDto) {
 
 		long userId = (long) generate.parseJWT(token);
 		// List<Label> list = new ArrayList<Label>();
@@ -153,7 +151,7 @@ public class LabelImplementation implements LabelService {
 			labelData = list.stream().filter(t -> t.getlId() == lId).findFirst()
 					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
 
-			labelData.setLableName(LabelDto.getlName());
+			labelData.setLableName(LabelDto.getLableName());
 			labelData.setUpdateDateAndTime(LocalDateTime.now());
 			labelRepository.save(labelData);
 
@@ -169,26 +167,29 @@ public class LabelImplementation implements LabelService {
 	@Override
 	public Label removeLabel(String token, long lId) {
 
-		Set<Label> list = this.getLableByUserId(token);
-		/*
-		 * java 8 streams feature
-		 */
-		Label data = null;
-		try {
-			if (list != null) {
-				data = list.stream().filter(t -> t.getlId() == lId).findFirst()
-						.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
+		long userId = (long) generate.parseJWT(token);
 
-				//labelRepository.findLabelNote(lId);
-				labelRepository.delete(data);
+		  List<Noteinfo> notes = noteRepository.findNoteByUserId(userId);
+				  
+			Label lables = labelRepository.findLableById(lId)
+					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
+			
+			try {
 
-				return data;
+				for(Noteinfo note:notes) {
+				note.getLabel().remove(lables);
+				}
+				
+				labelRepository.delete(lables); 
+			} catch (Exception ae) {
+				ae.printStackTrace();
+				throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,
+						"Notes not added to Label due to Internel server problem");
 			}
-		} catch (Exception ae) {
-			throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,
-					"Label Not Deleted due to Internel server problem");
-		}
-		return null;
+
+			return lables;
+		
+
 	}
 
 	

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import com.bridgelabz.fundoonote.dto.LableDto;
 import com.bridgelabz.fundoonote.dto.NoteDto;
-import com.bridgelabz.fundoonote.dto.UpdateLabel;
 import com.bridgelabz.fundoonote.entity.Label;
 import com.bridgelabz.fundoonote.entity.Noteinfo;
 
@@ -31,7 +30,7 @@ public interface LabelService {
 
 	boolean addExistingNotesToLabel(String noteTitle, String token, String labelName);
 
-	Label updateLabel(String token, long lId, UpdateLabel LabelDto);
+	Label updateLabel(String token, long lId, LableDto labelDto);
 
 	ArrayList<Noteinfo> LabelNote(long lId);
 

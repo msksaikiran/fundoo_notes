@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,15 +26,15 @@ public class CollabratorController {
 	@Autowired
 	private CollabratorService service;
 
-	@PostMapping("/add-coll")
+	@PostMapping("/add-coll/{token}")
 	public ResponseEntity<Response> addCollabrator(@RequestParam("NoteId") long NoteId,
-			@RequestParam("email") String email, @RequestHeader("token") String token) {
+			@RequestParam("email") String email, @PathVariable String token) {
 		      service.addCollabrator(NoteId, token, email);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("Collabrator added",200));
 	}
 
-	@GetMapping("/getAll")
-	public ResponseEntity<NoteResponse> getAllCollabrator(@RequestHeader("token") String token) {
+	@GetMapping("/getAll/{token}")
+	public ResponseEntity<NoteResponse> getAllCollabrator(@PathVariable String token) {
 		      List<Noteinfo> collabare = service.getAllCollabrator(token);
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 				.body(new NoteResponse("Listed all collabrator information",collabare,200));

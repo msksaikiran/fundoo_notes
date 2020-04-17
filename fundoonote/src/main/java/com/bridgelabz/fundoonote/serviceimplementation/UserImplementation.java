@@ -34,6 +34,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.bridgelabz.fundoonote.constants.Constants;
 import com.bridgelabz.fundoonote.dto.EmailVeify;
+import com.bridgelabz.fundoonote.dto.Mail;
 import com.bridgelabz.fundoonote.dto.Register;
 import com.bridgelabz.fundoonote.dto.UserLogin;
 import com.bridgelabz.fundoonote.entity.User;
@@ -75,8 +76,9 @@ public class UserImplementation implements UserService {
 	@Override
 	public String login(UserLogin userdto) {
 
+		Mail mail=new Mail();
 		User user = userRepository.findUserByEmail(userdto.getEmail())
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("103")));
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY,env.getProperty("103")));
 
 		try {
 
@@ -86,14 +88,14 @@ public class UserImplementation implements UserService {
 				 * send the email verification to the register user
 				 */
 				String token = generate.jwtToken(user.getUid());
-				Email email =new Email();
-				this.mailservice();
+//				Email email =new Email();
+//				this.mailservice();
 				
-				email.setEmailId(user.getEmail());
-			    email.setToken(token);
-			    
-				rabbitMQSender.send(email);
-		        rabbitMQSender.Reciver(email);		
+//				email.setEmailId(user.getEmail());
+//			    email.setToken(token);
+			    			
+//				rabbitMQSender.sendToQueue(email);
+//		        rabbitMQSender.Reciver(email);		
 		        
 				return token;
 			} else {
@@ -146,14 +148,14 @@ public class UserImplementation implements UserService {
 			email.setEmailId(result.getEmail());
 		    email.setToken(token);
 		    
-			rabbitMQSender.send(email);
+			rabbitMQSender.sendToQueue(email);
 	        rabbitMQSender.Reciver(email);		
 			 
 			return result;
 
 		} catch (Exception ae) {
-			ae.printStackTrace();
-			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
+			//ae.printStackTrace();
+			throw new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("110"));
 		}
 	}
 
@@ -199,7 +201,7 @@ public class UserImplementation implements UserService {
 
 	@Transactional
 	@Override
-	@Cacheable(value = "twenty-second-cache", key = "'tokenInCache'+#token", condition = "#isCacheable != null && #isCacheable")
+	//@Cacheable(value = "twenty-second-cache", key = "'tokenInCache'+#token", condition = "#isCacheable != null && #isCacheable")
 	public User getUser(String token, boolean isCacheable) {
 		long id = (Long) generate.parseJWT(token);
 		User user = userRepository.getUserById(id)

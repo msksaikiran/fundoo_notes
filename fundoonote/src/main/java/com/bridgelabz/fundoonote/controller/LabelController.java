@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoonote.dto.LableDto;
 import com.bridgelabz.fundoonote.dto.NoteDto;
-import com.bridgelabz.fundoonote.dto.UpdateLabel;
 import com.bridgelabz.fundoonote.dto.label;
 import com.bridgelabz.fundoonote.entity.Label;
 import com.bridgelabz.fundoonote.entity.Noteinfo;
@@ -82,9 +82,9 @@ public class LabelController {
 	/*
 	 * API to add the update Label Details
 	 */
-	@PutMapping(value = "/{id}/users/{token}")
-	public ResponseEntity<LabelResponse> updateLabel(@PathVariable String token,@PathVariable long id, @RequestBody UpdateLabel dto) {
-		Label label = labelService.updateLabel(token,id, dto);
+	@PutMapping(value = "/updatelabel/{token}")
+	public ResponseEntity<LabelResponse> updateLabel(@PathVariable String token,@RequestParam("lid") long id,@RequestBody LableDto label) {
+		 labelService.updateLabel(token,id,label);
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new LabelResponse(env.getProperty("302"),200,label));
 	}

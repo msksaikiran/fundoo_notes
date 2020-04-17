@@ -102,7 +102,6 @@ public class NotesController {
 	
 		return note;
 //		if (note != null) {
-//			// return result;
 //			return ResponseEntity.status(HttpStatus.CREATED)
 //					.body(new NoteResponse(env.getProperty("211"),note,200));
 //		}
@@ -168,6 +167,13 @@ public class NotesController {
 					.body(new NoteResponse(env.getProperty("206"),note,200));
 	}
 
+	/* API for archieve a Note */
+	@PutMapping("/unarchieve/{token}")
+	public ResponseEntity<NoteResponse> unarchieve(@RequestBody TrashNotes archieve, @PathVariable String token) {
+		    Noteinfo note = noteService.unarchieveNote(archieve.getNid(), token);
+		    return ResponseEntity.status(HttpStatus.CREATED)
+					.body(new NoteResponse(env.getProperty("206"),note,200));
+	}
 	/*
 	 * API for updating color to a Note
 	 */
@@ -215,7 +221,7 @@ public class NotesController {
 	 */
 	@PostMapping("/addremainder/{token}")
 	public ResponseEntity<NoteResponse> addRemainder(@PathVariable String token,@RequestBody ReminderDto remainder) {
-		System.out.println(remainder.getRemainder()+"**********");
+		//System.out.println(remainder.getRemainder()+"**********");
 		     String note = noteService.addReminder(remainder.getNid(), token, remainder);
 		     return ResponseEntity.status(HttpStatus.CREATED)
 						.body(new NoteResponse(env.getProperty("206"),note,200));

@@ -50,6 +50,8 @@ public interface NoteService {
 	Noteinfo restoreNotes(String token, long nId);
 
 	Noteinfo deleteNotes(String token, long nId);
+
+	Noteinfo unarchieveNote(long nid, String token);
 	
 
 }

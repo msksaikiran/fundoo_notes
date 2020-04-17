@@ -2,7 +2,15 @@ package com.bridgelabz.fundoonote.utility;
 
 import java.io.Serializable;
 
+import org.springframework.amqp.AmqpException;
+
 public class Email implements Serializable{
+	
+	
+//	public Email() {
+//		super();
+//	}
+
 	private String emailId;
 	private String token;
 	

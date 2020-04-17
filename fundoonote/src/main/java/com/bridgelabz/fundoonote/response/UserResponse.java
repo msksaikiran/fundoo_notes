@@ -14,11 +14,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class UserResponse {
-	private String token;
 	private String Message;
+	private String token;
 	private Object obj;
 	
-	public UserResponse(String token, String message) {
+	
+
+	public UserResponse(String message, String token) {
 		super();
 		this.token = token;
 		Message = message;

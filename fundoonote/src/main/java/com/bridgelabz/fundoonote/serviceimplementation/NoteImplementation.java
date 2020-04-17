@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import org.elasticsearch.action.index.IndexRequest;
@@ -163,13 +164,13 @@ public class NoteImplementation implements NoteService {
 			return null;
 
 		Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
-				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST,env.getProperty("204")));
 		try {
 		    data.setIsTrashed(0);
 		    //data.setIsArchieved(0);
 			noteRepository.save(data);
 
-			//iServiceElasticSearch.deleteNote(String.valueOf(nId));
+			iServiceElasticSearch.deleteNote(String.valueOf(nId));
 		} catch (Exception ae) {
 			ae.printStackTrace();
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("210"));
@@ -194,7 +195,7 @@ public class NoteImplementation implements NoteService {
 		    //data.setIsArchieved(0);
 			noteRepository.delete(data);
 
-			//iServiceElasticSearch.deleteNote(String.valueOf(nId));
+			iServiceElasticSearch.deleteNote(String.valueOf(nId));
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("210"));
 		}
@@ -260,6 +261,31 @@ public class NoteImplementation implements NoteService {
 		try {
 			data.setIsPinned(0);
 			data.setIsArchieved(1);
+			data.setUpDateAndTime(LocalDateTime.now());
+			Noteinfo notess = noteRepository.save(data);
+
+			iServiceElasticSearch.upDateNote(notess);
+		} catch (Exception ae) {
+			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("206"));
+		}
+
+		return data;
+	}
+	
+	@Transactional
+	@Override
+	public Noteinfo unarchieveNote(long nId, String token) {
+		List<Noteinfo> notes = this.getNoteByUserId(token);
+
+		if (notes.isEmpty())
+			return null;
+		Noteinfo data;
+
+		data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
+				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+		try {
+			//data.setIsPinned(0);
+			data.setIsArchieved(0);
 			data.setUpDateAndTime(LocalDateTime.now());
 			Noteinfo notess = noteRepository.save(data);
 
@@ -402,6 +428,7 @@ public class NoteImplementation implements NoteService {
 	@Override
 	public String addReminder(long nId, String token, ReminderDto reminder) {
 		List<Noteinfo> notes = this.getNoteByUserId(token);
+		
 		/*
 		 * java 8 streams feature
 		 */
@@ -455,26 +482,31 @@ public class NoteImplementation implements NoteService {
 
 	@Transactional
 	@Override
-	@Cacheable(value = "twenty-second-cache", key = "'tokenInCache'+#token", condition = "#isCacheable != null && #isCacheable")
 	public List<Noteinfo> getNoteByUserId(String token) {
+		
+		    long uId = (long) generate.parseJWT(token);
 
-		long uId = (long) generate.parseJWT(token);
-
-		try {
-			List<Noteinfo> user = noteRepository.findNoteByUserId(uId);
-
-			if (user != null) {
-				return user;
+			List<Noteinfo> notes = noteRepository.findNoteByUserId(uId);
+            List<Long> clnotes = noteRepository.getCollabrateNotes(uId);
+            /**
+             * merging of collabrated notes and actuall User Notes
+             */
+            Iterable<Noteinfo> clNoteInfo = noteRepository.findAllById(clnotes);
+            notes.addAll((Collection<? extends Noteinfo>) clNoteInfo);
+            
+			if (notes != null) {
+				return notes;
 			} else {
 				new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("104"));
 			}
-		} catch (Exception ae) {
-
-			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, "Cant able to get the user");
-		}
 		return null;
 	}
 
+	public List<Long> getCollabrateNotes(String token) {
+		long uId = (long) generate.parseJWT(token);
+		 List<Long> collabareNotes = noteRepository.getCollabrateNotes(uId);
+		 return collabareNotes;
+	}
 	@Transactional
 	@Override
 	public Noteinfo getNote(String id) {

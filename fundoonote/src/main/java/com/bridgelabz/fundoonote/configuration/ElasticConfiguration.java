@@ -14,17 +14,8 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
-//@EnableElasticsearchRepositories(basePackages = "com.mkyong.book.repository")
 public class ElasticConfiguration {
 
-//    @Value("${elasticsearch.host}")
-//    private String EsHost;
-//
-//    @Value("${elasticsearch.port}")
-//    private int EsPort;
-//
-//    @Value("${elasticsearch.clustername}")
-//    private String EsClusterName;
 
     @Bean(destroyMethod = "close")
     public RestHighLevelClient client()  {

@@ -16,7 +16,6 @@ public class CustomiseduserExceptionHandler extends ResponseEntityExceptionHandl
 	@ExceptionHandler(UserException.class)
 	public final ResponseEntity<ExceptionResponse> handlerUserException(UserException ex) {
 		
-		
 		return ResponseEntity.status(ex.getStatusCode()).body(new ExceptionResponse(LocalDateTime.now(),ex.getMessage()));
 	
 	}

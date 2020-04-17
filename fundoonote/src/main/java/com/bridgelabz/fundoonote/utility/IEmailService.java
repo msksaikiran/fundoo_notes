@@ -2,6 +2,7 @@ package com.bridgelabz.fundoonote.utility;
 
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
+import com.bridgelabz.fundoonote.dto.Mail;
 import com.bridgelabz.fundoonote.entity.User;
 
 public interface IEmailService {

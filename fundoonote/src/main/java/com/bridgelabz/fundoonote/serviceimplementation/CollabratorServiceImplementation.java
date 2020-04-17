@@ -33,10 +33,9 @@ public class CollabratorServiceImplementation implements CollabratorService {
 	@Override
 	public List<Noteinfo> addCollabrator(long noteId, String token, String email) {
 
-		Optional<User> collabrator = repository.findUserByEmail(email);
-
-		if (collabrator.isPresent()) {
-			try {
+		User collabrator = repository.findUserByEmail(email)
+				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "User not Exist"));
+		
 				long uid = (long) generate.parseJWT(token);
 				System.out.println("UserId:" + uid);
 
@@ -45,18 +44,11 @@ public class CollabratorServiceImplementation implements CollabratorService {
 					Noteinfo data = note.stream().filter(t -> t.getNid() == noteId).findFirst()
 							.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "NoteId not Exist"));
 
-					collabrator.ifPresent(t -> t.getCollablare().add(data));
-
-					//System.out.println("da::" + data);
-
-					return note;
+                    collabrator.getCollablare().add(data);
+					
 				}
-			} catch (Exception e) {
-				// throw new UserException("User doesnot exist with this id");
-			}
 
-		}
-		return null;
+				return note;
 
 	}
 

@@ -27,5 +27,7 @@ public interface NoteRepository extends CrudRepository<Noteinfo, Long> {
 	@Query(value="select * from  noteinfo where user_id=? AND is_pinned =1",nativeQuery = true)
 	List<Noteinfo> getPinnededNotes(long userid);
 
+	@Query(value="select collablare_nid  from user_collablare where user_uid=?",nativeQuery = true)
+	List<Long> getCollabrateNotes(long userid);
 
 }

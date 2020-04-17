@@ -136,8 +136,8 @@ public class UserController {
 	 * API for getting the user details based on the token
 	 */
 	@GetMapping(value = "/{token}")
-	public User getUser(@PathVariable String token,@RequestParam(name = "isCacheable") boolean isCacheable) {
-		return userService.getUser(token,isCacheable);
+	public User getUser(@PathVariable String token) {
+		return userService.getUser(token,true);
 	}
 
 	//@PostMapping(value = "/getimageurl/{token}")

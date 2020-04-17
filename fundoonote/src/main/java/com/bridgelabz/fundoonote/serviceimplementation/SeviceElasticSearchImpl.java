@@ -41,8 +41,6 @@ public class SeviceElasticSearchImpl implements IServiceElasticSearch {
 	private RestHighLevelClient client;
 	@Autowired
 	private ObjectMapper objectMapper;
-	@Autowired
-	private JwtGenerator tokenservice;
 
 	@Override
 	public String createNote(Noteinfo note) throws IOException {

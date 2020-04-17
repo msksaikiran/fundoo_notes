@@ -1,11 +1,16 @@
 package com.bridgelabz.fundoonote.utility;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.bridgelabz.fundoonote.dto.Mail;
+
 @Service
 public class RabbitMQSender {
 	
+	//Mail mail=new  Mail();
 	@Autowired
 	IEmailService mailservice;
 	
@@ -18,16 +23,21 @@ public class RabbitMQSender {
 	@Value("${fundoo.rabbitmq.routingkey}")
 	private String routingkey;	
 	
-	public void send(Object obj) {
+	@Value("${fundoo.rabbitmq.queue}")
+	private String queue;
+	
+	public void sendToQueue(Email obj) {
 		System.out.println(exchange + "    " + routingkey);
 		System.out.println("Send msg = " + obj.toString());
 		rabbitTemplate.convertAndSend(exchange, routingkey, obj);
 	}
 	
-	public void Reciver(Object object) {
+	//@RabbitListener(queues = "fundoo-queue")
+	public void Reciver(Email object) {
 		System.out.println("entered to listner of rabbit mq");
-		
-		mailservice.send((Email) object);
+		System.out.println(object);
+
+		mailservice.send(object);
 		
 	}
 }
