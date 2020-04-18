@@ -60,7 +60,13 @@ public class LabelImplementation implements LabelService {
 	public Label createLable(LableDto labelDto, String token) {
 		
 		long userId = (long) generate.parseJWT(token);
-
+            
+		Optional<Label> labeldetails = labelRepository.findLableByName(labelDto.getLableName());
+		             // orElseThrow(() -> new LabelException(HttpStatus.BAD_GATEWAY,"label Name Exist"));
+		if(labeldetails.isPresent()) {
+			throw new LabelException(HttpStatus.BAD_GATEWAY,"label Name already Exist");
+		}
+		
 		Label label=new Label();
 		User user = userRepository.getUserById(userId)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
@@ -68,18 +74,19 @@ public class LabelImplementation implements LabelService {
 		BeanUtils.copyProperties(labelDto,label);
 		user.getLabel().add(label);
 		return labelRepository.save(label);
+		
 
 	}
 
 	@Transactional
 	@Override
-	public Label addLabelToNotes(long nId,long lId,String token) {
+	public Label addLabelToNotes(long nId,String lname,String token) {
 
 		
          Noteinfo note = noteRepository.findNoteById(nId)
         		 .orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
              
-		Label lables = labelRepository.findLableById(lId)
+		Label lables = labelRepository.findLableByName(lname)
 				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
 		
 		try {
@@ -99,13 +106,13 @@ public class LabelImplementation implements LabelService {
 
 	@Transactional
 	@Override
-	public Label removeLabelToNotes(long nId,long lId,String token) {
+	public Label removeLabelToNotes(long nId,String lId,String token) {
 
 		
         Noteinfo note = noteRepository.findNoteById(nId)
        		 .orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
             
-		Label lables = labelRepository.findLableById(lId)
+		Label lables = labelRepository.findLableByName(lId)
 				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
 		
 		try {
@@ -126,6 +133,7 @@ public class LabelImplementation implements LabelService {
 	public ArrayList<Noteinfo> LabelNote(long lId) {
 		ArrayList<Noteinfo> list=new ArrayList<>();
 		List<Long> labelNote = labelRepository.findLabelNote(lId);
+				//.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "Label Not Exist"));
 		for(long lb:labelNote) {
 			list.add(noteRepository.findNoteById(lb).orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104"))));
 		}
@@ -137,8 +145,9 @@ public class LabelImplementation implements LabelService {
 	public Label updateLabel(String token, long lId, LableDto LabelDto) {
 
 		long userId = (long) generate.parseJWT(token);
+		
 		// List<Label> list = new ArrayList<Label>();
-		Set<Label> list = labelRepository.findLableByUserId(userId);
+		List<Label> list = labelRepository.findLableByUserId(userId);
 		if (list.isEmpty())
 			return null;
 
@@ -148,7 +157,7 @@ public class LabelImplementation implements LabelService {
 		Label labelData;
 		try {
 
-			labelData = list.stream().filter(t -> t.getlId() == lId).findFirst()
+			labelData = list.stream().filter(t -> t.getLableName().equalsIgnoreCase(LabelDto.getLableName())).findFirst()
 					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
 
 			labelData.setLableName(LabelDto.getLableName());
@@ -236,17 +245,17 @@ public class LabelImplementation implements LabelService {
 
 	@Transactional
 	@Override
-	public Set<Label> getLableByUserId(String token) {
-		// List<Label> note = new ArrayList<>();
+	public List<String> getLableByUserId(String token) {
+		
 		long id = (long) generate.parseJWT(token);
-		// List<Label> label=new ArrayList<Label>();
-		Set<Label> label = labelRepository.findLableByUserId(id);
-		if (label != null) {
-			// System.out.println(label + "userlbbb");
-			return label;
-
+		List<String> labelnames=new ArrayList<>();
+		List<Label> label = labelRepository.findLableByUserId(id);
+		for(Label labelinfo:label) {
+			labelnames.add(labelinfo.getLableName());
 		}
-		return null;
+		
+			return labelnames;
+		
 	}
 
 	@Transactional
@@ -269,6 +278,16 @@ public class LabelImplementation implements LabelService {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public List<Label> getLableDetailsByUserId(String token) {
+		long id = (long) generate.parseJWT(token);
+		
+		List<Label> label = labelRepository.findLableByUserId(id);
+			return label;
+	}
+
+	
 
 	
 

@@ -81,9 +81,21 @@ public class NotesController {
 	 * API to getting the Note Details By Id
 	 */
 
-	@GetMapping(value = "/notes/{id}")
+	@GetMapping(value = "/notelabels/{id}")
 	public ResponseEntity<NoteResponse> getNote(@PathVariable String id) {
-		Noteinfo note = noteService.getNote(id);
+		List<String> note = noteService.getNote(id);
+		if (note != null) {
+			// String token = generator.jwtToken(result.getId());
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(new NoteResponse(env.getProperty("201"),note,200));
+		}
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new NoteResponse(env.getProperty("204"),note,200));
+	}
+	
+	@GetMapping(value = "/notesdetails/{id}")
+	public ResponseEntity<NoteResponse> getNotedetails(@PathVariable String id) {
+		Noteinfo note = noteService.getNotedetails(id);
 		if (note != null) {
 			// String token = generator.jwtToken(result.getId());
 			return ResponseEntity.status(HttpStatus.CREATED)

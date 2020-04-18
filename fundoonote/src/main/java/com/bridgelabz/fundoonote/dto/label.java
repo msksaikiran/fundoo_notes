@@ -4,7 +4,7 @@ public class label {
 
 	
     private long nId;
-    private long lId;
+    private String lname;
     
 	public long getnId() {
 		return nId;
@@ -14,12 +14,15 @@ public class label {
 		this.nId = nId;
 	}
 
-	public long getlId() {
-		return lId;
+	public String getLname() {
+		return lname;
 	}
 
-	public void setlId(long lId) {
-		this.lId = lId;
+	public void setLname(String lname) {
+		this.lname = lname;
 	}
+
+	
+
 	
 }

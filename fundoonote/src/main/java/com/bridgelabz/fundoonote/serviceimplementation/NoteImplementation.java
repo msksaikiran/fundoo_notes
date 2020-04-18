@@ -33,6 +33,7 @@ import com.bridgelabz.fundoonote.dto.NoteDto;
 import com.bridgelabz.fundoonote.dto.ReminderDto;
 import com.bridgelabz.fundoonote.dto.TrashNotes;
 import com.bridgelabz.fundoonote.dto.UpdateNote;
+import com.bridgelabz.fundoonote.entity.Label;
 import com.bridgelabz.fundoonote.entity.Noteinfo;
 import com.bridgelabz.fundoonote.entity.User;
 import com.bridgelabz.fundoonote.exception.NoteException;
@@ -530,11 +531,29 @@ public class NoteImplementation implements NoteService {
 	}
 	@Transactional
 	@Override
-	public Noteinfo getNote(String id) {
+	public List<String> getNote(String id) {
 
 		Noteinfo notes = noteRepository.findNoteById(Integer.parseInt(id))
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+		List<String> labelnames=new ArrayList<>();
+		List<Label> labeldetails = notes.getLabel();
+		for(Label labelinfo:labeldetails) {
+			labelnames.add(labelinfo.getLableName());
+		}
+		return labelnames;
 
+	}
+	@Transactional
+	@Override
+	public Noteinfo getNotedetails(String id) {
+
+		Noteinfo notes = noteRepository.findNoteById(Integer.parseInt(id))
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+//		List<String> labelnames=new ArrayList<>();
+//		List<Label> labeldetails = notes.getLabel();
+//		for(Label labelinfo:labeldetails) {
+//			labelnames.add(labelinfo.getLableName());
+//		}
 		return notes;
 
 	}

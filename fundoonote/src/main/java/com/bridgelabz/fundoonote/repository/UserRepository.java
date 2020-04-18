@@ -41,4 +41,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
 	@Query(value="select * from user where uid=?",nativeQuery=true)
 	Optional<User> findUserByProfile(long id);
+	
+	@Query(value = "select * from user where uid in (select user_id from noteinfo where nid=?)",nativeQuery = true)
+	User findcolluserbyNoteId(long noteid);
+	
 }

@@ -9,6 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.bridgelabz.fundoonote.entity.Label;
+import com.bridgelabz.fundoonote.entity.User;
 
 @Repository
 public interface LabelRepository extends CrudRepository<Label, Integer> {
@@ -17,13 +18,15 @@ public interface LabelRepository extends CrudRepository<Label, Integer> {
 	Optional<Label> findLableById(long id);
 
 	@Query(value = "select * from label where user_id=?", nativeQuery = true)
-	Set<Label> findLableByUserId(long user_id);
+	List<Label> findLableByUserId(long user_id);
 
 	@Query(value = "select * from label where lable_name=?", nativeQuery = true)
-	Label findLableByName(String labelName);
+	Optional<Label> findLableByName(String labelName);
 
 	@Query(value="select note_nid from noteinfo_label where label_l_id=?",nativeQuery = true)
 	List<Long> findLabelNote(long lId);
+
+	//Optional<User> findLableByname(String lname);
 
 	
 }

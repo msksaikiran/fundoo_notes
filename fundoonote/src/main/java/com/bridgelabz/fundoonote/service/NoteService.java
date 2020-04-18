@@ -19,7 +19,7 @@ public interface NoteService {
 
 	List<Noteinfo> updateNotes(String token, long id, UpdateNote updateDto);
 	
-	Noteinfo getNote(String id);
+	List<String> getNote(String id);
 
 	List<Noteinfo> getNoteByUserId(String id);
 
@@ -52,6 +52,8 @@ public interface NoteService {
 	Noteinfo deleteNotes(String token, long nId);
 
 	Noteinfo unarchieveNote(long nid, String token);
+
+	Noteinfo getNotedetails(String id);
 	
 
 }

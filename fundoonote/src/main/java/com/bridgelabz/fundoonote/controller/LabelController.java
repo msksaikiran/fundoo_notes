@@ -55,7 +55,7 @@ public class LabelController {
 	@PostMapping(value = "/addlabels/{token}")
 	public ResponseEntity<LabelResponse> addLabelToNotes(@RequestBody label label, @PathVariable String token) {
 
-		Label lnote = labelService.addLabelToNotes(label.getnId(),label.getlId(),token);
+		Label lnote = labelService.addLabelToNotes(label.getnId(),label.getLname(),token);
 		
 		 return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new LabelResponse(env.getProperty("301"),200,lnote));
@@ -65,11 +65,12 @@ public class LabelController {
 	@PostMapping(value = "/removelabels/{token}")
 	public ResponseEntity<LabelResponse> removeLabelToNotes(@RequestBody label label, @PathVariable String token) {
 
-		Label lnote = labelService.removeLabelToNotes(label.getnId(),label.getlId(),token);
+		Label lnote = labelService.removeLabelToNotes(label.getnId(),label.getLname(),token);
 		
 		 return ResponseEntity.status(HttpStatus.CREATED)
 					.body(new LabelResponse(env.getProperty("301"),200,lnote));
 	}
+	
 	@GetMapping(value = "/getlabelNotes/{lId}")
 	public ResponseEntity<LabelResponse> getLabelNotes(@PathVariable long lId) {
 
@@ -93,8 +94,8 @@ public class LabelController {
 	 * API to add the delete Label Details
 	 */
 	@PostMapping(value = "/delete/{token}")
-	public ResponseEntity<LabelResponse> deleteLabel(@RequestBody label labelid,@PathVariable String token) {
-	     Label label = labelService.removeLabel(token,labelid.getlId());
+	public ResponseEntity<LabelResponse> deleteLabel(@RequestParam("lid") long labelid,@PathVariable String token) {
+	     Label label = labelService.removeLabel(token,labelid);
 	     if(label!=null)
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new LabelResponse(env.getProperty("304"),200,label));
@@ -108,12 +109,18 @@ public class LabelController {
 	 */
 
 	@GetMapping(value = "/users/{id}")
-	public ResponseEntity<LabelResponse> getLabel(@PathVariable long id) {
+	public ResponseEntity<LabelResponse> getLabelName(@PathVariable long id) {
 		Label label = labelService.getLableById(id);
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new LabelResponse(env.getProperty("303"),200,label));
 	}
 	
+	@GetMapping(value = "/details/users/{token}")
+	public ResponseEntity<LabelResponse> getLabelDetails(@PathVariable String token) {
+		List<Label> label = labelService.getLableDetailsByUserId(token);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new LabelResponse(env.getProperty("302"),200,label));
+	}
 	
 	/*
 	 * API to get The All label Details
@@ -131,7 +138,7 @@ public class LabelController {
 
 	@GetMapping(value = "/user/{token}")
 	public ResponseEntity<LabelResponse> getLabelByUserId(@PathVariable String token) {
-		Set<Label> label = labelService.getLableByUserId(token);
+		List<String> label = labelService.getLableByUserId(token);
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new LabelResponse(env.getProperty("302"),200,label));
 	}

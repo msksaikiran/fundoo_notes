@@ -40,6 +40,7 @@ import com.bridgelabz.fundoonote.dto.EmailVeify;
 import com.bridgelabz.fundoonote.dto.Mail;
 import com.bridgelabz.fundoonote.dto.Register;
 import com.bridgelabz.fundoonote.dto.UserLogin;
+import com.bridgelabz.fundoonote.entity.Noteinfo;
 import com.bridgelabz.fundoonote.entity.User;
 import com.bridgelabz.fundoonote.exception.UserException;
 import com.bridgelabz.fundoonote.repository.NoteRepository;
@@ -84,36 +85,18 @@ public class UserImplementation implements UserService {
 	@Override
 	public String login(UserLogin userdto) {
 
-		Mail mail=new Mail();
+		
 		User user = userRepository.findUserByEmail(userdto.getEmail())
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY,env.getProperty("103")));
-
-		try {
-
-			
+	
 			if ((user.isVerified() == true) && passEncryption.matches(userdto.getPassword(), user.getPassword())) {
-				/*
-				 * send the email verification to the register user
-				 */
-				String token = generate.jwtToken(user.getUid());
-//				Email email =new Email();
-//				this.mailservice();
 				
-//				email.setEmailId(user.getEmail());
-//			    email.setToken(token);
-			    			
-//				rabbitMQSender.sendToQueue(email);
-//		        rabbitMQSender.Reciver(email);		
+				String token = generate.jwtToken(user.getUid());
 		        
 				return token;
 			} else {
 				throw new UserException(HttpStatus.BAD_REQUEST, env.getProperty("105"));
 			}
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
-		}
 	}
 
 	@Override
@@ -162,7 +145,6 @@ public class UserImplementation implements UserService {
 			return result;
 
 		} catch (Exception ae) {
-			//ae.printStackTrace();
 			throw new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("110"));
 		}
 	}
@@ -209,13 +191,20 @@ public class UserImplementation implements UserService {
 
 	@Transactional
 	@Override
-	//@Cacheable(value = "twenty-second-cache", key = "'tokenInCache'+#token", condition = "#isCacheable != null && #isCacheable")
+	@Cacheable(value = "twenty-second-cache", key = "'tokenInCache'+#token", condition = "#isCacheable != null && #isCacheable")
 	public User getUser(String token, boolean isCacheable) {
+		ArrayList<User> userlist=new ArrayList<>();
 		long id = (Long) generate.parseJWT(token);
 		User user = userRepository.getUserById(id)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
-
-		return user;
+		User coluser =null;
+         List<Noteinfo> colNotes = user.getCollablare();
+         for(Noteinfo notes:colNotes) {
+        	coluser = userRepository.findcolluserbyNoteId(notes.getNid());
+        	userlist.add(coluser);
+        	System.out.println(coluser+"*****************");
+         }
+		return coluser;
 	}
 	
 	@Transactional

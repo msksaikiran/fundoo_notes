@@ -14,9 +14,9 @@ public interface LabelService {
 
 	Label createLable(LableDto labelDto, String token);
 
-	Label removeLabel(String token, long id);
+	Label removeLabel(String token, long labelid);
 
-	Set<Label> getLableByUserId(String token);
+	List<String> getLableByUserId(String token);
 	
 	Label getLableById(long id);
 
@@ -26,7 +26,7 @@ public interface LabelService {
 
 	List<String> ascsortByName();
 
-	Label addLabelToNotes(long nId,  long lId,String token);
+	Label addLabelToNotes(long nId, String lname, String token);
 
 	boolean addExistingNotesToLabel(String noteTitle, String token, String labelName);
 
@@ -34,7 +34,15 @@ public interface LabelService {
 
 	ArrayList<Noteinfo> LabelNote(long lId);
 
-	Label removeLabelToNotes(long nId, long lId, String token);
+	Label removeLabelToNotes(long nId, String string, String token);
+
+	//Label getLableDetailsById(String id);
+
+	List<Label> getLableDetailsByUserId(String token);
+
+	
+
+	
 	
 	
 }
