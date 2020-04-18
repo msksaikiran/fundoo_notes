@@ -67,30 +67,24 @@ public class CollabratorServiceImplementation implements CollabratorService {
 	@Transactional
 	@Override
 	public Noteinfo deleteCollabrator(long noteId, String token) {
+		
 		long uid = (long) generate.parseJWT(token);
-		Optional<User> collabrator = repository.findById(uid);
-		if (collabrator.isPresent()) {
-			try {
-				
-				System.out.println("UserId:" + uid);
+		User collabrator = repository.findById(uid)
+				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "User not Exist"));
+		
+		Noteinfo data = null;
 
 				List<Noteinfo> note = noteRepo.findNoteByUserId(uid);
 				if (note != null) {
-					Noteinfo data = note.stream().filter(t -> t.getNid() == noteId).findFirst()
+					data = note.stream().filter(t -> t.getNid() == noteId).findFirst()
 							.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "NoteId not Exist"));
 
-					collabrator.ifPresent(t -> t.getCollablare().remove(data));
-
-					System.out.println("da::" + data);
-
-					return data;
+					
+                    collabrator.getCollablare().remove(data);
+					//repository.save(collabrator);
 				}
-			} catch (Exception e) {
-				// throw new UserException("User doesnot exist with this id");
-			}
 
-		}
-		return null;
+				return data;
 	}
 
 }

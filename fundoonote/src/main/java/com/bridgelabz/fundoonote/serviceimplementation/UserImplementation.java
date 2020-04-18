@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 /*#
  * Description: implementation part for user when user register,login,update
  * @author : SaiKiranMsk
@@ -27,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.regions.Region;
+import com.amazonaws.services.codecommit.model.UserInfo;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -39,6 +42,7 @@ import com.bridgelabz.fundoonote.dto.Register;
 import com.bridgelabz.fundoonote.dto.UserLogin;
 import com.bridgelabz.fundoonote.entity.User;
 import com.bridgelabz.fundoonote.exception.UserException;
+import com.bridgelabz.fundoonote.repository.NoteRepository;
 import com.bridgelabz.fundoonote.repository.UserRepository;
 import com.bridgelabz.fundoonote.service.UserService;
 import com.bridgelabz.fundoonote.utility.Email;
@@ -52,6 +56,10 @@ public class UserImplementation implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private NoteRepository noteRepository;
+	
 	@Autowired
 	private BCryptPasswordEncoder passEncryption;
 	@Autowired
@@ -208,6 +216,19 @@ public class UserImplementation implements UserService {
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
 
 		return user;
+	}
+	
+	@Transactional
+	@Override
+	public ArrayList<User> getUserByNoteid(Long nid) {
+		ArrayList<User> users=new ArrayList<User>();
+		List<Long> userid = noteRepository.findcollabrateuserbyNoteId(nid);
+		for(Long id:userid) {
+		User user = userRepository.getUserById(id)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
+		users.add(user);
+		}
+		return users;
 	}
 
 	public JavaMailSenderImpl mailservice() {

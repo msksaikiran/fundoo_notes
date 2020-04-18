@@ -120,7 +120,7 @@ public class NoteImplementation implements NoteService {
 			data.setUpDateAndTime(LocalDateTime.now());
 			Noteinfo notess = noteRepository.save(data);
 
-			iServiceElasticSearch.upDateNote(notess);
+			//iServiceElasticSearch.upDateNote(notess);
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("209"));
 		}
@@ -132,7 +132,9 @@ public class NoteImplementation implements NoteService {
 	@Override
 	public Noteinfo removeNotes(String token, long nId) {
 
-		List<Noteinfo> notes = this.getNoteByUserId(token);
+		//List<Noteinfo> notes = this.getNoteByUserId(token);
+		long uId = (long) generate.parseJWT(token);
+		List<Noteinfo> notes = noteRepository.findNoteByUserId(uId);
 		/*
 		 * java 8 streams feature
 		 */
@@ -146,7 +148,7 @@ public class NoteImplementation implements NoteService {
 		    data.setIsArchieved(0);
 			noteRepository.save(data);
 
-			iServiceElasticSearch.deleteNote(String.valueOf(nId));
+			//iServiceElasticSearch.deleteNote(String.valueOf(nId));
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("210"));
 		}
@@ -156,7 +158,10 @@ public class NoteImplementation implements NoteService {
 	@Override
 	public Noteinfo restoreNotes(String token, long nId) {
 
-		List<Noteinfo> notes = this.getNoteByUserId(token);
+		//List<Noteinfo> notes = this.getNoteByUserId(token);
+		long uId = (long) generate.parseJWT(token);
+		List<Noteinfo> notes = noteRepository.findNoteByUserId(uId);
+		
 		/*
 		 * java 8 streams feature
 		 */
@@ -170,7 +175,7 @@ public class NoteImplementation implements NoteService {
 		    //data.setIsArchieved(0);
 			noteRepository.save(data);
 
-			iServiceElasticSearch.deleteNote(String.valueOf(nId));
+			//iServiceElasticSearch.deleteNote(String.valueOf(nId));
 		} catch (Exception ae) {
 			ae.printStackTrace();
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("210"));
@@ -181,7 +186,9 @@ public class NoteImplementation implements NoteService {
 	@Override
 	public Noteinfo deleteNotes(String token, long nId) {
 
-		List<Noteinfo> notes = this.getNoteByUserId(token);
+		//List<Noteinfo> notes = this.getNoteByUserId(token);
+		long uId = (long) generate.parseJWT(token);
+		List<Noteinfo> notes = noteRepository.findNoteByUserId(uId);
 		/*
 		 * java 8 streams feature
 		 */
@@ -195,7 +202,7 @@ public class NoteImplementation implements NoteService {
 		    //data.setIsArchieved(0);
 			noteRepository.delete(data);
 
-			iServiceElasticSearch.deleteNote(String.valueOf(nId));
+			//iServiceElasticSearch.deleteNote(String.valueOf(nId));
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("210"));
 		}
@@ -206,6 +213,7 @@ public class NoteImplementation implements NoteService {
 	public List<Noteinfo> getAllNotes() {
 		List<Noteinfo> notes = new ArrayList<>();
 		noteRepository.findAll().forEach(notes::add);
+		
 		return notes;
 	}
 
@@ -250,8 +258,9 @@ public class NoteImplementation implements NoteService {
 	@Transactional
 	@Override
 	public Noteinfo archieveNote(long nId, String token) {
-		List<Noteinfo> notes = this.getNoteByUserId(token);
-
+		//List<Noteinfo> notes = this.getNoteByUserId(token);
+		long uId = (long) generate.parseJWT(token);
+		List<Noteinfo> notes = noteRepository.findNoteByUserId(uId);
 		if (notes.isEmpty())
 			return null;
 		Noteinfo data;
@@ -264,7 +273,7 @@ public class NoteImplementation implements NoteService {
 			data.setUpDateAndTime(LocalDateTime.now());
 			Noteinfo notess = noteRepository.save(data);
 
-			iServiceElasticSearch.upDateNote(notess);
+			//iServiceElasticSearch.upDateNote(notess);
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("206"));
 		}
@@ -275,8 +284,9 @@ public class NoteImplementation implements NoteService {
 	@Transactional
 	@Override
 	public Noteinfo unarchieveNote(long nId, String token) {
-		List<Noteinfo> notes = this.getNoteByUserId(token);
-
+		//List<Noteinfo> notes = this.getNoteByUserId(token);
+		long uId = (long) generate.parseJWT(token);
+		List<Noteinfo> notes = noteRepository.findNoteByUserId(uId);
 		if (notes.isEmpty())
 			return null;
 		Noteinfo data;
@@ -289,7 +299,7 @@ public class NoteImplementation implements NoteService {
 			data.setUpDateAndTime(LocalDateTime.now());
 			Noteinfo notess = noteRepository.save(data);
 
-			iServiceElasticSearch.upDateNote(notess);
+			//iServiceElasticSearch.upDateNote(notess);
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("206"));
 		}
@@ -300,7 +310,9 @@ public class NoteImplementation implements NoteService {
 	@Transactional
 	@Override
 	public Noteinfo pinNote(long nId, String token) {
-		List<Noteinfo> notes = this.getNoteByUserId(token);
+		//List<Noteinfo> notes = this.getNoteByUserId(token);
+		long uId = (long) generate.parseJWT(token);
+		List<Noteinfo> notes = noteRepository.findNoteByUserId(uId);
 		try {
 			if (notes != null) {
 				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
@@ -310,7 +322,7 @@ public class NoteImplementation implements NoteService {
 				data.setUpDateAndTime(LocalDateTime.now());
 				Noteinfo notess = noteRepository.save(data);
 				
-				iServiceElasticSearch.upDateNote(notess);
+				//iServiceElasticSearch.upDateNote(notess);
 				return notess;
 			}
 		} catch (Exception ae) {
@@ -324,8 +336,9 @@ public class NoteImplementation implements NoteService {
 	@Transactional
 	@Override
 	public Noteinfo unpinNote(long nId, String token) {
-		List<Noteinfo> notes = this.getNoteByUserId(token);
-		
+		//List<Noteinfo> notes = this.getNoteByUserId(token);
+		long uId = (long) generate.parseJWT(token);
+		List<Noteinfo> notes = noteRepository.findNoteByUserId(uId);
 		try {
 			if (notes != null) {
 				Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
@@ -336,7 +349,7 @@ public class NoteImplementation implements NoteService {
 				
                 Noteinfo notess = noteRepository.save(data);
 				
-				iServiceElasticSearch.upDateNote(notess);
+				//iServiceElasticSearch.upDateNote(notess);
 				return notess;
 			}
 		} catch (Exception ae) {
@@ -384,7 +397,10 @@ public class NoteImplementation implements NoteService {
 	@Override
 	public String addColour(String id, String token, String colour) {
 
-		List<Noteinfo> notes = this.getNoteByUserId(token);
+		//List<Noteinfo> notes = this.getNoteByUserId(token);
+		long uId = (long) generate.parseJWT(token);
+		List<Noteinfo> notes = noteRepository.findNoteByUserId(uId);
+		
 		/*
 		 * java 8 streams feature
 		 */
@@ -397,7 +413,7 @@ public class NoteImplementation implements NoteService {
 				data.setColour(colour);
                 Noteinfo notess = noteRepository.save(data);
 				
-				iServiceElasticSearch.upDateNote(notess);
+				//iServiceElasticSearch.upDateNote(notess);
 				
 
 			}
@@ -427,7 +443,10 @@ public class NoteImplementation implements NoteService {
 	@Transactional
 	@Override
 	public String addReminder(long nId, String token, ReminderDto reminder) {
-		List<Noteinfo> notes = this.getNoteByUserId(token);
+		//List<Noteinfo> notes = this.getNoteByUserId(token);
+		long uId = (long) generate.parseJWT(token);
+
+		List<Noteinfo> notes = noteRepository.findNoteByUserId(uId);
 		
 		/*
 		 * java 8 streams feature
@@ -442,7 +461,7 @@ public class NoteImplementation implements NoteService {
 				//noteRepository.save(noteData);
                 Noteinfo notess = noteRepository.save(noteData);
 				
-				iServiceElasticSearch.upDateNote(notess);
+				//iServiceElasticSearch.upDateNote(notess);
 				
 				
 			}
@@ -457,7 +476,9 @@ public class NoteImplementation implements NoteService {
 	@Transactional
 	@Override
 	public String removeReminder(TrashNotes noteid, String token) {
-		List<Noteinfo> notes = this.getNoteByUserId(token);
+//		List<Noteinfo> notes = this.getNoteByUserId(token);
+		long uId = (long) generate.parseJWT(token);
+		List<Noteinfo> notes = noteRepository.findNoteByUserId(uId);
 		/*
 		 * java 8 streams feature
 		 */
@@ -470,7 +491,7 @@ public class NoteImplementation implements NoteService {
 				noteData.setReminder(null);
                 Noteinfo notess = noteRepository.save(noteData);
 				
-				iServiceElasticSearch.upDateNote(notess);
+				//iServiceElasticSearch.upDateNote(notess);
 
 			}
 		} catch (Exception ae) {

@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoonote.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,8 @@ public interface UserService {
     User getUser(String token, boolean isCacheable);
 
 	User getImageUrl(String token);
+
+	ArrayList<User> getUserByNoteid(Long nid);
 
 
 }

@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoonote.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;
@@ -140,7 +141,12 @@ public class UserController {
 		return userService.getUser(token,true);
 	}
 
-	//@PostMapping(value = "/getimageurl/{token}")
+	@GetMapping(value = "/getuserBynoteid")
+	public ArrayList<User> getUser(@RequestParam Long nid) {
+		return userService.getUserByNoteid(nid);
+	}
+	
+	
 	@PostMapping(value="/uploadProfile/{token}")
     public Map<String, String> uploadProfile(@RequestBody MultipartFile file,@PathVariable String token)
     {
