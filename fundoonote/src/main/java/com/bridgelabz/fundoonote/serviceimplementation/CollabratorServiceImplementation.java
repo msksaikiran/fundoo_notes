@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoonote.serviceimplementation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +59,7 @@ public class CollabratorServiceImplementation implements CollabratorService {
 		long id = (long) generate.parseJWT(token);
 		//List<User> user = repository.getCollobaraterById(id);
 		User user = repository.getUserById(id)
-				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "NoteId not Exist"));
+				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "User not Exist"));
 
 		return user.getCollablare();
 		
@@ -66,24 +67,17 @@ public class CollabratorServiceImplementation implements CollabratorService {
 
 	@Transactional
 	@Override
-	public Noteinfo deleteCollabrator(long noteId, String token) {
+	public Noteinfo deleteCollabrator(long noteId, long id) {
 		
-		long uid = (long) generate.parseJWT(token);
-		User collabrator = repository.findById(uid)
-				.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "User not Exist"));
-		
-		Noteinfo data = null;
-
-				List<Noteinfo> note = noteRepo.findNoteByUserId(uid);
-				if (note != null) {
-					data = note.stream().filter(t -> t.getNid() == noteId).findFirst()
+		User coluser= repository.getUserById(id)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, "user Not exist"));
+	    
+		Noteinfo data = coluser.getCollablare().stream().filter(t -> t.getNid() == noteId).findFirst()
 							.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, "NoteId not Exist"));
 
+        coluser.getCollablare().remove(data);
 					
-                    collabrator.getCollablare().remove(data);
-					//repository.save(collabrator);
-				}
-
+				
 				return data;
 	}
 

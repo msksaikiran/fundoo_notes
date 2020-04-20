@@ -148,26 +148,20 @@ public class LabelImplementation implements LabelService {
 		
 		// List<Label> list = new ArrayList<Label>();
 		List<Label> list = labelRepository.findLableByUserId(userId);
+		
 		if (list.isEmpty())
 			return null;
 
 		/*
 		 * java 8 streams feature
 		 */
-		Label labelData;
-		try {
-
-			labelData = list.stream().filter(t -> t.getLableName().equalsIgnoreCase(LabelDto.getLableName())).findFirst()
+		Label labelData = list.stream().filter(t -> t.getlId()==lId).findFirst()
 					.orElseThrow(() -> new LabelException(HttpStatus.BAD_REQUEST, env.getProperty("301")));
 
 			labelData.setLableName(LabelDto.getLableName());
 			labelData.setUpdateDateAndTime(LocalDateTime.now());
 			labelRepository.save(labelData);
 
-		} catch (Exception ae) {
-			throw new LabelException(HttpStatus.INTERNAL_SERVER_ERROR,
-					"Label Not Updated due to Internel server problem");
-		}
 
 		return labelData;
 	}

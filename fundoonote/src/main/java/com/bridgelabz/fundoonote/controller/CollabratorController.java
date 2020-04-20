@@ -42,8 +42,8 @@ public class CollabratorController {
 
 	@DeleteMapping("/delete-coll")
 	public ResponseEntity<Response> deleteCollabrator(@RequestParam("NoteId") long NoteId,
-			@RequestParam("email") String email) {
-		     service.deleteCollabrator(NoteId, email);
+			@RequestParam("userId") long uid) {
+		     service.deleteCollabrator(NoteId, uid);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Response("Collabrator removed", 200));
 	}
 }

@@ -110,9 +110,8 @@ public class NoteImplementation implements NoteService {
 		if (notes.isEmpty())
 			return null;
 		/*
-		 * java 8 streams feature
+		 * java 8 streams feature for getting the specified note to the user
 		 */
-		
 		Noteinfo data = notes.stream().filter(t -> t.getNid() == nId).findFirst()
 				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
 		try {
@@ -121,7 +120,7 @@ public class NoteImplementation implements NoteService {
 			data.setUpDateAndTime(LocalDateTime.now());
 			Noteinfo notess = noteRepository.save(data);
 
-			//iServiceElasticSearch.upDateNote(notess);
+			iServiceElasticSearch.upDateNote(notess);
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("209"));
 		}
@@ -203,7 +202,7 @@ public class NoteImplementation implements NoteService {
 		    //data.setIsArchieved(0);
 			noteRepository.delete(data);
 
-			//iServiceElasticSearch.deleteNote(String.valueOf(nId));
+			iServiceElasticSearch.deleteNote(String.valueOf(nId));
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("210"));
 		}

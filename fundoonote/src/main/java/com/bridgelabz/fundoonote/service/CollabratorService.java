@@ -12,6 +12,6 @@ public interface CollabratorService {
 
 	List<Noteinfo> getAllCollabrator(String token);
 
-	Noteinfo deleteCollabrator(long noteId, String token);
+	Noteinfo deleteCollabrator(long noteId, long id);
 
 }
