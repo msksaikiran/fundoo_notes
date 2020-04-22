@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Build-Jdk-Spec: 13
-Implementation-Title: fundoo_note_api
+Implementation-Title: fundoonotesBackend
 Implementation-Version: 0.0.1-SNAPSHOT
 Main-Class: com.bridgelabz.fundoonote.controller.UserController
 Created-By: Maven Integration for Eclipse
