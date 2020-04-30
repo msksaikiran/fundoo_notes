@@ -100,11 +100,13 @@ public class UserImplementation implements UserService {
 	}
 
 	@Override
-	public User getImageUrl(String token) {
+	public String getImageUrl(String token) {
 		long id = (Long) generate.parseJWT(token);
-		User url = userRepository.findUserByProfile(id)
+		User user = userRepository.findUserByProfile(id)
 				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("103")));
-		return url;
+		//url.getProfile();
+	 return "https://msksaikiran.s3.us-east-2.amazonaws.com/"+user.getProfile();
+		
 	}
 	
 	@Transactional

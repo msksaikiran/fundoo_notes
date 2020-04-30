@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.bridgelabz.fundoonotesBackend.dto.NoteDto;
 import com.bridgelabz.fundoonotesBackend.dto.ReminderDto;
 import com.bridgelabz.fundoonotesBackend.dto.TrashNotes;
 import com.bridgelabz.fundoonotesBackend.dto.UpdateNote;
 import com.bridgelabz.fundoonotesBackend.entity.Noteinfo;
+import com.bridgelabz.fundoonotesBackend.entity.User;
 import com.bridgelabz.fundoonotesBackend.exception.NoteException;
 
 public interface NoteService {
@@ -54,6 +57,12 @@ public interface NoteService {
 	Noteinfo unarchieveNote(long nid, String token);
 
 	Noteinfo getNotedetails(String id);
+	
+	void uploadFileToS3Bucket(MultipartFile multipartFile, boolean enablePublicReadAccess,long token);
+
+	void deleteFileFromS3Bucket(String fileName,String token);
+	
+	ArrayList<String> getImageUrl(long nid);
 	
 
 }

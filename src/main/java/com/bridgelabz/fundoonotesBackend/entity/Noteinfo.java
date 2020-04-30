@@ -41,6 +41,9 @@ public class Noteinfo {
 	private String colour;
 	@Column
 	private String reminder;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<Profile> profile;
 		
 	@ManyToMany(cascade = CascadeType.ALL)
 	public List<Label> label;
@@ -154,7 +157,15 @@ public class Noteinfo {
 	public void setLabel(List<Label> label) {
 		this.label = label;
 	}
-	
 
-	
+
+	public List<Profile> getProfile() {
+		return profile;
+	}
+
+
+	public void setProfile(List<Profile> profile) {
+		this.profile = profile;
+	}
+
 }

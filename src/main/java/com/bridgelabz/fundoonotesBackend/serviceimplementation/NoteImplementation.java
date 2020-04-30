@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,14 +30,25 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 //import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.regions.Region;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.bridgelabz.fundoonotesBackend.dto.NoteDto;
 import com.bridgelabz.fundoonotesBackend.dto.ReminderDto;
 import com.bridgelabz.fundoonotesBackend.dto.TrashNotes;
 import com.bridgelabz.fundoonotesBackend.dto.UpdateNote;
 import com.bridgelabz.fundoonotesBackend.entity.Label;
 import com.bridgelabz.fundoonotesBackend.entity.Noteinfo;
+import com.bridgelabz.fundoonotesBackend.entity.Profile;
 import com.bridgelabz.fundoonotesBackend.entity.User;
 import com.bridgelabz.fundoonotesBackend.exception.NoteException;
 import com.bridgelabz.fundoonotesBackend.exception.UserException;
@@ -54,7 +67,7 @@ public class NoteImplementation implements NoteService {
 
 	@Autowired
 	private UserRepository userRepository;
-
+	
 	@Autowired
 	private JwtGenerator generate;
 
@@ -88,7 +101,7 @@ public class NoteImplementation implements NoteService {
 			Noteinfo notess = noteRepository.save(note);
 			
 			try {
-				iServiceElasticSearch.createNote(notess);
+				//iServiceElasticSearch.createNote(notess);
 			} catch (Exception e) {
 				throw new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("111"));
 			}
@@ -117,7 +130,7 @@ public class NoteImplementation implements NoteService {
 			Noteinfo notess = noteRepository.save(data);
 		
 		try {
-			iServiceElasticSearch.upDateNote(notess);
+			//iServiceElasticSearch.upDateNote(notess);
 		} catch (Exception ae) {
 			throw new NoteException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("111"));
 		}
@@ -231,7 +244,7 @@ public class NoteImplementation implements NoteService {
 	@Transactional
 	@Override
 	public List<Noteinfo> sortByName() {
-		ArrayList<String> noteTitles = new ArrayList<>();
+		//ArrayList<String> noteTitles = new ArrayList<>();
 		List<Noteinfo> Notelist = this.getAllNotes();
 		/*
 		 * java8 parallel sort
@@ -529,6 +542,7 @@ public class NoteImplementation implements NoteService {
 		 List<Long> collabareNotes = noteRepository.getCollabrateNotes(uId);
 		 return collabareNotes;
 	}
+	
 	@Transactional
 	@Override
 	public List<String> getNote(String id) {
@@ -552,6 +566,84 @@ public class NoteImplementation implements NoteService {
 
 		return notes;
 
+	}
+
+	private String awsS3AudioBucket;
+
+	private AmazonS3 amazonS3;
+	
+	@Override
+	public ArrayList<String> getImageUrl(long id) {
+		//long id = (Long) generate.parseJWT(token);
+		ArrayList<String> imageurls=new ArrayList<>();
+		Noteinfo notes = noteRepository.findNoteById(id)
+				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
+		List<Profile> data =notes.getProfile();
+		for(Profile url:data) {
+			imageurls.add("https://msksaikiran.s3.us-east-2.amazonaws.com/"+url.getIName());
+		}
+		return imageurls;
+	}
+	
+	@Autowired
+    public void AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider, String awsS3AudioBucket) 
+    { 
+        this.amazonS3 = AmazonS3ClientBuilder.standard()
+                .withCredentials(awsCredentialsProvider)
+                .withRegion(awsRegion.getName()).build();
+        this.awsS3AudioBucket = awsS3AudioBucket;
+    }
+
+	@Async
+	public void uploadFileToS3Bucket(MultipartFile multipartFile, boolean enablePublicReadAccess, long id) {
+		//long id = (Long) generate.parseJWT(token);
+
+		Profile image=new Profile();
+		
+		Noteinfo notes = noteRepository.findNoteById(id)
+				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
+		String fileName = multipartFile.getOriginalFilename();
+
+		image.setIName(fileName);
+		
+        notes.getProfile().add(image);
+		
+		try {
+			// creating the file in the server (temporarily)
+			File file = new File(fileName);
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(multipartFile.getBytes());
+			fos.close();
+
+			PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3AudioBucket, fileName, file);
+ 
+			if (enablePublicReadAccess) {
+				putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
+			}
+			this.amazonS3.putObject(putObjectRequest);
+			// removing the file created in the server
+			file.delete();
+			noteRepository.save(notes);
+		} catch (IOException | AmazonServiceException ex) {
+			ex.printStackTrace();
+			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
+		}
+	}
+
+	@Async
+	public void deleteFileFromS3Bucket(String fileName, String token) {
+		long id = (Long) generate.parseJWT(token);
+
+		User user = userRepository.getUserById(id)
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
+
+		user.setProfile("null");
+		try {
+			amazonS3.deleteObject(new DeleteObjectRequest(awsS3AudioBucket, fileName));
+		} catch (AmazonServiceException ex) {
+			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
+		}
+		userRepository.save(user);
 	}
 
 }

@@ -29,7 +29,7 @@ public interface UserService {
 
     User getUser(String token, boolean isCacheable);
 
-	User getImageUrl(String token);
+	String getImageUrl(String token);
 
 	ArrayList<User> getUserByNoteid(Long nid);
 

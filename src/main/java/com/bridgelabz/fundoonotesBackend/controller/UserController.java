@@ -68,7 +68,7 @@ public class UserController {
 	@PostMapping(value = "/getimageurl/{token}")
 	public ResponseEntity<UserResponse> imageurl(@PathVariable String token) {
 		
-		User url = userService.getImageUrl(token);
+		String url = userService.getImageUrl(token);
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new UserResponse(env.getProperty("101"), "200-ok", url));
 
@@ -170,7 +170,7 @@ public class UserController {
         return response;
     }
     
-    
+   
 	/* API for Getting the all users */
 
 	/*

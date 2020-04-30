@@ -21,7 +21,7 @@ public class Register {
 	@Email(message="Email Field should be proper")
 	private String email;
 	
-	@Pattern(regexp = "^[a-z]",message = "Name should be small letters")
+	@Pattern(regexp = "^[A-z]{1}[a-z]{3}",message = "Name should be small letters")
 	private String name;
 	
 	

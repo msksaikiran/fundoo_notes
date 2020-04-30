@@ -1,7 +1,11 @@
 package com.bridgelabz.fundoonotesBackend.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -16,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bridgelabz.fundoonotesBackend.dto.NoteDto;
 import com.bridgelabz.fundoonotesBackend.dto.PinDto;
@@ -24,7 +30,9 @@ import com.bridgelabz.fundoonotesBackend.dto.ReminderDto;
 import com.bridgelabz.fundoonotesBackend.dto.TrashNotes;
 import com.bridgelabz.fundoonotesBackend.dto.UpdateNote;
 import com.bridgelabz.fundoonotesBackend.entity.Noteinfo;
+import com.bridgelabz.fundoonotesBackend.entity.User;
 import com.bridgelabz.fundoonotesBackend.response.NoteResponse;
+import com.bridgelabz.fundoonotesBackend.response.UserResponse;
 import com.bridgelabz.fundoonotesBackend.service.IServiceElasticSearch;
 import com.bridgelabz.fundoonotesBackend.service.LabelService;
 import com.bridgelabz.fundoonotesBackend.service.NoteService;
@@ -316,10 +324,42 @@ public class NotesController {
 
 		return noteService.getAllNotes();
 	}
+	
+	@PostMapping(value = "/getimageurl/{token}")
+	public ResponseEntity<UserResponse> imageurl(@PathVariable long token) {
+		
+		ArrayList<String> url = noteService.getImageUrl(token);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new UserResponse(env.getProperty("101"), "200-ok", url));
 
-//	 @GetMapping(value = "/title/{text}")
-//	    public List<Noteinfo> searchName(@PathVariable final String text) {
-//	        return result.findByName(text);
-//	    }
-	 
+	}
+	
+	@PostMapping(value="/uploadProfile")
+    public Map<String, String> uploadProfile(@RequestBody MultipartFile file,@RequestParam("NoteId") long token)
+    {
+        this.noteService.uploadFileToS3Bucket(file, true,token);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "file [" + file.getOriginalFilename() + "] uploading request submitted successfully.");
+
+        return response;
+    }
+
+    @DeleteMapping(value="/deleteProfile")
+    public Map<String, String> deleteProfile(@RequestParam("file_name") String fileName,@RequestPart("token") String token)
+    {
+        this.noteService.deleteFileFromS3Bucket(fileName,token);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "file [" + fileName + "] removing request submitted successfully.");
+
+        return response;
+    }
+
+    @DeleteMapping(value = "/removeimage/{noteid}")
+    public void deleteimage(@PathVariable long noteid) {
+    	
+    	
+    }
+
 }

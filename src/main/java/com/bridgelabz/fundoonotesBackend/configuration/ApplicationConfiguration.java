@@ -39,7 +39,7 @@ public class ApplicationConfiguration {
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("com.bridgelabz.fundoonote.controller"))
+				.apis(RequestHandlerSelectors.basePackage("com.bridgelabz.fundoonotesBackend.controller"))
 				.paths(PathSelectors.any()).build();
 
 	}
