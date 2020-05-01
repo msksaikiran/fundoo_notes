@@ -346,9 +346,9 @@ public class NotesController {
     }
 
     @DeleteMapping(value="/deleteProfile")
-    public Map<String, String> deleteProfile(@RequestParam("file_name") String fileName,@RequestPart("token") String token)
+    public Map<String, String> deleteProfile(@RequestParam("file_name") String fileName,@RequestParam("nId") long noteId)
     {
-        this.noteService.deleteFileFromS3Bucket(fileName,token);
+        this.noteService.deleteFileFromS3Bucket(fileName,noteId);
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "file [" + fileName + "] removing request submitted successfully.");
@@ -356,10 +356,5 @@ public class NotesController {
         return response;
     }
 
-    @DeleteMapping(value = "/removeimage/{noteid}")
-    public void deleteimage(@PathVariable long noteid) {
-    	
-    	
-    }
 
 }

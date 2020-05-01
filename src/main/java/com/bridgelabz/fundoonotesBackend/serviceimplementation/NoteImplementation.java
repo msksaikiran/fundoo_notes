@@ -596,7 +596,6 @@ public class NoteImplementation implements NoteService {
 
 	@Async
 	public void uploadFileToS3Bucket(MultipartFile multipartFile, boolean enablePublicReadAccess, long id) {
-		//long id = (Long) generate.parseJWT(token);
 
 		Profile image=new Profile();
 		
@@ -623,6 +622,7 @@ public class NoteImplementation implements NoteService {
 			this.amazonS3.putObject(putObjectRequest);
 			// removing the file created in the server
 			file.delete();
+			
 			noteRepository.save(notes);
 		} catch (IOException | AmazonServiceException ex) {
 			ex.printStackTrace();
@@ -631,19 +631,23 @@ public class NoteImplementation implements NoteService {
 	}
 
 	@Async
-	public void deleteFileFromS3Bucket(String fileName, String token) {
-		long id = (Long) generate.parseJWT(token);
+	@Override
+	public void deleteFileFromS3Bucket(String fileName, long id) {
 
-		User user = userRepository.getUserById(id)
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("104")));
-
-		user.setProfile("null");
+		Noteinfo notes = noteRepository.findNoteById(id)
+				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
+		
+		Profile userImage = notes.getProfile().stream().filter(t -> t.getIName().equalsIgnoreCase(fileName)).findFirst()
+				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+       
+		notes.getProfile().remove(userImage);
+		
 		try {
-			amazonS3.deleteObject(new DeleteObjectRequest(awsS3AudioBucket, fileName));
+			//amazonS3.deleteObject(new DeleteObjectRequest(awsS3AudioBucket, fileName));
 		} catch (AmazonServiceException ex) {
 			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
 		}
-		userRepository.save(user);
+		noteRepository.save(notes);
 	}
 
 }
