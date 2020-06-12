@@ -568,86 +568,86 @@ public class NoteImplementation implements NoteService {
 
 	}
 
-	private String awsS3AudioBucket;
-
-	private AmazonS3 amazonS3;
-	
+//	private String awsS3AudioBucket;
+//
+//	private AmazonS3 amazonS3;
+//	
 	@Override
 	public ArrayList<String> getImageUrl(long id) {
 		//long id = (Long) generate.parseJWT(token);
 		ArrayList<String> imageurls=new ArrayList<>();
-		Noteinfo notes = noteRepository.findNoteById(id)
-				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
-		List<Profile> data =notes.getProfile();
-		for(Profile url:data) {
-			imageurls.add("https://msksaikiran.s3.us-east-2.amazonaws.com/"+url.getIName());
-		}
+//		Noteinfo notes = noteRepository.findNoteById(id)
+//				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
+//		List<Profile> data =notes.getProfile();
+//		for(Profile url:data) {
+//			imageurls.add("https://msksaikiran.s3.us-east-2.amazonaws.com/"+url.getIName());
+//		}
 		return imageurls;
 	}
 	
-	@Autowired
-    public void AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider, String awsS3AudioBucket) 
-    { 
-        this.amazonS3 = AmazonS3ClientBuilder.standard()
-                .withCredentials(awsCredentialsProvider)
-                .withRegion(awsRegion.getName()).build();
-        this.awsS3AudioBucket = awsS3AudioBucket;
-    }
+//	@Autowired
+//    public void AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider, String awsS3AudioBucket) 
+//    { 
+//        this.amazonS3 = AmazonS3ClientBuilder.standard()
+//                .withCredentials(awsCredentialsProvider)
+//                .withRegion(awsRegion.getName()).build();
+//        this.awsS3AudioBucket = awsS3AudioBucket;
+ //   }
 
 	@Async
 	public void uploadFileToS3Bucket(MultipartFile multipartFile, boolean enablePublicReadAccess, long id) {
 
-		Profile image=new Profile();
-		
-		Noteinfo notes = noteRepository.findNoteById(id)
-				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
-		String fileName = multipartFile.getOriginalFilename();
-
-		image.setIName(fileName);
-		
-        notes.getProfile().add(image);
-		
-		try {
-			// creating the file in the server (temporarily)
-			File file = new File(fileName);
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(multipartFile.getBytes());
-			fos.close();
-
-			PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3AudioBucket, fileName, file);
- 
-			if (enablePublicReadAccess) {
-				putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
-			}
-			this.amazonS3.putObject(putObjectRequest);
-			// removing the file created in the server
-			file.delete();
-			
-			noteRepository.save(notes);
-		} catch (IOException | AmazonServiceException ex) {
-			ex.printStackTrace();
-			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
-		}
+//		Profile image=new Profile();
+//		
+//		Noteinfo notes = noteRepository.findNoteById(id)
+//				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
+//		String fileName = multipartFile.getOriginalFilename();
+//
+//		image.setIName(fileName);
+//		
+//        notes.getProfile().add(image);
+//		
+//		try {
+//			// creating the file in the server (temporarily)
+//			File file = new File(fileName);
+//			FileOutputStream fos = new FileOutputStream(file);
+//			fos.write(multipartFile.getBytes());
+//			fos.close();
+//
+//			PutObjectRequest putObjectRequest = new PutObjectRequest(this.awsS3AudioBucket, fileName, file);
+// 
+//			if (enablePublicReadAccess) {
+//				putObjectRequest.withCannedAcl(CannedAccessControlList.PublicRead);
+//			}
+//			this.amazonS3.putObject(putObjectRequest);
+//			// removing the file created in the server
+//			file.delete();
+//			
+//			noteRepository.save(notes);
+//		} catch (IOException | AmazonServiceException ex) {
+//			ex.printStackTrace();
+//			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
+//		}
 	}
 
 	@Async
 	@Override
 	public void deleteFileFromS3Bucket(String fileName, long id) {
 
-		Noteinfo notes = noteRepository.findNoteById(id)
-				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
-		
-		Profile userImage = notes.getProfile().stream().filter(t -> t.getIName().equalsIgnoreCase(fileName)).findFirst()
-				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
-       
-		notes.getProfile().remove(userImage);
-		
-		try {
-			//amazonS3.deleteObject(new DeleteObjectRequest(awsS3AudioBucket, fileName));
-		} catch (AmazonServiceException ex) {
-			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
-		}
-		noteRepository.save(notes);
+//		Noteinfo notes = noteRepository.findNoteById(id)
+//				.orElseThrow(() -> new NoteException(HttpStatus.BAD_REQUEST, env.getProperty("104")));
+//		
+//		Profile userImage = notes.getProfile().stream().filter(t -> t.getIName().equalsIgnoreCase(fileName)).findFirst()
+//				.orElseThrow(() -> new UserException(HttpStatus.BAD_REQUEST, env.getProperty("204")));
+//       
+//		notes.getProfile().remove(userImage);
+//		
+//		try {
+//			//amazonS3.deleteObject(new DeleteObjectRequest(awsS3AudioBucket, fileName));
+//		} catch (AmazonServiceException ex) {
+//			throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, env.getProperty("500"));
+//		}
+//		noteRepository.save(notes);
 	}
 
 }

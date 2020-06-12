@@ -237,14 +237,14 @@ public class UserImplementation implements UserService {
 		return senderimp;
 	}
 
-	@Autowired
-    public void AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider, String awsS3AudioBucket) 
-    { 
-        this.amazonS3 = AmazonS3ClientBuilder.standard()
-                .withCredentials(awsCredentialsProvider)
-                .withRegion(awsRegion.getName()).build();
-        this.awsS3AudioBucket = awsS3AudioBucket;
-    }
+//	@Autowired
+//    public void AmazonS3ClientServiceImpl(Region awsRegion, AWSCredentialsProvider awsCredentialsProvider, String awsS3AudioBucket) 
+//    { 
+//        this.amazonS3 = AmazonS3ClientBuilder.standard()
+//                .withCredentials(awsCredentialsProvider)
+//                .withRegion(awsRegion.getName()).build();
+//        this.awsS3AudioBucket = awsS3AudioBucket;
+//    }
 
 	@Async
 	public void uploadFileToS3Bucket(MultipartFile multipartFile, boolean enablePublicReadAccess, String token) {
