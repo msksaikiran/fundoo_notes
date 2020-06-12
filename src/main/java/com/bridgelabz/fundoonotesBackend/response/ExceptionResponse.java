@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@NoArgsConstructor
-@ToString
 public class ExceptionResponse {
 	private LocalDateTime timestamp;
 	private String message;

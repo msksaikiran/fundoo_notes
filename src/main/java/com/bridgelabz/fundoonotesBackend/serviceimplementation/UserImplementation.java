@@ -135,18 +135,19 @@ public class UserImplementation implements UserService {
 			 */
 			
 			String token = generate.jwtToken(userDetails.getUid());
-			Email email =new Email();
+	//		Email email =new Email();
 			this.mailservice();
-			
-			email.setEmailId(result.getEmail());
-		    email.setToken(token);
-		    
-			rabbitMQSender.sendToQueue(email);
-	        rabbitMQSender.Reciver(email);		
+			mail.senEmailMail(userDetails, senderimp, token);
+//			email.setEmailId(result.getEmail());
+//		    email.setToken(token);
+//		    
+//			rabbitMQSender.sendToQueue(email);
+//	        rabbitMQSender.Reciver(email);		
 			 
 			return result;
 
 		} catch (Exception ae) {
+			ae.printStackTrace();
 			throw new UserException(HttpStatus.BAD_GATEWAY, env.getProperty("110"));
 		}
 	}
@@ -204,7 +205,7 @@ public class UserImplementation implements UserService {
          for(Noteinfo notes:colNotes) {
         	coluser = userRepository.findcolluserbyNoteId(notes.getNid());
         	userlist.add(coluser);
-        	System.out.println(coluser+"*****************");
+        	
          }
 		return coluser;
 	}
@@ -223,8 +224,8 @@ public class UserImplementation implements UserService {
 	}
 
 	public JavaMailSenderImpl mailservice() {
-		senderimp.setUsername(System.getenv("email"));
-		senderimp.setPassword(System.getenv("password"));
+		senderimp.setUsername("msaikiran201@gmail.com");
+		senderimp.setPassword("Sai@072807");
 		senderimp.setPort(587);
 		Properties prop = new Properties();
 		prop.put("mail.smtp.auth", "true");

@@ -6,10 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
-
 public class NoteResponse {
 	private String Message;
 	private Object notes;

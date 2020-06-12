@@ -10,9 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
 public class UserResponse {
 	private String Message;
 	private String token;

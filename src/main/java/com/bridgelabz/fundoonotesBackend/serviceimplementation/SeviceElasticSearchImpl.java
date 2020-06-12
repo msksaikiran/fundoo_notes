@@ -48,10 +48,6 @@ public class SeviceElasticSearchImpl implements IServiceElasticSearch {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> documentMappper = objectMapper.convertValue(note, Map.class);
 
-//		CreateIndexRequest request = new CreateIndexRequest(INDEX);
-//	    request.mapping("_doc", XContentType.JSON);
-//	    CreateIndexResponse response = client.indices().create(request, RequestOptions.DEFAULT);
-
 		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, String.valueOf(note.getNid()))
 				.source(documentMappper);
 		IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
