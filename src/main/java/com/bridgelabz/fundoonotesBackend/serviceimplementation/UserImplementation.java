@@ -224,8 +224,8 @@ public class UserImplementation implements UserService {
 	}
 
 	public JavaMailSenderImpl mailservice() {
-		senderimp.setUsername("msaikiran201@gmail.com");
-		senderimp.setPassword("Sai@072807");
+		senderimp.setUsername("morramshettysaikiran148@gmail.com");
+		senderimp.setPassword("sai96666");
 		senderimp.setPort(587);
 		Properties prop = new Properties();
 		prop.put("mail.smtp.auth", "true");
