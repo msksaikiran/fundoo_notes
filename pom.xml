@@ -162,11 +162,12 @@
 		
 		<plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.6.3</version>
+           <artifactId>maven-compiler-plugin</artifactId>
+            <version>${maven-compiler.version}</version>
             <configuration>
-                <source>1.8</source>
-                <target>1.8</target>
+                <source>${java.version}</source>
+                <target>${java.version}</target>
+                <debug>true</debug>
             </configuration>
         </plugin>
         
@@ -175,7 +176,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			
-			<plugin>
+		<plugin>
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.6.0</version>
             <configuration>
