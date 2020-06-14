@@ -159,17 +159,6 @@
 
 	<build>
 		<plugins>
-		
-		<plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-compiler-plugin</artifactId>
-            <version>${maven-compiler.version}</version>
-            <configuration>
-                <source>${java.version}</source>
-                <target>${java.version}</target>
-                <debug>true</debug>
-            </configuration>
-        </plugin>
         
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -177,6 +166,8 @@
 			</plugin>
 			
 		<plugin>
+		<artifactId>apache-maven-compiler-plugin</artifactId>
+            <version>3.6.3</version>
             <configuration>
                 <fork>true</fork>
                 <executable>C:\Program Files\Java\jdk1.8.0_251\bin\javac.exe</executable>
