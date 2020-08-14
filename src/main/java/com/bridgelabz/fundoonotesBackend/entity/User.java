@@ -13,14 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
 @Entity
-@Data
-@NoArgsConstructor
-@ToString
+//@Data
+//@NoArgsConstructor
+//@ToString
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

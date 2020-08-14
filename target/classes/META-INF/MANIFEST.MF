@@ -1,7 +1,6 @@
 Manifest-Version: 1.0
-Build-Jdk-Spec: 13
 Implementation-Title: fundoonotesBackend
 Implementation-Version: 0.0.1-SNAPSHOT
-Main-Class: com.bridgelabz.fundoonote.controller.UserController
+Build-Jdk-Spec: 1.8
 Created-By: Maven Integration for Eclipse
 
